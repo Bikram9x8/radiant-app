@@ -1,0 +1,224 @@
+// Radiant Educations — Prisma Schema
+// Run: npx prisma migrate dev --name init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+
+}
+
+// ================= ENUMS =================
+
+enum Role {
+  STUDENT
+  COMPANY
+  ADMIN
+}
+
+enum AccountStatus {
+  PENDING     // company awaiting admin approval
+  APPROVED
+  REJECTED
+  BLOCKED
+}
+
+enum OpportunityType {
+  JOB
+  INTERNSHIP
+  COMPETITION
+  QUIZ
+  HACKATHON
+  EVENT
+}
+
+enum OpportunityStatus {
+  PENDING     // awaiting admin approval
+  APPROVED
+  REJECTED
+  CLOSED
+}
+
+enum ApplicationStatus {
+  APPLIED
+  SHORTLISTED
+  REJECTED
+  SELECTED
+}
+
+enum NotificationType {
+  APPLICATION_UPDATE
+  OPPORTUNITY_APPROVED
+  OPPORTUNITY_REJECTED
+  COMPANY_APPROVED
+  COMPANY_REJECTED
+  ACCOUNT_BLOCKED
+  GENERAL
+}
+
+// ================= CORE =================
+
+model User {
+  id            String        @id @default(cuid())
+  email         String        @unique
+  passwordHash  String
+  role          Role
+  status        AccountStatus @default(APPROVED) // students auto-approved; companies start PENDING
+  emailVerified DateTime?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  studentProfile  StudentProfile?
+  companyProfile  CompanyProfile?
+  notifications   Notification[]
+  adminLogsMade   AdminLog[]      @relation("AdminActor")
+
+  @@index([role])
+  @@index([status])
+}
+
+model StudentProfile {
+  id            String   @id @default(cuid())
+  userId        String   @unique
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  fullName      String
+  phone         String?
+  college       String?
+  degree        String?
+  graduationYr  Int?
+  skills        String[] @default([])
+  bio           String?
+  linkedinUrl   String?
+  githubUrl     String?
+  portfolioUrl  String?
+  avatarUrl     String?
+
+  resumes       Resume[]
+  applications  Application[]
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model CompanyProfile {
+  id            String   @id @default(cuid())
+  userId        String   @unique
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  companyName   String
+  website       String?
+  industry      String?
+  description   String?
+  logoUrl       String?
+  contactPerson String?
+  contactPhone  String?
+
+  opportunities Opportunity[]
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model Resume {
+  id            String   @id @default(cuid())
+  studentId     String
+  student       StudentProfile @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  fileUrl       String   // Cloudinary/S3 URL
+  fileName      String
+  isPrimary     Boolean  @default(true)
+  uploadedAt    DateTime @default(now())
+}
+
+model Category {
+  id            String   @id @default(cuid())
+  name          String   @unique
+  slug          String   @unique
+  description   String?
+  opportunities Opportunity[]
+  createdAt     DateTime @default(now())
+}
+
+model Opportunity {
+  id            String            @id @default(cuid())
+  companyId     String
+  company       CompanyProfile    @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  categoryId    String
+  category      Category          @relation(fields: [categoryId], references: [id])
+
+  title         String
+  type          OpportunityType
+  description   String
+  eligibility   String?
+  location      String?
+  mode          String            @default("Online") // Online / Offline / Hybrid
+  stipendOrPrize String?
+  applyDeadline DateTime
+  eventDate     DateTime?
+  externalLink  String?           // optional external application link
+
+  status        OpportunityStatus @default(PENDING)
+  rejectionReason String?
+
+  applications  Application[]
+
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+
+  @@index([status])
+  @@index([type])
+  @@index([applyDeadline])
+}
+
+model Application {
+  id            String            @id @default(cuid())
+  studentId     String
+  student       StudentProfile    @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  opportunityId String
+  opportunity   Opportunity       @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
+
+  resumeUrl     String?           // snapshot of resume used at time of application
+  coverNote     String?
+  status        ApplicationStatus @default(APPLIED)
+
+  appliedAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+
+  @@unique([studentId, opportunityId]) // one application per student per opportunity
+  @@index([status])
+}
+
+model Notification {
+  id        String            @id @default(cuid())
+  userId    String
+  user      User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  type      NotificationType
+  title     String
+  message   String
+  isRead    Boolean           @default(false)
+  createdAt DateTime          @default(now())
+
+  @@index([userId, isRead])
+}
+
+model AdminLog {
+  id          String   @id @default(cuid())
+  actorId     String
+  actor       User     @relation("AdminActor", fields: [actorId], references: [id])
+
+  action      String   // e.g. "APPROVE_COMPANY", "BLOCK_USER", "REJECT_OPPORTUNITY"
+  targetType  String   // "User" | "Opportunity" | "Company"
+  targetId    String
+  notes       String?
+
+  createdAt   DateTime @default(now())
+
+  @@index([actorId])
+  @@index([targetType, targetId])
+}
