@@ -1,3 +1,4 @@
+import "dotenv/config";
 import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
@@ -15,8 +16,10 @@ export const authOptions: NextAuthOptions = {
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) return null;
+        console.log("LOGIN ATTEMPT:", credentials.email);
 
         const user = await prisma.user.findUnique({ where: { email: credentials.email } });
+        console.log("USER FOUND:", user);
         if (!user) return null;
 
         const valid = await bcrypt.compare(credentials.password, user.passwordHash);
