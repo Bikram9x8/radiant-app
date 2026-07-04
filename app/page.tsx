@@ -1,37 +1,13 @@
-"use client";
 import Link from "next/link";
-import { useSession, signOut } from "next-auth/react";
+import { getServerSession } from "next-auth/next";
+import { redirect } from "next/navigation";
+import { authOptions } from "@/lib/auth";
 
-export default function Home() {
-  const { data: session, status } = useSession();
-
-  if (status === "loading") {
-    return (
-      <div className="flex flex-1 items-center justify-center">
-        <p className="text-zinc-500">Loading...</p>
-      </div>
-    );
-  }
+export default async function Home() {
+  const session = await getServerSession(authOptions);
 
   if (session?.user) {
-    const user = session.user as any;
-    return (
-      <div className="flex flex-1 flex-col items-center justify-center gap-6 px-6 text-center">
-        <h1 className="text-3xl font-bold">Welcome back{user.email ? `, ${user.email}` : ""}</h1>
-        <p className="text-zinc-500">
-          Role: <span className="font-medium">{user.role}</span>
-          {user.status === "PENDING" && (
-            <span className="ml-2 text-amber-600">(awaiting admin approval)</span>
-          )}
-        </p>
-        <button
-          onClick={() => signOut({ callbackUrl: "/" })}
-          className="rounded px-5 py-2 border font-semibold hover:bg-zinc-50 dark:hover:bg-zinc-900"
-        >
-          Log out
-        </button>
-      </div>
-    );
+    redirect("/dashboard");
   }
 
   return (
