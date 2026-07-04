@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { getServerSession } from "next-auth/next";
 import { redirect } from "next/navigation";
 import { authOptions } from "@/lib/auth";
@@ -26,14 +27,14 @@ export default async function DashboardPage() {
     );
   }
 
-  if (user.role === "STUDENT") {
+if (user.role === "STUDENT") {
     return (
       <div className="flex flex-1 flex-col items-center justify-center gap-4 px-6 text-center">
         <h1 className="text-2xl font-bold">Student Dashboard</h1>
         <p className="text-zinc-500">Welcome, {user.email}.</p>
-        <p className="text-zinc-500 max-w-md">
-          Your profile, applications, and opportunities will appear here as we build them out.
-        </p>
+        <Link href="/profile" className="rounded px-5 py-2 bg-blue-700 text-white font-semibold hover:bg-blue-800">
+          Edit My Profile
+        </Link>
       </div>
     );
   }
