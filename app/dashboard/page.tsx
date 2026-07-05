@@ -35,6 +35,9 @@ if (user.role === "STUDENT") {
         <Link href="/profile" className="rounded px-5 py-2 bg-blue-700 text-white font-semibold hover:bg-blue-800">
           Edit My Profile
         </Link>
+        <Link href="/my-applications" className="rounded px-5 py-2 border font-semibold hover:bg-zinc-50 dark:hover:bg-zinc-900">
+          My Applications
+        </Link>
       </div>
     );
   }
