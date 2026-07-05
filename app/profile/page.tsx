@@ -7,6 +7,8 @@ export default function ProfilePage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+  const [resumeFile, setResumeFile] = useState<File | null>(null);
+  const [uploadingResume, setUploadingResume] = useState(false);
   const [success, setSuccess] = useState(false);
   const [form, setForm] = useState({
     fullName: "", phone: "", college: "", degree: "", graduationYr: "",
@@ -41,6 +43,28 @@ export default function ProfilePage() {
     loadProfile();
   }, [router]);
 
+  async function handleResumeUpload() {
+    if (!resumeFile) return;
+    setUploadingResume(true);
+    setError("");
+
+    const fd = new FormData();
+    fd.append("file", resumeFile);
+
+    const res = await fetch("/api/upload-resume", {
+      method: "POST",
+      body: fd,
+    });
+
+    setUploadingResume(false);
+    if (res.ok) {
+      setSuccess(true);
+      setResumeFile(null);
+    } else {
+      const data = await res.json();
+      setError(data.error || "Resume upload failed");
+    }
+  }
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setSaving(true);
@@ -126,6 +150,23 @@ export default function ProfilePage() {
           <label className="block text-sm font-medium mb-1">Portfolio URL</label>
           <input type="url" className="border rounded px-3 py-2 w-full"
             value={form.portfolioUrl} onChange={(e) => setForm({ ...form, portfolioUrl: e.target.value })} />
+        </div>
+        <div className="border-t pt-4 mt-2">
+          <label className="block text-sm font-medium mb-2">Resume (PDF, max 5MB)</label>
+          <input
+            type="file"
+            accept="application/pdf"
+            onChange={(e) => setResumeFile(e.target.files?.[0] || null)}
+            className="text-sm"
+          />
+          <button
+            type="button"
+            onClick={handleResumeUpload}
+            disabled={!resumeFile || uploadingResume}
+            className="mt-3 rounded px-4 py-2 border font-semibold hover:bg-zinc-50 dark:hover:bg-zinc-900 disabled:opacity-50"
+          >
+            {uploadingResume ? "Uploading..." : "Upload Resume"}
+          </button>
         </div>
 
         {error && <p className="text-red-600 text-sm">{error}</p>}
