@@ -12,7 +12,7 @@ export default function ContactPage() {
         <div className="space-y-4">
           <div>
             <p className="text-sm font-medium text-zinc-500 dark:text-zinc-400">Email</p>
-            
+            <a 
               href="mailto:radiantedu1@gmail.com"
               className="text-lg text-zinc-900 dark:text-white hover:text-purple-600 dark:hover:text-purple-400"
             >
