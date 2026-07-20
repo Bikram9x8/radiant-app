@@ -62,16 +62,16 @@ export default async function Home() {
         </div>
 
         {/* Stats strip */}
-        <div className="relative grid grid-cols-3 border-t border-zinc-200 dark:border-zinc-800">
-          <div className="text-center py-5 border-r border-zinc-200 dark:border-zinc-800">
+        <div className="relative max-w-5xl mx-auto px-6 pb-12 grid grid-cols-3 gap-4">
+          <div className="glass text-center py-5 rounded-2xl">
             <p className="text-2xl font-bold text-purple-600 dark:text-purple-400">{totalTests}+</p>
             <p className="text-xs text-zinc-500 mt-1">Practice tests</p>
           </div>
-          <div className="text-center py-5 border-r border-zinc-200 dark:border-zinc-800">
+          <div className="glass text-center py-5 rounded-2xl">
             <p className="text-2xl font-bold text-purple-600 dark:text-purple-400">{categories.length}</p>
             <p className="text-xs text-zinc-500 mt-1">Subjects and exams</p>
           </div>
-          <div className="text-center py-5">
+          <div className="glass text-center py-5 rounded-2xl">
             <p className="text-2xl font-bold text-purple-600 dark:text-purple-400">Free</p>
             <p className="text-xs text-zinc-500 mt-1">Always</p>
           </div>
@@ -86,7 +86,7 @@ export default async function Home() {
             <Link
               key={c.id}
               href={`/opportunities?categoryId=${c.id}`}
-              className="rounded-xl border border-zinc-200 dark:border-zinc-800 p-4 text-center hover:border-purple-300 dark:hover:border-purple-700 hover:bg-purple-50 dark:hover:bg-purple-950/30 transition-colors"
+              className="glass rounded-xl p-4 text-center hover:scale-[1.02] transition-transform"
             >
               <p className="text-sm font-medium text-zinc-900 dark:text-white">{c.name}</p>
             </Link>
@@ -109,7 +109,7 @@ export default async function Home() {
               <Link
                 key={o.id}
                 href={`/opportunities/${o.id}`}
-                className="rounded-xl border border-zinc-200 dark:border-zinc-800 p-4 hover:border-purple-300 dark:hover:border-purple-700 transition-colors"
+                className="glass rounded-xl p-4 hover:scale-[1.02] transition-transform"
               >
                 <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-purple-100 dark:bg-purple-900/50 text-purple-800 dark:text-purple-300">
                   {o.category.name}
