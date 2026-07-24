@@ -22,6 +22,7 @@ export default function PostOpportunityForm({ categories }: { categories: Catego
   const [mode, setMode] = useState("Online");
   const [stipendOrPrize, setStipendOrPrize] = useState("");
   const [eventDate, setEventDate] = useState("");
+  const [requiresCode, setRequiresCode] = useState(false);
 
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
@@ -63,6 +64,7 @@ export default function PostOpportunityForm({ categories }: { categories: Catego
         applyDeadline,
         eventDate: showEventDate && eventDate ? eventDate : null,
         externalLink: externalLink || null,
+        requiresCode: isQuiz ? requiresCode : false,
       }),
     });
 
@@ -150,6 +152,21 @@ export default function PostOpportunityForm({ categories }: { categories: Catego
           </p>
         )}
       </div>
+
+      {isQuiz && (
+        <div className="flex items-center gap-2">
+          <input
+            type="checkbox"
+            id="requiresCode"
+            checked={requiresCode}
+            onChange={(e) => setRequiresCode(e.target.checked)}
+            className="w-4 h-4 rounded"
+          />
+          <label htmlFor="requiresCode" className="text-sm font-medium text-zinc-900 dark:text-white">
+            Requires access code (students need a code from you to unlock this test)
+          </label>
+        </div>
+      )}
 
       <div>
         <label className={labelClass}>{isQuiz ? "Available Until *" : "Apply Deadline *"}</label>

@@ -22,8 +22,8 @@ export default async function PostOpportunityPage() {
 
   return (
     <div className="flex-1 px-6 py-8 max-w-2xl mx-auto w-full">
-      <h1 className="text-2xl font-bold mb-1">Post Opportunity</h1>
-      <p className="text-zinc-500 text-sm mb-8">
+      <h1 className="text-2xl font-bold mb-1 text-zinc-900 dark:text-white">Post Opportunity</h1>
+      <p className="text-zinc-600 dark:text-zinc-400 text-sm mb-8">
         This will be reviewed by an admin before it goes live.
       </p>
       <PostOpportunityForm categories={categories} />
