@@ -1,4 +1,5 @@
 "use client";
+import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
@@ -7,6 +8,7 @@ export default function OpportunityDetailPage() {
   const params = useParams();
   const router = useRouter();
   const id = params.id as string;
+  const { status } = useSession();
 
   const [opportunity, setOpportunity] = useState<any>(null);
   const [alreadyApplied, setAlreadyApplied] = useState(false);
@@ -127,7 +129,14 @@ export default function OpportunityDetailPage() {
 
         <div className="mt-6 border-t border-white/20 dark:border-white/10 pt-4">
           {isQuiz ? (
-            opportunity.externalLink ? (
+            status !== "authenticated" ? (
+              <Link
+                href="/signup"
+                className="inline-block rounded-xl px-6 py-3 bg-purple-600 text-white font-semibold hover:bg-purple-700 transition-colors"
+              >
+                Sign up to take this test →
+              </Link>
+            ) : opportunity.externalLink ? (
               <a
                 href={opportunity.externalLink}
                 target="_blank"
