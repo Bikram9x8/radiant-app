@@ -12,7 +12,7 @@ export default async function Home() {
   }
 
   const [categories, latestOpportunities, totalTests] = await Promise.all([
-    prisma.category.findMany({ orderBy: { name: "asc" }, take: 8 }),
+    prisma.category.findMany({ orderBy: { name: "asc" }}),
     prisma.opportunity.findMany({
       where: { status: "APPROVED" },
       orderBy: { createdAt: "desc" },
