@@ -160,6 +160,8 @@ model Opportunity {
   applyDeadline DateTime
   eventDate     DateTime?
   externalLink  String?           // optional external application link
+  requiresCode  Boolean           @default(false)
+  accessCodes   AccessCode[]
 
   status        OpportunityStatus @default(PENDING)
   rejectionReason String?
@@ -172,6 +174,21 @@ model Opportunity {
   @@index([status])
   @@index([type])
   @@index([applyDeadline])
+}
+model AccessCode {
+  id            String       @id @default(cuid())
+  code          String       @unique
+
+  opportunityId String
+  opportunity   Opportunity  @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
+
+  isUsed        Boolean      @default(false)
+  usedByUserId  String?
+  usedAt        DateTime?
+
+  createdAt     DateTime     @default(now())
+
+  @@index([opportunityId])
 }
 
 model Application {
