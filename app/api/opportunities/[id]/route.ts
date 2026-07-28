@@ -17,8 +17,9 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
     return NextResponse.json({ error: "Opportunity not found" }, { status: 404 });
   }
 
-  const session = await getServerSession(authOptions);
+const session = await getServerSession(authOptions);
   let alreadyApplied = false;
+  let codeUnlocked = false;
 
   if (session?.user && (session.user as any).role === "STUDENT") {
     const userId = (session.user as any).id;
@@ -34,9 +35,20 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
       });
       alreadyApplied = !!existing;
     }
+
+    if (opportunity.requiresCode) {
+      const usedCode = await prisma.accessCode.findFirst({
+        where: {
+          opportunityId: opportunity.id,
+          usedByUserId: userId,
+          isUsed: true,
+        },
+      });
+      codeUnlocked = !!usedCode;
+    }
   }
 
-  return NextResponse.json({ opportunity, alreadyApplied });
+  return NextResponse.json({ opportunity, alreadyApplied, codeUnlocked }); 
 }
 export async function PUT(req: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;

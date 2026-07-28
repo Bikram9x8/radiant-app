@@ -9,6 +9,10 @@ export default function OpportunityDetailPage() {
   const router = useRouter();
   const id = params.id as string;
   const { status } = useSession();
+  const [code, setCode] = useState("");
+  const [redeeming, setRedeeming] = useState(false);
+  const [codeError, setCodeError] = useState("");
+  const [codeUnlocked, setCodeUnlocked] = useState(false);
 
   const [opportunity, setOpportunity] = useState<any>(null);
   const [alreadyApplied, setAlreadyApplied] = useState(false);
@@ -30,10 +34,32 @@ export default function OpportunityDetailPage() {
       const data = await res.json();
       setOpportunity(data.opportunity);
       setAlreadyApplied(data.alreadyApplied);
+      setCodeUnlocked(data.codeUnlocked || false);
       setLoading(false);
     }
     load();
   }, [id]);
+
+  async function handleRedeemCode() {
+    setCodeError("");
+    setRedeeming(true);
+
+    const res = await fetch("/api/access-codes/redeem", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ opportunityId: id, code }),
+    });
+
+    setRedeeming(false);
+
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}));
+      setCodeError(data.error || "Something went wrong.");
+      return;
+    }
+
+    setCodeUnlocked(true);
+  }
 
   async function handleApply() {
     setApplying(true);
@@ -136,6 +162,32 @@ export default function OpportunityDetailPage() {
               >
                 Sign up to take this test →
               </Link>
+            ) : opportunity.requiresCode && !codeUnlocked ? (
+              <div>
+                <label className="block text-sm font-medium mb-2 text-zinc-900 dark:text-white">
+                  Enter access code
+                </label>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={code}
+                    onChange={(e) => setCode(e.target.value)}
+                    placeholder="RAD-XXXXXXX"
+                    className="bg-white/70 dark:bg-zinc-900/70 rounded-xl px-3 py-2 outline-none text-zinc-900 dark:text-white flex-1"
+                  />
+                  <button
+                    onClick={handleRedeemCode}
+                    disabled={redeeming || !code}
+                    className="rounded-xl px-5 py-2.5 bg-purple-600 text-white font-semibold hover:bg-purple-700 transition-colors disabled:opacity-50"
+                  >
+                    {redeeming ? "Checking..." : "Unlock"}
+                  </button>
+                </div>
+                {codeError && <p className="text-sm text-red-600 dark:text-red-400 mt-2">{codeError}</p>}
+                <p className="text-xs text-zinc-500 mt-2">
+                  Get this code from your institute to unlock this test.
+                </p>
+              </div>
             ) : opportunity.externalLink ? (
               <a
                 href={opportunity.externalLink}

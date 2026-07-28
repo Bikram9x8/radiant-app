@@ -23,7 +23,9 @@ export default function PostOpportunityForm({ categories }: { categories: Catego
   const [stipendOrPrize, setStipendOrPrize] = useState("");
   const [eventDate, setEventDate] = useState("");
   const [requiresCode, setRequiresCode] = useState(false);
-
+  const [linkType, setLinkType] = useState<"link" | "pdf">("link");
+  const [pdfFile, setPdfFile] = useState<File | null>(null);
+  const [uploadingPdf, setUploadingPdf] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
@@ -42,12 +44,40 @@ export default function PostOpportunityForm({ categories }: { categories: Catego
       setError("Please fill in all required fields.");
       return;
     }
-    if (isQuiz && !externalLink) {
+    if (isQuiz && linkType === "link" && !externalLink) {
       setError("Please provide the test link.");
+      return;
+    }
+    if (isQuiz && linkType === "pdf" && !pdfFile) {
+      setError("Please upload a test PDF.");
       return;
     }
 
     setSubmitting(true);
+
+    let finalExternalLink = externalLink;
+
+    if (isQuiz && linkType === "pdf" && pdfFile) {
+      setUploadingPdf(true);
+      const pdfFormData = new FormData();
+      pdfFormData.append("file", pdfFile);
+
+      const uploadRes = await fetch("/api/upload-test-pdf", {
+        method: "POST",
+        body: pdfFormData,
+      });
+      setUploadingPdf(false);
+
+      if (!uploadRes.ok) {
+        const uploadData = await uploadRes.json().catch(() => ({}));
+        setError(uploadData.error || "PDF upload failed.");
+        setSubmitting(false);
+        return;
+      }
+
+      const uploadData = await uploadRes.json();
+      finalExternalLink = uploadData.fileUrl;
+    }
 
     const res = await fetch("/api/opportunities", {
       method: "POST",
@@ -63,7 +93,7 @@ export default function PostOpportunityForm({ categories }: { categories: Catego
         stipendOrPrize: isQuiz ? null : stipendOrPrize || null,
         applyDeadline,
         eventDate: showEventDate && eventDate ? eventDate : null,
-        externalLink: externalLink || null,
+        externalLink: finalExternalLink || null,
         requiresCode: isQuiz ? requiresCode : false,
       }),
     });
@@ -137,21 +167,67 @@ export default function PostOpportunityForm({ categories }: { categories: Catego
         />
       </div>
 
-      <div>
-        <label className={labelClass}>{isQuiz ? "Test Link *" : "External Link (optional)"}</label>
-        <input
-          type="url"
-          value={externalLink}
-          onChange={(e) => setExternalLink(e.target.value)}
-          placeholder="https://..."
-          className={inputClass}
-        />
-        {isQuiz && (
-          <p className="text-xs text-zinc-600 dark:text-zinc-400 mt-1">
-            Link to the Google Form, PDF, or external site where students take the test.
-          </p>
-        )}
-      </div>
+      {isQuiz ? (
+        <div>
+          <label className={labelClass}>Test Source *</label>
+          <div className="flex gap-4 mb-3">
+            <label className="flex items-center gap-2 text-sm text-zinc-900 dark:text-white">
+              <input
+                type="radio"
+                checked={linkType === "link"}
+                onChange={() => setLinkType("link")}
+              />
+              Link
+            </label>
+            <label className="flex items-center gap-2 text-sm text-zinc-900 dark:text-white">
+              <input
+                type="radio"
+                checked={linkType === "pdf"}
+                onChange={() => setLinkType("pdf")}
+              />
+              Upload PDF
+            </label>
+          </div>
+
+          {linkType === "link" ? (
+            <>
+              <input
+                type="url"
+                value={externalLink}
+                onChange={(e) => setExternalLink(e.target.value)}
+                placeholder="https://..."
+                className={inputClass}
+              />
+              <p className="text-xs text-zinc-600 dark:text-zinc-400 mt-1">
+                Link to the Google Form, PDF, or external site where students take the test.
+              </p>
+            </>
+          ) : (
+            <>
+              <input
+                type="file"
+                accept="application/pdf"
+                onChange={(e) => setPdfFile(e.target.files?.[0] || null)}
+                className={inputClass}
+              />
+              <p className="text-xs text-zinc-600 dark:text-zinc-400 mt-1">
+                Upload the test as a PDF (max 10MB).
+              </p>
+            </>
+          )}
+        </div>
+      ) : (
+        <div>
+          <label className={labelClass}>External Link (optional)</label>
+          <input
+            type="url"
+            value={externalLink}
+            onChange={(e) => setExternalLink(e.target.value)}
+            placeholder="https://..."
+            className={inputClass}
+          />
+        </div>
+      )}
 
       {isQuiz && (
         <div className="flex items-center gap-2">
@@ -244,7 +320,7 @@ export default function PostOpportunityForm({ categories }: { categories: Catego
         disabled={submitting}
         className="rounded-xl px-5 py-2.5 bg-purple-600 text-white font-semibold hover:bg-purple-700 transition-colors disabled:opacity-50"
       >
-        {submitting ? "Submitting..." : "Submit for Approval"}
+        {uploadingPdf ? "Uploading PDF..." : submitting ? "Submitting..." : "Submit for Approval"}
       </button>
     </form>
   );
