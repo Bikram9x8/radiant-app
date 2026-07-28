@@ -186,6 +186,10 @@ model AccessCode {
   usedByUserId  String?
   usedAt        DateTime?
 
+  isLocked      Boolean      @default(false)
+  lockedAt      DateTime?
+  lockReason    String?
+
   createdAt     DateTime     @default(now())
 
   @@index([opportunityId])

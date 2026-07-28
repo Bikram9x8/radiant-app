@@ -20,7 +20,8 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
 const session = await getServerSession(authOptions);
   let alreadyApplied = false;
   let codeUnlocked = false;
-
+  let isLocked = false;
+  
   if (session?.user && (session.user as any).role === "STUDENT") {
     const userId = (session.user as any).id;
     const studentProfile = await prisma.studentProfile.findUnique({ where: { userId } });
@@ -36,7 +37,7 @@ const session = await getServerSession(authOptions);
       alreadyApplied = !!existing;
     }
 
-    if (opportunity.requiresCode) {
+  if (opportunity.requiresCode) {
       const usedCode = await prisma.accessCode.findFirst({
         where: {
           opportunityId: opportunity.id,
@@ -45,11 +46,12 @@ const session = await getServerSession(authOptions);
         },
       });
       codeUnlocked = !!usedCode;
+      isLocked = usedCode?.isLocked || false;
     }
   }
 
-  return NextResponse.json({ opportunity, alreadyApplied, codeUnlocked }); 
-}
+  return NextResponse.json({ opportunity, alreadyApplied, codeUnlocked, isLocked });  
+  }
 export async function PUT(req: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const session = await getServerSession(authOptions);

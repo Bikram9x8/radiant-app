@@ -1,5 +1,6 @@
 "use client";
 import { useSession } from "next-auth/react";
+import SecureTestViewer from "./SecureTestViewer";
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
@@ -13,6 +14,7 @@ export default function OpportunityDetailPage() {
   const [redeeming, setRedeeming] = useState(false);
   const [codeError, setCodeError] = useState("");
   const [codeUnlocked, setCodeUnlocked] = useState(false);
+  const [alreadyLocked, setAlreadyLocked] = useState(false);
 
   const [opportunity, setOpportunity] = useState<any>(null);
   const [alreadyApplied, setAlreadyApplied] = useState(false);
@@ -35,6 +37,7 @@ export default function OpportunityDetailPage() {
       setOpportunity(data.opportunity);
       setAlreadyApplied(data.alreadyApplied);
       setCodeUnlocked(data.codeUnlocked || false);
+      setAlreadyLocked(data.isLocked || false);
       setLoading(false);
     }
     load();
@@ -162,6 +165,16 @@ export default function OpportunityDetailPage() {
               >
                 Sign up to take this test →
               </Link>
+            ) : opportunity.requiresCode && codeUnlocked && alreadyLocked ? (
+              <div className="glass rounded-2xl p-6 text-center">
+                <h2 className="text-lg font-bold text-red-600 dark:text-red-400 mb-2">Test Locked</h2>
+                <p className="text-sm text-zinc-700 dark:text-zinc-300">
+                  This test was locked because you switched tabs or apps. Contact your institute to request access again.
+                </p>
+              </div>
+            ) : opportunity.requiresCode && codeUnlocked ? (
+              <SecureTestViewer opportunityId={id} pdfUrl={opportunity.externalLink} />
+              
             ) : opportunity.requiresCode && !codeUnlocked ? (
               <div>
                 <label className="block text-sm font-medium mb-2 text-zinc-900 dark:text-white">
