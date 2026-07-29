@@ -35,8 +35,9 @@ export default function SecureTestViewer({
       lockTest();
     }
 
-    document.addEventListener("visibilitychange", handleVisibilityChange);
-    window.addEventListener("blur", handleBlur);
+    // TEMP: disabled for debugging
+    // document.addEventListener("visibilitychange", handleVisibilityChange);
+    // window.addEventListener("blur", handleBlur);
 
     return () => {
       document.removeEventListener("visibilitychange", handleVisibilityChange);
