@@ -1,6 +1,7 @@
 "use client";
 import { useSession } from "next-auth/react";
 import SecureTestViewer from "./SecureTestViewer";
+import PlainTestViewer from "./PlainTestViewer";
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
@@ -202,14 +203,7 @@ export default function OpportunityDetailPage() {
                 </p>
               </div>
             ) : opportunity.externalLink ? (
-              <a
-                href={opportunity.externalLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-block rounded-xl px-6 py-3 bg-purple-600 text-white font-semibold hover:bg-purple-700 transition-colors"
-              >
-                Take Test →
-              </a>
+              <PlainTestViewer pdfUrl={opportunity.externalLink} />
             ) : (
               <p className="text-sm text-zinc-500">Test link not available.</p>
             )
