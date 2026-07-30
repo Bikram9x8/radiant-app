@@ -9,7 +9,7 @@ export default function SecureTestViewer({
   opportunityId: string;
   pdfUrl: string;
 }) {
-  const inlinePdfUrl = pdfUrl.replace("/upload/", "/upload/fl_attachment:false/");
+  const inlinePdfUrl = `https://docs.google.com/viewer?url=${encodeURIComponent(pdfUrl)}&embedded=true`;
   const [locked, setLocked] = useState(false);
   const hasLocked = useRef(false);
 
