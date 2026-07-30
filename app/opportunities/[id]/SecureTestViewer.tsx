@@ -9,6 +9,7 @@ export default function SecureTestViewer({
   opportunityId: string;
   pdfUrl: string;
 }) {
+  const inlinePdfUrl = pdfUrl.replace("/upload/", "/upload/fl_attachment:false/");
   const [locked, setLocked] = useState(false);
   const hasLocked = useRef(false);
 
@@ -59,7 +60,7 @@ export default function SecureTestViewer({
   return (
     <div className="glass rounded-2xl p-2">
       <iframe
-        src={pdfUrl}
+        src={inlinePdfUrl}
         className="w-full rounded-xl"
         style={{ height: "80vh", border: "none" }}
         title="Test PDF"
