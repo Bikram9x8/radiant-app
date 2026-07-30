@@ -36,9 +36,9 @@ export async function POST(req: Request) {
   const buffer = Buffer.from(bytes);
 
   const uploadResult: any = await new Promise((resolve, reject) => {
-    const stream = cloudinary.uploader.upload_stream(
-      { resource_type: "raw", folder: "test-pdfs" },
-      (error, result) => {
+const stream = cloudinary.uploader.upload_stream(
+      { resource_type: "image", folder: "test-pdfs", format: "pdf" },
+            (error, result) => {
         if (error) reject(error);
         else resolve(result);
       }

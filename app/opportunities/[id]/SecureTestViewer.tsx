@@ -9,7 +9,7 @@ export default function SecureTestViewer({
   opportunityId: string;
   pdfUrl: string;
 }) {
-  const inlinePdfUrl = `https://docs.google.com/viewer?url=${encodeURIComponent(pdfUrl)}&embedded=true`;
+  const inlinePdfUrl = pdfUrl;
   const [locked, setLocked] = useState(false);
   const hasLocked = useRef(false);
 
@@ -57,12 +57,26 @@ export default function SecureTestViewer({
     );
   }
 
+  const [isFullscreen, setIsFullscreen] = useState(false);
+
   return (
-    <div className="glass rounded-2xl p-2">
+    <div
+      className={
+        isFullscreen
+          ? "fixed inset-0 z-50 bg-black p-2"
+          : "glass rounded-2xl p-2"
+      }
+    >
+      <button
+        onClick={() => setIsFullscreen(!isFullscreen)}
+        className="mb-2 text-sm px-3 py-1.5 rounded-lg bg-purple-600 text-white font-semibold"
+      >
+        {isFullscreen ? "Exit Fullscreen" : "Fullscreen"}
+      </button>
       <iframe
         src={inlinePdfUrl}
         className="w-full rounded-xl"
-        style={{ height: "80vh", border: "none" }}
+        style={{ height: isFullscreen ? "calc(100vh - 50px)" : "80vh", border: "none" }}
         title="Test PDF"
       />
     </div>
