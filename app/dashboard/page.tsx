@@ -47,9 +47,19 @@ export default async function DashboardPage() {
     );
   }
 
-  if (user.role === "STUDENT") {
+if (user.role === "STUDENT") {
+    const studentTiles = [
+      { href: "/opportunities", label: "Test Series", icon: "📝" },
+      { href: "/coming-soon", label: "Skill Building", icon: "🛠️" },
+      { href: "/coming-soon", label: "Career Counseling", icon: "🎯" },
+      { href: "/coming-soon", label: "Study Package", icon: "📦" },
+      { href: "/coming-soon", label: "DPP", icon: "📄" },
+      { href: "/coming-soon", label: "Board Level Test", icon: "🎓" },
+      { href: "/coming-soon", label: "Chapter Wise Test", icon: "📚" },
+    ];
+
     return (
-      <div className="flex-1 px-6 py-12 max-w-3xl mx-auto w-full">
+      <div className="flex-1 px-6 py-12 max-w-4xl mx-auto w-full">
         <div className="mb-10">
           <h1 className="text-4xl font-bold tracking-tight text-zinc-900 dark:text-white mb-2">
             Welcome back
@@ -57,50 +67,33 @@ export default async function DashboardPage() {
           <p className="text-zinc-600 dark:text-zinc-400">{user.email}</p>
         </div>
 
-        <div className="grid sm:grid-cols-2 gap-5">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 mb-10">
+          {studentTiles.map((tile) => (
+            <Link
+              key={tile.label}
+              href={tile.href}
+              className="glass rounded-3xl p-6 hover:scale-[1.03] transition-transform flex flex-col items-center text-center gap-3"
+            >
+              <div className="w-14 h-14 rounded-2xl bg-purple-100 dark:bg-purple-900/40 flex items-center justify-center text-3xl">
+                {tile.icon}
+              </div>
+              <p className="text-sm font-semibold text-zinc-900 dark:text-white">{tile.label}</p>
+            </Link>
+          ))}
+        </div>
+
+        <div className="flex gap-3">
           <Link
             href="/profile"
-            className="glass rounded-3xl p-8 hover:scale-[1.02] transition-transform flex flex-col gap-3"
+            className="rounded-xl px-5 py-2.5 glass font-semibold text-sm text-zinc-900 dark:text-white"
           >
-            <div className="w-12 h-12 rounded-2xl bg-purple-100 dark:bg-purple-900/40 flex items-center justify-center text-2xl">
-              👤
-            </div>
-            <div>
-              <p className="text-lg font-semibold text-zinc-900 dark:text-white">Edit My Profile</p>
-              <p className="text-sm text-zinc-600 dark:text-zinc-400 mt-1">
-                Update your info, skills, and resume
-              </p>
-            </div>
+            Edit My Profile
           </Link>
-
           <Link
             href="/my-applications"
-            className="glass rounded-3xl p-8 hover:scale-[1.02] transition-transform flex flex-col gap-3"
+            className="rounded-xl px-5 py-2.5 glass font-semibold text-sm text-zinc-900 dark:text-white"
           >
-            <div className="w-12 h-12 rounded-2xl bg-purple-100 dark:bg-purple-900/40 flex items-center justify-center text-2xl">
-              📋
-            </div>
-            <div>
-              <p className="text-lg font-semibold text-zinc-900 dark:text-white">My Applications</p>
-              <p className="text-sm text-zinc-600 dark:text-zinc-400 mt-1">
-                Track the tests and opportunities you've applied to
-              </p>
-            </div>
-          </Link>
-
-          <Link
-            href="/opportunities"
-            className="glass rounded-3xl p-8 hover:scale-[1.02] transition-transform flex flex-col gap-3 sm:col-span-2"
-          >
-            <div className="w-12 h-12 rounded-2xl bg-purple-100 dark:bg-purple-900/40 flex items-center justify-center text-2xl">
-              📝
-            </div>
-            <div>
-              <p className="text-lg font-semibold text-zinc-900 dark:text-white">Browse Tests</p>
-              <p className="text-sm text-zinc-600 dark:text-zinc-400 mt-1">
-                Explore practice tests by subject and exam
-              </p>
-            </div>
+            My Applications
           </Link>
         </div>
       </div>
