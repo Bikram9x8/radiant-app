@@ -49,24 +49,59 @@ export default async function DashboardPage() {
 
   if (user.role === "STUDENT") {
     return (
-      <div className="flex flex-1 flex-col items-center justify-center gap-4 px-6 text-center">
-        <div className="glass rounded-2xl px-8 py-10 flex flex-col items-center gap-4">
-          <h1 className="text-2xl font-bold text-zinc-900 dark:text-white">Student Dashboard</h1>
-          <p className="text-zinc-600 dark:text-zinc-400">Welcome, {user.email}.</p>
-          <div className="flex gap-3">
-            <Link
-              href="/profile"
-              className="rounded-lg px-5 py-2 bg-purple-600 text-white font-semibold hover:bg-purple-700 transition-colors"
-            >
-              Edit My Profile
-            </Link>
-            <Link
-              href="/my-applications"
-              className="rounded-lg px-5 py-2 glass font-semibold text-zinc-900 dark:text-white"
-            >
-              My Applications
-            </Link>
-          </div>
+      <div className="flex-1 px-6 py-12 max-w-3xl mx-auto w-full">
+        <div className="mb-10">
+          <h1 className="text-4xl font-bold tracking-tight text-zinc-900 dark:text-white mb-2">
+            Welcome back
+          </h1>
+          <p className="text-zinc-600 dark:text-zinc-400">{user.email}</p>
+        </div>
+
+        <div className="grid sm:grid-cols-2 gap-5">
+          <Link
+            href="/profile"
+            className="glass rounded-3xl p-8 hover:scale-[1.02] transition-transform flex flex-col gap-3"
+          >
+            <div className="w-12 h-12 rounded-2xl bg-purple-100 dark:bg-purple-900/40 flex items-center justify-center text-2xl">
+              👤
+            </div>
+            <div>
+              <p className="text-lg font-semibold text-zinc-900 dark:text-white">Edit My Profile</p>
+              <p className="text-sm text-zinc-600 dark:text-zinc-400 mt-1">
+                Update your info, skills, and resume
+              </p>
+            </div>
+          </Link>
+
+          <Link
+            href="/my-applications"
+            className="glass rounded-3xl p-8 hover:scale-[1.02] transition-transform flex flex-col gap-3"
+          >
+            <div className="w-12 h-12 rounded-2xl bg-purple-100 dark:bg-purple-900/40 flex items-center justify-center text-2xl">
+              📋
+            </div>
+            <div>
+              <p className="text-lg font-semibold text-zinc-900 dark:text-white">My Applications</p>
+              <p className="text-sm text-zinc-600 dark:text-zinc-400 mt-1">
+                Track the tests and opportunities you've applied to
+              </p>
+            </div>
+          </Link>
+
+          <Link
+            href="/opportunities"
+            className="glass rounded-3xl p-8 hover:scale-[1.02] transition-transform flex flex-col gap-3 sm:col-span-2"
+          >
+            <div className="w-12 h-12 rounded-2xl bg-purple-100 dark:bg-purple-900/40 flex items-center justify-center text-2xl">
+              📝
+            </div>
+            <div>
+              <p className="text-lg font-semibold text-zinc-900 dark:text-white">Browse Tests</p>
+              <p className="text-sm text-zinc-600 dark:text-zinc-400 mt-1">
+                Explore practice tests by subject and exam
+              </p>
+            </div>
+          </Link>
         </div>
       </div>
     );
