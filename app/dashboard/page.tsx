@@ -14,9 +14,9 @@ function StatCard({
   accent?: string;
 }) {
   return (
-    <div className="glass rounded-2xl px-4 py-5 text-center">
-      <div className={`text-2xl font-bold ${accent ?? "text-zinc-900 dark:text-white"}`}>{value}</div>
-      <div className="text-xs text-zinc-600 dark:text-zinc-400 mt-1">{label}</div>
+    <div className="glass rounded-3xl px-5 py-6 text-center">
+      <div className={`text-3xl font-bold ${accent ?? "text-zinc-900 dark:text-white"}`}>{value}</div>
+      <div className="text-xs font-medium text-zinc-600 dark:text-zinc-400 mt-2">{label}</div>
     </div>
   );
 }
@@ -150,12 +150,12 @@ export default async function DashboardPage() {
 
     return (
       <div className="flex-1 px-6 py-8 max-w-6xl mx-auto w-full">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-10">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight text-zinc-900 dark:text-white">
+            <h1 className="text-4xl font-bold tracking-tight text-zinc-900 dark:text-white">
               {companyProfile.companyName}
             </h1>
-            <p className="text-zinc-600 dark:text-zinc-400 mt-1">Here's how your opportunities are performing.</p>
+            <p className="text-zinc-600 dark:text-zinc-400 mt-2">Here's how your opportunities are performing.</p>
           </div>
           <div className="flex gap-3">
             <Link
@@ -182,9 +182,9 @@ export default async function DashboardPage() {
           <StatCard label="Shortlisted" value={shortlistedCount} accent="text-purple-600 dark:text-purple-400" />
         </div>
 
-        <div className="glass rounded-2xl overflow-hidden">
-          <div className="flex items-center justify-between px-5 py-4 border-b border-white/20 dark:border-white/10">
-            <h2 className="font-semibold text-zinc-900 dark:text-white">Recent Opportunities</h2>
+        <div className="glass rounded-3xl overflow-hidden">
+          <div className="flex items-center justify-between px-6 py-5 border-b border-white/20 dark:border-white/10">
+            <h2 className="font-semibold text-lg text-zinc-900 dark:text-white">Recent Opportunities</h2>
             <Link href="/company/opportunities" className="text-sm text-purple-600 dark:text-purple-400 font-semibold hover:underline">
               View all
             </Link>
