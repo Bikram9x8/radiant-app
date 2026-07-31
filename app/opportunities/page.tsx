@@ -31,18 +31,18 @@ export default function OpportunitiesPage() {
 
   return (
     <div className="max-w-4xl mx-auto mt-12 px-6 mb-12">
-      <h1 className="text-2xl font-bold mb-6 text-zinc-900 dark:text-white">Opportunities</h1>
+      <h1 className="text-4xl font-bold tracking-tight mb-8 text-zinc-900 dark:text-white">Opportunities</h1>
 
-      <div className="glass rounded-2xl p-4 flex flex-col sm:flex-row gap-3 mb-6">
+      <div className="glass rounded-3xl p-5 flex flex-col sm:flex-row gap-3 mb-8">
         <input
           type="text"
           placeholder="Search by title..."
-          className="bg-white/70 dark:bg-zinc-900/70 rounded-xl px-3 py-2 flex-1 outline-none text-zinc-900 dark:text-white placeholder:text-zinc-500"
+          className="bg-white/70 dark:bg-zinc-900/70 rounded-2xl px-4 py-2.5 flex-1 outline-none text-zinc-900 dark:text-white placeholder:text-zinc-500"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
         <select
-          className="bg-white/70 dark:bg-zinc-900/70 rounded-xl px-3 py-2 outline-none text-zinc-900 dark:text-white"
+          className="bg-white/70 dark:bg-zinc-900/70 rounded-2xl px-4 py-2.5 outline-none text-zinc-900 dark:text-white"
           value={type}
           onChange={(e) => setType(e.target.value)}
         >
@@ -52,7 +52,7 @@ export default function OpportunitiesPage() {
           ))}
         </select>
         <select
-          className="bg-white/70 dark:bg-zinc-900/70 rounded-xl px-3 py-2 outline-none text-zinc-900 dark:text-white"
+          className="bg-white/70 dark:bg-zinc-900/70 rounded-2xl px-4 py-2.5 outline-none text-zinc-900 dark:text-white"
           value={categoryId}
           onChange={(e) => setCategoryId(e.target.value)}
         >
@@ -74,7 +74,7 @@ export default function OpportunitiesPage() {
           <Link
             key={op.id}
             href={`/opportunities/${op.id}`}
-            className="glass rounded-2xl p-5 hover:scale-[1.01] transition-transform"
+            className="glass rounded-3xl p-6 hover:scale-[1.01] transition-transform"
           >
             <div className="flex justify-between items-start">
               <div>
