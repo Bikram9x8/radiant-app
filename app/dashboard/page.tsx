@@ -62,11 +62,11 @@ if (user.role === "STUDENT") {
       <div className="flex-1 px-6 py-12 max-w-4xl mx-auto w-full">
         <div className="mb-10">
           <h1 className="text-4xl font-bold tracking-tight text-zinc-900 dark:text-white mb-2">
-            Welcome back
+            Unlock Your Full Potential
           </h1>
-          <p className="text-zinc-600 dark:text-zinc-400">{user.email}</p>
+          <p className="text-zinc-600 dark:text-zinc-400">Practice tests, career tools, and more — all in one place.</p>
         </div>
-
+        
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 mb-10">
           {studentTiles.map((tile) => (
             <Link
