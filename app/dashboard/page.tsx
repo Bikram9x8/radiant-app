@@ -210,6 +210,8 @@ export default async function DashboardPage() {
       { href: "/admin/companies", label: "Company Approvals", desc: "Review new company signups" },
       { href: "/admin/categories", label: "Categories", desc: "Manage subjects and exams" },
       { href: "/admin/users", label: "Users", desc: "View and manage accounts" },
+      { href: "/admin/access-codes", label: "Access Codes", desc: "Generate and manage test access codes" },
+      { href: "/admin/locked-tests", label: "Locked Tests", desc: "Review and unlock students locked out of tests" },
       { href: "/admin/stats", label: "Stats", desc: "Platform overview" },
       { href: "/admin/logs", label: "Activity Log", desc: "Recent admin actions" },
     ];
