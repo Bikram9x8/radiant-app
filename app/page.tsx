@@ -62,15 +62,6 @@ export default async function Home() {
         </div>
 
         {/* Stats strip */}
-        <div className="relative max-w-5xl mx-auto px-6 pb-12 grid grid-cols-3 gap-4">
-          <div className="glass text-center py-5 rounded-2xl">
-            <p className="text-2xl font-bold text-purple-600 dark:text-purple-400">{totalTests}+</p>
-            <p className="text-xs text-zinc-500 mt-1">Practice tests</p>
-          </div>
-          <div className="glass text-center py-5 rounded-2xl">
-            <p className="text-2xl font-bold text-purple-600 dark:text-purple-400">{categories.length}</p>
-            <p className="text-xs text-zinc-500 mt-1">Subjects and exams</p>
-          </div>{/* Stats strip */}
         <div className="relative max-w-5xl mx-auto px-6 pb-12 grid grid-cols-2 gap-4">
           <div className="glass text-center py-7 rounded-3xl bg-gradient-to-br from-purple-50/80 to-transparent dark:from-purple-900/20">
             <p className="text-3xl font-bold text-purple-600 dark:text-purple-400">{totalTests}+</p>
@@ -79,11 +70,6 @@ export default async function Home() {
           <div className="glass text-center py-7 rounded-3xl bg-gradient-to-br from-purple-50/80 to-transparent dark:from-purple-900/20">
             <p className="text-3xl font-bold text-purple-600 dark:text-purple-400">{categories.length}</p>
             <p className="text-xs text-zinc-500 mt-1">Subjects and exams</p>
-          </div>
-        </div>
-          <div className="glass text-center py-5 rounded-2xl">
-            <p className="text-2xl font-bold text-purple-600 dark:text-purple-400">Free</p>
-            <p className="text-xs text-zinc-500 mt-1">Always</p>
           </div>
         </div>
       </div>
