@@ -120,15 +120,15 @@ export default function OpportunityDetailPage() {
         ← Back to opportunities
       </Link>
 
-      <div className="glass rounded-2xl p-6 mt-4">
+      <div className="glass rounded-3xl p-8 mt-5">
         <div className="flex justify-between items-start">
           <div>
-            <h1 className="text-2xl font-bold text-zinc-900 dark:text-white">{opportunity.title}</h1>
-            <p className="text-zinc-600 dark:text-zinc-400">
+            <h1 className="text-3xl font-bold tracking-tight text-zinc-900 dark:text-white">{opportunity.title}</h1>
+            <p className="text-zinc-600 dark:text-zinc-400 mt-1">
               {opportunity.company?.companyName} • {opportunity.category?.name}
             </p>
           </div>
-          <span className="text-xs font-medium bg-purple-100/70 dark:bg-purple-900/40 text-purple-800 dark:text-purple-300 rounded-full px-3 py-1">
+          <span className="text-xs font-semibold bg-purple-100/70 dark:bg-purple-900/40 text-purple-800 dark:text-purple-300 rounded-full px-3.5 py-1.5">
             {opportunity.type}
           </span>
         </div>
@@ -167,7 +167,7 @@ export default function OpportunityDetailPage() {
                 Sign up to take this test →
               </Link>
             ) : opportunity.requiresCode && codeUnlocked && alreadyLocked ? (
-              <div className="glass rounded-2xl p-6 text-center">
+              <div className="glass rounded-3xl p-8 text-center">
                 <h2 className="text-lg font-bold text-red-600 dark:text-red-400 mb-2">Test Locked</h2>
                 <p className="text-sm text-zinc-700 dark:text-zinc-300">
                   This test was locked because you switched tabs or apps. Contact your institute to request access again.
