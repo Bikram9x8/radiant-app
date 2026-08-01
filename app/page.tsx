@@ -70,7 +70,17 @@ export default async function Home() {
           <div className="glass text-center py-5 rounded-2xl">
             <p className="text-2xl font-bold text-purple-600 dark:text-purple-400">{categories.length}</p>
             <p className="text-xs text-zinc-500 mt-1">Subjects and exams</p>
+          </div>{/* Stats strip */}
+        <div className="relative max-w-5xl mx-auto px-6 pb-12 grid grid-cols-2 gap-4">
+          <div className="glass text-center py-7 rounded-3xl bg-gradient-to-br from-purple-50/80 to-transparent dark:from-purple-900/20">
+            <p className="text-3xl font-bold text-purple-600 dark:text-purple-400">{totalTests}+</p>
+            <p className="text-xs text-zinc-500 mt-1">Practice tests</p>
           </div>
+          <div className="glass text-center py-7 rounded-3xl bg-gradient-to-br from-purple-50/80 to-transparent dark:from-purple-900/20">
+            <p className="text-3xl font-bold text-purple-600 dark:text-purple-400">{categories.length}</p>
+            <p className="text-xs text-zinc-500 mt-1">Subjects and exams</p>
+          </div>
+        </div>
           <div className="glass text-center py-5 rounded-2xl">
             <p className="text-2xl font-bold text-purple-600 dark:text-purple-400">Free</p>
             <p className="text-xs text-zinc-500 mt-1">Always</p>
@@ -81,14 +91,14 @@ export default async function Home() {
       {/* Browse by subject */}
       <div className="max-w-5xl mx-auto px-6 py-12">
         <h2 className="text-lg font-semibold mb-4 text-zinc-900 dark:text-white">Browse by subject</h2>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-12">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-12">
           {categories.map((c) => (
             <Link
               key={c.id}
               href={`/opportunities?categoryId=${c.id}`}
-              className="glass rounded-xl p-4 text-center hover:scale-[1.02] transition-transform"
+              className="glass rounded-3xl p-6 text-center hover:scale-[1.03] transition-transform bg-gradient-to-br from-purple-50/60 to-transparent dark:from-purple-900/10"
             >
-              <p className="text-sm font-medium text-zinc-900 dark:text-white">{c.name}</p>
+              <p className="text-sm font-semibold text-zinc-900 dark:text-white">{c.name}</p>
             </Link>
           ))}
         </div>
@@ -109,7 +119,7 @@ export default async function Home() {
               <Link
                 key={o.id}
                 href={`/opportunities/${o.id}`}
-                className="glass rounded-xl p-4 hover:scale-[1.02] transition-transform"
+                className="glass rounded-3xl p-6 hover:scale-[1.03] transition-transform bg-gradient-to-br from-purple-50/60 to-transparent dark:from-purple-900/10"
               >
                 <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-purple-100 dark:bg-purple-900/50 text-purple-800 dark:text-purple-300">
                   {o.category.name}
