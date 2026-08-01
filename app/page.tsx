@@ -82,8 +82,11 @@ export default async function Home() {
             <Link
               key={c.id}
               href={`/opportunities?categoryId=${c.id}`}
-              className="glass rounded-3xl p-6 text-center hover:scale-[1.03] transition-transform bg-gradient-to-br from-purple-50/60 to-transparent dark:from-purple-900/10"
+              className="glass rounded-3xl p-6 hover:scale-[1.03] transition-transform flex flex-col items-center text-center gap-3"
             >
+              <div className="w-14 h-14 rounded-2xl bg-purple-100 dark:bg-purple-900/40 flex items-center justify-center text-3xl">
+                📚
+              </div>
               <p className="text-sm font-semibold text-zinc-900 dark:text-white">{c.name}</p>
             </Link>
           ))}
