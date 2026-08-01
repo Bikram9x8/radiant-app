@@ -74,20 +74,28 @@ export default async function Home() {
         </div>
       </div>
 
-      {/* Browse by subject */}
+      {/* Main divisions */}
       <div className="max-w-5xl mx-auto px-6 py-12">
-        <h2 className="text-lg font-semibold mb-4 text-zinc-900 dark:text-white">Browse by subject</h2>
+        <h2 className="text-lg font-semibold mb-4 text-zinc-900 dark:text-white">Explore</h2>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-12">
-          {categories.map((c) => (
+          {[
+            { href: "/opportunities", label: "Test Series", icon: "📝" },
+            { href: "/coming-soon", label: "Skill Building", icon: "🛠️" },
+            { href: "/coming-soon", label: "Career Counseling", icon: "🎯" },
+            { href: "/coming-soon", label: "Study Package", icon: "📦" },
+            { href: "/coming-soon", label: "DPP", icon: "📄" },
+            { href: "/coming-soon", label: "Board Level Test", icon: "🎓" },
+            { href: "/coming-soon", label: "Chapter Wise Test", icon: "📚" },
+          ].map((tile) => (
             <Link
-              key={c.id}
-              href={`/opportunities?categoryId=${c.id}`}
+              key={tile.label}
+              href={tile.href}
               className="glass rounded-3xl p-6 hover:scale-[1.03] transition-transform flex flex-col items-center text-center gap-3"
             >
               <div className="w-14 h-14 rounded-2xl bg-purple-100 dark:bg-purple-900/40 flex items-center justify-center text-3xl">
-                📚
+                {tile.icon}
               </div>
-              <p className="text-sm font-semibold text-zinc-900 dark:text-white">{c.name}</p>
+              <p className="text-sm font-semibold text-zinc-900 dark:text-white">{tile.label}</p>
             </Link>
           ))}
         </div>
