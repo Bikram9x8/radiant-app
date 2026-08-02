@@ -53,7 +53,7 @@ if (user.role === "STUDENT") {
       { href: "/coming-soon", label: "Skill Building", icon: "🛠️" },
       { href: "/coming-soon", label: "Career Counseling", icon: "🎯" },
       { href: "/coming-soon", label: "Study Package", icon: "📦" },
-      { href: "/coming-soon", label: "DPP", icon: "📄" },
+      { href: "/opportunities?division=DPP", label: "DPP", icon: "📄" },
       { href: "/coming-soon", label: "Board Level Test", icon: "🎓" },
       { href: "/coming-soon", label: "Chapter Wise Test", icon: "📚" },
     ];

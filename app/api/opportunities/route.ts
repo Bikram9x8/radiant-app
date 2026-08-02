@@ -8,6 +8,7 @@ export async function GET(req: Request) {
   const search = searchParams.get("search") || "";
   const type = searchParams.get("type") || "";
   const categoryId = searchParams.get("categoryId") || "";
+  const division = searchParams.get("division") || "";
 
   const opportunities = await prisma.opportunity.findMany({
     where: {
@@ -15,6 +16,7 @@ export async function GET(req: Request) {
       ...(search ? { title: { contains: search, mode: "insensitive" } } : {}),
       ...(type ? { type: type as any } : {}),
       ...(categoryId ? { categoryId } : {}),
+      ...(division ? { division: division as any } : {}),
     },
     include: {
       company: { select: { companyName: true } },
