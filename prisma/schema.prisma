@@ -48,6 +48,18 @@ enum ApplicationStatus {
   SELECTED
 }
 
+enum Division {
+  TEST_SERIES
+  SKILL_BUILDING
+  CAREER_COUNSELING
+  STUDY_PACKAGE
+  DPP
+  BOARD_LEVEL_TEST
+  CHAPTER_WISE_TEST
+}
+
+// ================= CORE =================
+
 enum NotificationType {
   APPLICATION_UPDATE
   OPPORTUNITY_APPROVED
@@ -162,6 +174,7 @@ model Opportunity {
   externalLink  String?           // optional external application link
   requiresCode  Boolean           @default(false)
   accessCodes   AccessCode[]
+  division      Division          @default(TEST_SERIES)
 
   status        OpportunityStatus @default(PENDING)
   rejectionReason String?
