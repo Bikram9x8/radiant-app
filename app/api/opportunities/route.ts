@@ -59,6 +59,7 @@ export async function POST(req: Request) {
     eventDate,
     externalLink,
     requiresCode,
+    division,
   } = body;
 
   if (!title || !type || !categoryId || !description || !applyDeadline) {
@@ -80,6 +81,7 @@ export async function POST(req: Request) {
       eventDate: eventDate ? new Date(eventDate) : null,
       externalLink: externalLink || null,
       requiresCode: requiresCode === true,
+      division: division || "TEST_SERIES",
       status: "PENDING",
     },
   });

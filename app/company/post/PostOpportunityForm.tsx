@@ -23,6 +23,7 @@ export default function PostOpportunityForm({ categories }: { categories: Catego
   const [stipendOrPrize, setStipendOrPrize] = useState("");
   const [eventDate, setEventDate] = useState("");
   const [requiresCode, setRequiresCode] = useState(false);
+  const [division, setDivision] = useState("TEST_SERIES");
   const [linkType, setLinkType] = useState<"link" | "pdf">("link");
   const [pdfFile, setPdfFile] = useState<File | null>(null);
   const [uploadingPdf, setUploadingPdf] = useState(false);
@@ -95,6 +96,7 @@ export default function PostOpportunityForm({ categories }: { categories: Catego
         eventDate: showEventDate && eventDate ? eventDate : null,
         externalLink: finalExternalLink || null,
         requiresCode: isQuiz ? requiresCode : false,
+        division,
       }),
     });
 
@@ -132,6 +134,19 @@ export default function PostOpportunityForm({ categories }: { categories: Catego
           <option value="EVENT">Event</option>
         </select>
       </div>
+<div>
+        <label className={labelClass}>Division *</label>
+        <select value={division} onChange={(e) => setDivision(e.target.value)} className={inputClass}>
+          <option value="TEST_SERIES">Test Series</option>
+          <option value="SKILL_BUILDING">Skill Building</option>
+          <option value="CAREER_COUNSELING">Career Counseling</option>
+          <option value="STUDY_PACKAGE">Study Package</option>
+          <option value="DPP">DPP</option>
+          <option value="BOARD_LEVEL_TEST">Board Level Test</option>
+          <option value="CHAPTER_WISE_TEST">Chapter Wise Test</option>
+        </select>
+      </div>
+
 
       <div>
         <label className={labelClass}>Category *</label>
