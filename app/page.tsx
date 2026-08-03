@@ -80,8 +80,8 @@ export default async function Home() {
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-12">
           {[
             { href: "/opportunities", label: "Test Series", icon: "📝" },
-            { href: "/coming-soon", label: "Skill Building", icon: "🛠️" },
-            { href: "/coming-soon", label: "Career Counseling", icon: "🎯" },
+            { href: "/opportunities?division=SKILL_BUILDING", label: "Skill Building", icon: "🛠️" },
+            { href: "/opportunities?division=CAREER_COUNSELING", label: "Career Counseling", icon: "🎯" },
             { href: "/opportunities?division=STUDY_PACKAGE", label: "Study Package", icon: "📦" },
             { href: "/opportunities?division=DPP", label: "DPP", icon: "📄" },
             { href: "/opportunities?division=BOARD_LEVEL_TEST", label: "Board Level Test", icon: "🎓" },

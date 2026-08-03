@@ -45,6 +45,10 @@ function OpportunitiesContent() {
           ? "Chapter Wise Tests"
           : division === "STUDY_PACKAGE"
           ? "Study Packages"
+          : division === "SKILL_BUILDING"
+          ? "Skill Building"
+          : division === "CAREER_COUNSELING"
+          ? "Career Counseling"
           : division
           ? division.replace(/_/g, " ")
           : "Opportunities"}
