@@ -207,6 +207,13 @@ export default function OpportunityDetailPage() {
             ) : (
               <p className="text-sm text-zinc-500">Test link not available.</p>
             )
+          ) : status !== "authenticated" ? (
+            <Link
+              href="/signup"
+              className="inline-block rounded-xl px-6 py-3 bg-purple-600 text-white font-semibold hover:bg-purple-700 transition-colors"
+            >
+              Sign up to apply →
+            </Link>
           ) : success || alreadyApplied ? (
             <p className="text-emerald-600 dark:text-emerald-400 font-semibold">✓ You've applied to this opportunity</p>
           ) : (
