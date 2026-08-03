@@ -55,7 +55,7 @@ if (user.role === "STUDENT") {
       { href: "/coming-soon", label: "Study Package", icon: "📦" },
       { href: "/opportunities?division=DPP", label: "DPP", icon: "📄" },
       { href: "/opportunities?division=BOARD_LEVEL_TEST", label: "Board Level Test", icon: "🎓" },
-      { href: "/coming-soon", label: "Chapter Wise Test", icon: "📚" },
+      { href: "/opportunities?division=CHAPTER_WISE_TEST", label: "Chapter Wise Test", icon: "📚" },
     ];
 
     return (
