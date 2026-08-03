@@ -1,11 +1,11 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 
 const TYPES = ["JOB", "INTERNSHIP", "COMPETITION", "QUIZ", "HACKATHON", "EVENT"];
 
-export default function OpportunitiesPage() {
+function OpportunitiesContent() {
   const searchParams = useSearchParams();
   const division = searchParams.get("division") || "";
 
@@ -105,5 +105,13 @@ export default function OpportunitiesPage() {
         ))}
       </div>
     </div>
+  );
+}
+
+export default function OpportunitiesPage() {
+  return (
+    <Suspense fallback={<div className="flex flex-1 items-center justify-center py-20 text-zinc-600 dark:text-zinc-400">Loading...</div>}>
+      <OpportunitiesContent />
+    </Suspense>
   );
 }
