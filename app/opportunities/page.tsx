@@ -1,10 +1,14 @@
 "use client";
 import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 
 const TYPES = ["JOB", "INTERNSHIP", "COMPETITION", "QUIZ", "HACKATHON", "EVENT"];
 
 export default function OpportunitiesPage() {
+  const searchParams = useSearchParams();
+  const division = searchParams.get("division") || "";
+
   const [opportunities, setOpportunities] = useState<any[]>([]);
   const [categories, setCategories] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -19,6 +23,7 @@ export default function OpportunitiesPage() {
       if (search) params.set("search", search);
       if (type) params.set("type", type);
       if (categoryId) params.set("categoryId", categoryId);
+      if (division) params.set("division", division);
 
       const res = await fetch(`/api/opportunities?${params.toString()}`);
       const data = await res.json();
@@ -27,11 +32,17 @@ export default function OpportunitiesPage() {
       setLoading(false);
     }
     load();
-  }, [search, type, categoryId]);
+  }, [search, type, categoryId, division]);
 
   return (
     <div className="max-w-4xl mx-auto mt-12 px-6 mb-12">
-      <h1 className="text-4xl font-bold tracking-tight mb-8 text-zinc-900 dark:text-white">Opportunities</h1>
+      <h1 className="text-4xl font-bold tracking-tight mb-8 text-zinc-900 dark:text-white">
+        {division === "DPP"
+          ? "Daily Practice Problems"
+          : division
+          ? division.replace(/_/g, " ")
+          : "Opportunities"}
+      </h1>
 
       <div className="glass rounded-3xl p-5 flex flex-col sm:flex-row gap-3 mb-8">
         <input
