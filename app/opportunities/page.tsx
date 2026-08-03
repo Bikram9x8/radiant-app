@@ -39,6 +39,8 @@ function OpportunitiesContent() {
       <h1 className="text-4xl font-bold tracking-tight mb-8 text-zinc-900 dark:text-white">
         {division === "DPP"
           ? "Daily Practice Problems"
+          : division === "BOARD_LEVEL_TEST"
+          ? "Board Level Tests"
           : division
           ? division.replace(/_/g, " ")
           : "Opportunities"}

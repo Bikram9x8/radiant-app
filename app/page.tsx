@@ -84,7 +84,7 @@ export default async function Home() {
             { href: "/coming-soon", label: "Career Counseling", icon: "🎯" },
             { href: "/coming-soon", label: "Study Package", icon: "📦" },
             { href: "/opportunities?division=DPP", label: "DPP", icon: "📄" },
-            { href: "/coming-soon", label: "Board Level Test", icon: "🎓" },
+            { href: "/opportunities?division=BOARD_LEVEL_TEST", label: "Board Level Test", icon: "🎓" },
             { href: "/coming-soon", label: "Chapter Wise Test", icon: "📚" },
           ].map((tile) => (
             <Link
