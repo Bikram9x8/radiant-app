@@ -82,7 +82,7 @@ export default async function Home() {
             { href: "/opportunities", label: "Test Series", icon: "📝" },
             { href: "/coming-soon", label: "Skill Building", icon: "🛠️" },
             { href: "/coming-soon", label: "Career Counseling", icon: "🎯" },
-            { href: "/coming-soon", label: "Study Package", icon: "📦" },
+            { href: "/opportunities?division=STUDY_PACKAGE", label: "Study Package", icon: "📦" },
             { href: "/opportunities?division=DPP", label: "DPP", icon: "📄" },
             { href: "/opportunities?division=BOARD_LEVEL_TEST", label: "Board Level Test", icon: "🎓" },
             { href: "/opportunities?division=CHAPTER_WISE_TEST", label: "Chapter Wise Test", icon: "📚" },

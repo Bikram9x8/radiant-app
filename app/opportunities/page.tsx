@@ -43,6 +43,8 @@ function OpportunitiesContent() {
           ? "Board Level Tests"
           : division === "CHAPTER_WISE_TEST"
           ? "Chapter Wise Tests"
+          : division === "STUDY_PACKAGE"
+          ? "Study Packages"
           : division
           ? division.replace(/_/g, " ")
           : "Opportunities"}
