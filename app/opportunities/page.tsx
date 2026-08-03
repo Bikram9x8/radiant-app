@@ -44,16 +44,16 @@ function OpportunitiesContent() {
           : "Opportunities"}
       </h1>
 
-      <div className="glass rounded-3xl p-5 flex flex-col sm:flex-row gap-3 mb-8">
+      <div className="glass rounded-3xl p-5 flex flex-col sm:flex-row flex-wrap gap-3 mb-8">
         <input
           type="text"
           placeholder="Search by title..."
-          className="bg-white/70 dark:bg-zinc-900/70 rounded-2xl px-4 py-2.5 flex-1 outline-none text-zinc-900 dark:text-white placeholder:text-zinc-500"
+          className="bg-white/70 dark:bg-zinc-900/70 rounded-2xl px-4 py-2.5 flex-1 min-w-0 outline-none text-zinc-900 dark:text-white placeholder:text-zinc-500"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
         <select
-          className="bg-white/70 dark:bg-zinc-900/70 rounded-2xl px-4 py-2.5 outline-none text-zinc-900 dark:text-white"
+          className="bg-white/70 dark:bg-zinc-900/70 rounded-2xl px-4 py-2.5 outline-none text-zinc-900 dark:text-white min-w-0 max-w-full sm:max-w-[160px]"
           value={type}
           onChange={(e) => setType(e.target.value)}
         >
@@ -63,7 +63,7 @@ function OpportunitiesContent() {
           ))}
         </select>
         <select
-          className="bg-white/70 dark:bg-zinc-900/70 rounded-2xl px-4 py-2.5 outline-none text-zinc-900 dark:text-white"
+          className="bg-white/70 dark:bg-zinc-900/70 rounded-2xl px-4 py-2.5 outline-none text-zinc-900 dark:text-white min-w-0 max-w-full sm:max-w-[180px]"
           value={categoryId}
           onChange={(e) => setCategoryId(e.target.value)}
         >
