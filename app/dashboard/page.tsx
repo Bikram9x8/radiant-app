@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { IconFileText, IconTool, IconTargetArrow, IconPackage, IconClipboardList, IconSchool, IconBook, IconClipboardCheck, IconBuildingSkyscraper, IconCategory, IconUsers, IconKey, IconLockSquareRounded, IconChartBar, IconHistory } from "@tabler/icons-react";
+import { IconFileText, IconTool, IconTargetArrow, IconPackage, IconClipboardList, IconSchool, IconBook, IconClipboardCheck, IconBuildingSkyscraper, IconCategory, IconUsers, IconKey, IconLockSquareRounded, IconChartBar, IconHistory, IconListDetails, IconCircleCheck, IconClockHour4, IconX, IconUsersGroup, IconStar } from "@tabler/icons-react";
 import { getServerSession } from "next-auth/next";
 import { redirect } from "next/navigation";
 import { authOptions } from "@/lib/auth";
@@ -9,15 +9,26 @@ function StatCard({
   label,
   value,
   accent,
+  gradient,
+  glow,
+  Icon,
 }: {
   label: string;
   value: number;
   accent?: string;
+  gradient?: string;
+  glow?: string;
+  Icon?: any;
 }) {
   return (
-    <div className="glass rounded-3xl px-5 py-6 text-center">
+    <div className="glass rounded-3xl px-5 py-6 text-center flex flex-col items-center gap-2">
+      {Icon && (
+        <div className={`w-9 h-9 rounded-lg bg-gradient-to-br ${gradient} ${glow} flex items-center justify-center mb-1`}>
+          <Icon size={16} color="white" stroke={2} />
+        </div>
+      )}
       <div className={`text-3xl font-bold ${accent ?? "text-zinc-900 dark:text-white"}`}>{value}</div>
-      <div className="text-xs font-medium text-zinc-600 dark:text-zinc-400 mt-2">{label}</div>
+      <div className="text-xs font-medium text-zinc-600 dark:text-zinc-400">{label}</div>
     </div>
   );
 }
@@ -160,7 +171,7 @@ if (user.role === "STUDENT") {
             </Link>
             <Link
               href="/company/post"
-              className="rounded-lg px-4 py-2 bg-purple-600 text-white font-semibold text-sm hover:bg-purple-700 transition-colors"
+              className="btn-neon rounded-xl px-4 py-2 font-semibold text-sm"
             >
               + Post Opportunity
             </Link>
@@ -168,12 +179,12 @@ if (user.role === "STUDENT") {
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 mb-10">
-          <StatCard label="Total Postings" value={totalOpportunities} />
-          <StatCard label="Live" value={approvedCount} accent="text-emerald-600 dark:text-emerald-400" />
-          <StatCard label="Pending Review" value={pendingCount} accent="text-amber-600 dark:text-amber-400" />
-          <StatCard label="Closed" value={closedCount} accent="text-zinc-500" />
-          <StatCard label="Total Applicants" value={totalApplicants} accent="text-blue-600 dark:text-blue-400" />
-          <StatCard label="Shortlisted" value={shortlistedCount} accent="text-purple-600 dark:text-purple-400" />
+          <StatCard label="Total Postings" value={totalOpportunities} accent="text-purple-600 dark:text-purple-400" Icon={IconListDetails} gradient="from-purple-400 to-pink-400" glow="shadow-[0_0_12px_rgba(192,132,252,0.5)]" />
+          <StatCard label="Live" value={approvedCount} accent="text-emerald-600 dark:text-emerald-400" Icon={IconCircleCheck} gradient="from-emerald-400 to-cyan-400" glow="shadow-[0_0_12px_rgba(52,211,153,0.5)]" />
+          <StatCard label="Pending Review" value={pendingCount} accent="text-amber-600 dark:text-amber-400" Icon={IconClockHour4} gradient="from-amber-400 to-pink-400" glow="shadow-[0_0_12px_rgba(251,191,36,0.5)]" />
+          <StatCard label="Closed" value={closedCount} accent="text-zinc-500" Icon={IconX} gradient="from-zinc-400 to-zinc-500" glow="" />
+          <StatCard label="Total Applicants" value={totalApplicants} accent="text-cyan-600 dark:text-cyan-400" Icon={IconUsersGroup} gradient="from-cyan-400 to-blue-400" glow="shadow-[0_0_12px_rgba(34,211,238,0.5)]" />
+          <StatCard label="Shortlisted" value={shortlistedCount} accent="text-lime-600 dark:text-lime-400" Icon={IconStar} gradient="from-lime-400 to-emerald-400" glow="shadow-[0_0_12px_rgba(163,230,53,0.5)]" />
         </div>
 
         <div className="glass rounded-3xl overflow-hidden">
