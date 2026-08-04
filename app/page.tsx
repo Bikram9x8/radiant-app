@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { IconFileText, IconTool, IconTargetArrow, IconPackage, IconClipboardList, IconSchool, IconBook } from "@tabler/icons-react";
 import { getServerSession } from "next-auth/next";
 import { redirect } from "next/navigation";
 import { authOptions } from "@/lib/auth";
@@ -79,21 +80,21 @@ export default async function Home() {
         <h2 className="text-lg font-semibold mb-4 text-zinc-900 dark:text-white">Explore</h2>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-12">
           {[
-            { href: "/opportunities", label: "Test Series", icon: "📝" },
-            { href: "/opportunities?division=SKILL_BUILDING", label: "Skill Building", icon: "🛠️" },
-            { href: "/opportunities?division=CAREER_COUNSELING", label: "Career Counseling", icon: "🎯" },
-            { href: "/opportunities?division=STUDY_PACKAGE", label: "Study Package", icon: "📦" },
-            { href: "/opportunities?division=DPP", label: "DPP", icon: "📄" },
-            { href: "/opportunities?division=BOARD_LEVEL_TEST", label: "Board Level Test", icon: "🎓" },
-            { href: "/opportunities?division=CHAPTER_WISE_TEST", label: "Chapter Wise Test", icon: "📚" },
+            { href: "/opportunities", label: "Test Series", Icon: IconFileText, gradient: "from-emerald-400 to-cyan-400", glow: "shadow-[0_0_16px_rgba(52,211,153,0.5)]" },
+            { href: "/opportunities?division=SKILL_BUILDING", label: "Skill Building", Icon: IconTool, gradient: "from-pink-400 to-purple-400", glow: "shadow-[0_0_16px_rgba(244,114,182,0.5)]" },
+            { href: "/opportunities?division=CAREER_COUNSELING", label: "Career Counseling", Icon: IconTargetArrow, gradient: "from-cyan-400 to-blue-400", glow: "shadow-[0_0_16px_rgba(34,211,238,0.5)]" },
+            { href: "/opportunities?division=STUDY_PACKAGE", label: "Study Package", Icon: IconPackage, gradient: "from-lime-400 to-emerald-400", glow: "shadow-[0_0_16px_rgba(163,230,53,0.5)]" },
+            { href: "/opportunities?division=DPP", label: "DPP", Icon: IconClipboardList, gradient: "from-amber-400 to-pink-400", glow: "shadow-[0_0_16px_rgba(251,191,36,0.5)]" },
+            { href: "/opportunities?division=BOARD_LEVEL_TEST", label: "Board Level Test", Icon: IconSchool, gradient: "from-emerald-400 to-purple-400", glow: "shadow-[0_0_16px_rgba(52,211,153,0.5)]" },
+            { href: "/opportunities?division=CHAPTER_WISE_TEST", label: "Chapter Wise Test", Icon: IconBook, gradient: "from-purple-400 to-pink-400", glow: "shadow-[0_0_16px_rgba(192,132,252,0.5)]" },
           ].map((tile) => (
             <Link
               key={tile.label}
               href={tile.href}
-              className="glass rounded-3xl p-6 hover:scale-[1.03] transition-transform flex flex-col items-center text-center gap-3"
+              className="glass rounded-3xl p-6 hover:scale-[1.03] transition-transform flex flex-col items-center text-center gap-3 min-h-[160px] justify-center"
             >
-              <div className="w-14 h-14 rounded-2xl bg-purple-100 dark:bg-purple-900/40 flex items-center justify-center text-3xl">
-                {tile.icon}
+              <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${tile.gradient} ${tile.glow} flex items-center justify-center`}>
+                <tile.Icon size={26} color="white" stroke={2} />
               </div>
               <p className="text-sm font-semibold text-zinc-900 dark:text-white">{tile.label}</p>
             </Link>
