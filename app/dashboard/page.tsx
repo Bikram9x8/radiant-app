@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { IconFileText, IconTool, IconTargetArrow, IconPackage, IconClipboardList, IconSchool, IconBook } from "@tabler/icons-react";
+import { IconFileText, IconTool, IconTargetArrow, IconPackage, IconClipboardList, IconSchool, IconBook, IconClipboardCheck, IconBuildingSkyscraper, IconCategory, IconUsers, IconKey, IconLockSquareRounded, IconChartBar, IconHistory } from "@tabler/icons-react";
 import { getServerSession } from "next-auth/next";
 import { redirect } from "next/navigation";
 import { authOptions } from "@/lib/auth";
@@ -235,14 +235,14 @@ if (user.role === "STUDENT") {
 
   if (user.role === "ADMIN") {
     const adminLinks = [
-      { href: "/admin/opportunities", label: "Opportunity Approvals", desc: "Review pending tests" },
-      { href: "/admin/companies", label: "Company Approvals", desc: "Review new company signups" },
-      { href: "/admin/categories", label: "Categories", desc: "Manage subjects and exams" },
-      { href: "/admin/users", label: "Users", desc: "View and manage accounts" },
-      { href: "/admin/access-codes", label: "Access Codes", desc: "Generate and manage test access codes" },
-      { href: "/admin/locked-tests", label: "Locked Tests", desc: "Review and unlock students locked out of tests" },
-      { href: "/admin/stats", label: "Stats", desc: "Platform overview" },
-      { href: "/admin/logs", label: "Activity Log", desc: "Recent admin actions" },
+      { href: "/admin/opportunities", label: "Opportunity Approvals", desc: "Review pending tests", Icon: IconClipboardCheck, gradient: "from-emerald-400 to-cyan-400", glow: "shadow-[0_0_16px_rgba(52,211,153,0.5)]" },
+      { href: "/admin/companies", label: "Company Approvals", desc: "Review new company signups", Icon: IconBuildingSkyscraper, gradient: "from-cyan-400 to-blue-400", glow: "shadow-[0_0_16px_rgba(34,211,238,0.5)]" },
+      { href: "/admin/categories", label: "Categories", desc: "Manage subjects and exams", Icon: IconCategory, gradient: "from-purple-400 to-pink-400", glow: "shadow-[0_0_16px_rgba(192,132,252,0.5)]" },
+      { href: "/admin/users", label: "Users", desc: "View and manage accounts", Icon: IconUsers, gradient: "from-pink-400 to-purple-400", glow: "shadow-[0_0_16px_rgba(244,114,182,0.5)]" },
+      { href: "/admin/access-codes", label: "Access Codes", desc: "Generate and manage test access codes", Icon: IconKey, gradient: "from-amber-400 to-pink-400", glow: "shadow-[0_0_16px_rgba(251,191,36,0.5)]" },
+      { href: "/admin/locked-tests", label: "Locked Tests", desc: "Review and unlock students locked out of tests", Icon: IconLockSquareRounded, gradient: "from-red-400 to-amber-400", glow: "shadow-[0_0_16px_rgba(248,113,113,0.5)]" },
+      { href: "/admin/stats", label: "Stats", desc: "Platform overview", Icon: IconChartBar, gradient: "from-lime-400 to-emerald-400", glow: "shadow-[0_0_16px_rgba(163,230,53,0.5)]" },
+      { href: "/admin/logs", label: "Activity Log", desc: "Recent admin actions", Icon: IconHistory, gradient: "from-emerald-400 to-purple-400", glow: "shadow-[0_0_16px_rgba(52,211,153,0.5)]" },
     ];
 
     return (
@@ -255,10 +255,15 @@ if (user.role === "STUDENT") {
             <Link
               key={link.href}
               href={link.href}
-              className="glass rounded-2xl p-5 hover:scale-[1.02] transition-transform"
+              className="glass rounded-3xl p-5 hover:scale-[1.02] transition-transform flex items-start gap-4"
             >
-              <p className="font-semibold text-zinc-900 dark:text-white">{link.label}</p>
-              <p className="text-sm text-zinc-600 dark:text-zinc-400 mt-1">{link.desc}</p>
+              <div className={`w-12 h-12 shrink-0 rounded-xl bg-gradient-to-br ${link.gradient} ${link.glow} flex items-center justify-center`}>
+                <link.Icon size={22} color="white" stroke={2} />
+              </div>
+              <div>
+                <p className="font-semibold text-zinc-900 dark:text-white">{link.label}</p>
+                <p className="text-sm text-zinc-600 dark:text-zinc-400 mt-1">{link.desc}</p>
+              </div>
             </Link>
           ))}
         </div>
