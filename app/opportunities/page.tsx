@@ -3,6 +3,17 @@ import { useEffect, useState, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
+import { IconFileText, IconTool, IconTargetArrow, IconPackage, IconClipboardList, IconSchool, IconBook, IconLock } from "@tabler/icons-react";
+
+const DIVISION_ICONS: Record<string, { Icon: any; gradient: string; glow: string }> = {
+  TEST_SERIES: { Icon: IconFileText, gradient: "from-emerald-400 to-cyan-400", glow: "shadow-[0_0_12px_rgba(52,211,153,0.5)]" },
+  SKILL_BUILDING: { Icon: IconTool, gradient: "from-pink-400 to-purple-400", glow: "shadow-[0_0_12px_rgba(244,114,182,0.5)]" },
+  CAREER_COUNSELING: { Icon: IconTargetArrow, gradient: "from-cyan-400 to-blue-400", glow: "shadow-[0_0_12px_rgba(34,211,238,0.5)]" },
+  STUDY_PACKAGE: { Icon: IconPackage, gradient: "from-lime-400 to-emerald-400", glow: "shadow-[0_0_12px_rgba(163,230,53,0.5)]" },
+  DPP: { Icon: IconClipboardList, gradient: "from-amber-400 to-pink-400", glow: "shadow-[0_0_12px_rgba(251,191,36,0.5)]" },
+  BOARD_LEVEL_TEST: { Icon: IconSchool, gradient: "from-emerald-400 to-purple-400", glow: "shadow-[0_0_12px_rgba(52,211,153,0.5)]" },
+  CHAPTER_WISE_TEST: { Icon: IconBook, gradient: "from-purple-400 to-pink-400", glow: "shadow-[0_0_12px_rgba(192,132,252,0.5)]" },
+};
 
 const TYPES = ["JOB", "INTERNSHIP", "COMPETITION", "QUIZ", "HACKATHON", "EVENT"];
 
@@ -108,28 +119,45 @@ function OpportunitiesContent() {
       )}
 
       <div className="flex flex-col gap-4">
-        {opportunities.map((op) => (
-          <Link
-            key={op.id}
-            href={`/opportunities/${op.id}`}
-            className="glass rounded-3xl p-6 hover:scale-[1.01] transition-transform"
-          >
-            <div className="flex justify-between items-start">
-              <div>
-                <h2 className="font-semibold text-lg text-zinc-900 dark:text-white">{op.title}</h2>
-                <p className="text-sm text-zinc-600 dark:text-zinc-400">
-                  {op.company?.companyName} • {op.category?.name}
-                </p>
+        {opportunities.map((op) => {
+          const divisionStyle = DIVISION_ICONS[op.division] || DIVISION_ICONS.TEST_SERIES;
+          const DivIcon = divisionStyle.Icon;
+          return (
+            <Link
+              key={op.id}
+              href={`/opportunities/${op.id}`}
+              className="glass rounded-3xl p-6 hover:scale-[1.01] transition-transform"
+            >
+              <div className="flex justify-between items-start gap-3">
+                <div className="flex items-start gap-3">
+                  <div className={`w-11 h-11 shrink-0 rounded-xl bg-gradient-to-br ${divisionStyle.gradient} ${divisionStyle.glow} flex items-center justify-center`}>
+                    <DivIcon size={20} color="white" stroke={2} />
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <h2 className="font-semibold text-lg text-zinc-900 dark:text-white">{op.title}</h2>
+                      {op.requiresCode && (
+                        <span className="flex items-center gap-1 text-[10px] font-semibold bg-zinc-200/70 dark:bg-zinc-700/50 text-zinc-700 dark:text-zinc-300 rounded-full px-2 py-0.5">
+                          <IconLock size={10} stroke={2.5} />
+                          Code required
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-sm text-zinc-600 dark:text-zinc-400">
+                      {op.company?.companyName} • {op.category?.name}
+                    </p>
+                  </div>
+                </div>
+                <span className="text-xs font-medium bg-purple-100/70 dark:bg-purple-900/40 text-purple-800 dark:text-purple-300 rounded-full px-3 py-1 shrink-0">
+                  {op.type}
+                </span>
               </div>
-              <span className="text-xs font-medium bg-purple-100/70 dark:bg-purple-900/40 text-purple-800 dark:text-purple-300 rounded-full px-3 py-1">
-                {op.type}
-              </span>
-            </div>
-            <p className="text-sm text-zinc-600 dark:text-zinc-400 mt-2">
-              Apply by {new Date(op.applyDeadline).toLocaleDateString()}
-            </p>
-          </Link>
-        ))}
+              <p className="text-sm text-zinc-600 dark:text-zinc-400 mt-2">
+                Apply by {new Date(op.applyDeadline).toLocaleDateString()}
+              </p>
+            </Link>
+          );
+        })}
       </div>
     </div>
   );
