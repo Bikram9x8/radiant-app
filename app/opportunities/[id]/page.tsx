@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 
+
 export default function OpportunityDetailPage() {
   const params = useParams();
   const router = useRouter();
@@ -159,14 +160,7 @@ export default function OpportunityDetailPage() {
 
         <div className="mt-6 border-t border-white/20 dark:border-white/10 pt-4">
           {isQuiz ? (
-            status !== "authenticated" ? (
-              <Link
-                href="/signup"
-                className="inline-block rounded-xl px-6 py-3 bg-purple-600 text-white font-semibold hover:bg-purple-700 transition-colors"
-              >
-                Sign up to take this test →
-              </Link>
-            ) : opportunity.requiresCode && codeUnlocked && alreadyLocked ? (
+            opportunity.requiresCode && codeUnlocked && alreadyLocked ? (
               <div className="glass rounded-3xl p-8 text-center">
                 <h2 className="text-lg font-bold text-red-600 dark:text-red-400 mb-2">Test Locked</h2>
                 <p className="text-sm text-zinc-700 dark:text-zinc-300">
@@ -175,7 +169,6 @@ export default function OpportunityDetailPage() {
               </div>
             ) : opportunity.requiresCode && codeUnlocked ? (
               <SecureTestViewer opportunityId={id} pdfUrl={opportunity.externalLink} />
-              
             ) : opportunity.requiresCode && !codeUnlocked ? (
               <div>
                 <label className="block text-sm font-medium mb-2 text-zinc-900 dark:text-white">
@@ -199,11 +192,30 @@ export default function OpportunityDetailPage() {
                 </div>
                 {codeError && <p className="text-sm text-red-600 dark:text-red-400 mt-2">{codeError}</p>}
                 <p className="text-xs text-zinc-500 mt-2">
-                  Get this code from your institute to unlock this test.
+                  Get this code from your institute to unlock this test. Note: signing up is still required to redeem a code.
                 </p>
               </div>
             ) : opportunity.externalLink ? (
-              <PlainTestViewer pdfUrl={opportunity.externalLink} />
+              <div>
+                <PlainTestViewer pdfUrl={opportunity.externalLink} />
+                <div className="mt-4">
+                  {status === "authenticated" ? (
+                    <a
+                      href={opportunity.externalLink.replace("/upload/", "/upload/fl_attachment/")}
+                      className="inline-block rounded-xl px-5 py-2.5 bg-purple-600 text-white font-semibold hover:bg-purple-700 transition-colors"
+                    >
+                      Download PDF
+                    </a>
+                  ) : (
+                    <Link
+                      href="/signup"
+                      className="inline-block rounded-xl px-5 py-2.5 bg-purple-600 text-white font-semibold hover:bg-purple-700 transition-colors"
+                    >
+                      Sign up to download →
+                    </Link>
+                  )}
+                </div>
+              </div>
             ) : (
               <p className="text-sm text-zinc-500">Test link not available.</p>
             )

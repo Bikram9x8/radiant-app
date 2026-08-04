@@ -1,7 +1,6 @@
 "use client";
 import { useEffect, useState, Suspense } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { IconFileText, IconTool, IconTargetArrow, IconPackage, IconClipboardList, IconSchool, IconBook, IconLock } from "@tabler/icons-react";
 
@@ -19,15 +18,7 @@ const TYPES = ["JOB", "INTERNSHIP", "COMPETITION", "QUIZ", "HACKATHON", "EVENT"]
 
 function OpportunitiesContent() {
   const searchParams = useSearchParams();
-  const router = useRouter();
-  const { status } = useSession();
   const division = searchParams.get("division") || "";
-
-  useEffect(() => {
-    if (status === "unauthenticated") {
-      router.push("/signup");
-    }
-  }, [status, router]);
 
   const [opportunities, setOpportunities] = useState<any[]>([]);
   const [categories, setCategories] = useState<any[]>([]);
@@ -53,14 +44,6 @@ function OpportunitiesContent() {
     }
     load();
   }, [search, type, categoryId, division]);
-
-  if (status === "loading" || status === "unauthenticated") {
-    return (
-      <div className="flex flex-1 items-center justify-center py-20">
-        <p className="text-zinc-600 dark:text-zinc-400">Loading...</p>
-      </div>
-    );
-  }
 
   return (
     <div className="max-w-4xl mx-auto mt-12 px-6 mb-12">
