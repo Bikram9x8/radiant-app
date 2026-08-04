@@ -43,7 +43,7 @@ export default async function Home() {
           <div className="flex flex-col sm:flex-row gap-3 mt-8">
             <Link
               href="/opportunities"
-              className="rounded-lg px-6 py-3 bg-purple-600 text-white font-semibold hover:bg-purple-700 transition-colors"
+              className="btn-neon rounded-2xl px-6 py-3 font-semibold"
             >
               Browse tests →
             </Link>
