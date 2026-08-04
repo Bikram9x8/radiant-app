@@ -26,19 +26,13 @@ export default async function Home() {
   return (
     <div className="flex-1">
       {/* Hero */}
-      <div className="relative overflow-hidden bg-gradient-to-b from-purple-50 to-white dark:from-purple-950/30 dark:to-zinc-950">
-        <div className="absolute -top-10 -right-10 w-56 h-56 rounded-full bg-purple-100 dark:bg-purple-900/30" />
-        <div className="absolute bottom-0 right-24 w-32 h-32 rounded-full bg-amber-50 dark:bg-amber-900/20" />
-
+      <div className="relative overflow-hidden">
         <div className="relative max-w-5xl mx-auto px-6 py-20 flex flex-col items-start">
-          <span className="text-xs font-semibold px-3 py-1.5 rounded-full bg-purple-100 dark:bg-purple-900/50 text-purple-800 dark:text-purple-300">
-            Free forever for students
-          </span>
-          <h1 className="text-4xl sm:text-5xl font-bold tracking-tight mt-5 max-w-2xl text-zinc-900 dark:text-white">
-            Practice tests for Class 12 boards and entrance exams
+          <h1 className="text-4xl sm:text-5xl font-bold tracking-tight max-w-2xl text-zinc-900 dark:text-white">
+            Everything for your next big step.
           </h1>
           <p className="text-lg text-zinc-600 dark:text-zinc-400 mt-4 max-w-xl">
-            Physics, Chemistry, Maths, Biology, English, JEE, NEET, and CUET — all in one place.
+            Practice tests, internships, and career tools — all in one place.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 mt-8">
             <Link
@@ -64,11 +58,11 @@ export default async function Home() {
 
         {/* Stats strip */}
         <div className="relative max-w-5xl mx-auto px-6 pb-12 grid grid-cols-2 gap-4">
-          <div className="glass text-center py-7 rounded-3xl bg-gradient-to-br from-purple-50/80 to-transparent dark:from-purple-900/20">
+          <div className="glass text-center py-7 rounded-3xl">
             <p className="text-3xl font-bold text-purple-600 dark:text-purple-400">{totalTests}+</p>
             <p className="text-xs text-zinc-500 mt-1">Practice tests</p>
           </div>
-          <div className="glass text-center py-7 rounded-3xl bg-gradient-to-br from-purple-50/80 to-transparent dark:from-purple-900/20">
+          <div className="glass text-center py-7 rounded-3xl">
             <p className="text-3xl font-bold text-purple-600 dark:text-purple-400">{categories.length}</p>
             <p className="text-xs text-zinc-500 mt-1">Subjects and exams</p>
           </div>
