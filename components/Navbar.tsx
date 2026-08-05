@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
 import { useEffect, useState } from "react";
-import { IconMenu2, IconX } from "@tabler/icons-react";
 
 export default function Navbar() {
   const { data: session, status } = useSession();
@@ -33,10 +32,24 @@ export default function Navbar() {
         <div className="flex items-center gap-3">
           <button
             onClick={() => setMenuOpen(!menuOpen)}
-            className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-400 to-cyan-400 shadow-[0_0_14px_rgba(155,60,255,0.5)] text-white flex items-center justify-center hover:shadow-[0_0_20px_rgba(155,60,255,0.7)] transition-shadow"
+            className="w-10 h-10 flex flex-col items-center justify-center gap-[5px]"
             aria-label="Menu"
           >
-            {menuOpen ? <IconX size={20} /> : <IconMenu2 size={20} />}
+            <span
+              className={`h-[2px] w-6 rounded-full bg-gradient-to-r from-purple-400 to-cyan-400 shadow-[0_0_8px_rgba(155,60,255,0.8)] transition-all duration-300 ${
+                menuOpen ? "rotate-45 translate-y-[7px]" : ""
+              }`}
+            />
+            <span
+              className={`h-[2px] w-6 rounded-full bg-gradient-to-r from-purple-400 to-cyan-400 shadow-[0_0_8px_rgba(155,60,255,0.8)] transition-all duration-300 ${
+                menuOpen ? "opacity-0" : ""
+              }`}
+            />
+            <span
+              className={`h-[2px] w-6 rounded-full bg-gradient-to-r from-purple-400 to-cyan-400 shadow-[0_0_8px_rgba(155,60,255,0.8)] transition-all duration-300 ${
+                menuOpen ? "-rotate-45 -translate-y-[7px]" : ""
+              }`}
+            />
           </button>
           <Link href={status === "authenticated" ? "/dashboard" : "/"} className="font-bold text-lg text-zinc-900 dark:text-white">
             Radiant
