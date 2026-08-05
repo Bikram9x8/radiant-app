@@ -33,10 +33,10 @@ export default function Navbar() {
         <div className="flex items-center gap-3">
           <button
             onClick={() => setMenuOpen(!menuOpen)}
-            className="text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white transition-colors"
+            className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-400 to-cyan-400 shadow-[0_0_14px_rgba(155,60,255,0.5)] text-white flex items-center justify-center hover:shadow-[0_0_20px_rgba(155,60,255,0.7)] transition-shadow"
             aria-label="Menu"
           >
-            {menuOpen ? <IconX size={22} /> : <IconMenu2 size={22} />}
+            {menuOpen ? <IconX size={20} /> : <IconMenu2 size={20} />}
           </button>
           <Link href={status === "authenticated" ? "/dashboard" : "/"} className="font-bold text-lg text-zinc-900 dark:text-white">
             Radiant
@@ -46,46 +46,17 @@ export default function Navbar() {
           </Link>
         </div>
 
-        <nav className="flex items-center gap-6">
-          <Link
-            href="/opportunities"
-            className="hidden sm:block text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors"
-          >
-            Tests
-          </Link>
-
+        <nav className="flex items-center gap-4">
           {status === "loading" ? null : status === "unauthenticated" ? (
-            <div className="flex items-center gap-3">
-              <Link
-                href="/login"
-                className="text-sm text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors"
-              >
-                Log in
-              </Link>
-              <Link
-                href="/signup"
-                className="btn-neon text-sm font-semibold px-4 py-2 rounded-xl"
-              >
-                Sign up free
-              </Link>
-            </div>
+            <Link
+              href="/signup"
+              className="btn-neon text-sm font-semibold px-4 py-2 rounded-xl"
+            >
+              Sign up free
+            </Link>
           ) : (
-            <div className="flex items-center gap-4">
-              <Link
-                href="/dashboard"
-                className="hidden sm:block text-sm text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors"
-              >
-                Dashboard
-              </Link>
-              <button
-                onClick={() => signOut({ callbackUrl: "/" })}
-                className="hidden sm:block text-sm text-zinc-600 dark:text-zinc-400 hover:text-red-600 dark:hover:text-red-400 transition-colors"
-              >
-                Log out
-              </button>
-              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-400 to-cyan-400 shadow-[0_0_10px_rgba(155,60,255,0.4)] text-white flex items-center justify-center text-xs font-semibold">
-                {initials}
-              </div>
+            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-400 to-cyan-400 shadow-[0_0_10px_rgba(155,60,255,0.4)] text-white flex items-center justify-center text-xs font-semibold">
+              {initials}
             </div>
           )}
         </nav>
