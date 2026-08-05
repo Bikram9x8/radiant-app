@@ -2,24 +2,40 @@
 
 import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
+import { useEffect, useState } from "react";
 
 export default function Navbar() {
   const { data: session, status } = useSession();
   const user = session?.user as any;
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    setVisible(true);
+  }, []);
 
   const initials = user?.email ? user.email.slice(0, 2).toUpperCase() : "";
 
   return (
-    <header className="border-b border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 sticky top-0 z-50">
+    <header
+      className="glass sticky top-0 z-50 rounded-none border-x-0 border-t-0"
+      style={{
+        opacity: visible ? 1 : 0,
+        transform: visible ? "translateY(0)" : "translateY(-12px)",
+        transition: "opacity 0.5s ease, transform 0.5s ease",
+      }}
+    >
       <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-        <Link href="/" className="font-semibold text-lg text-zinc-900 dark:text-white">
-          Radiant<span className="text-purple-600 dark:text-purple-400">Educations</span>
+        <Link href="/" className="font-bold text-lg text-zinc-900 dark:text-white">
+          Radiant
+          <span className="bg-gradient-to-r from-purple-500 to-cyan-400 bg-clip-text text-transparent">
+            Educations
+          </span>
         </Link>
 
         <nav className="flex items-center gap-6">
           <Link
             href="/opportunities"
-            className="hidden sm:block text-sm text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors"
+            className="hidden sm:block text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors"
           >
             Tests
           </Link>
@@ -34,7 +50,7 @@ export default function Navbar() {
               </Link>
               <Link
                 href="/signup"
-                className="text-sm font-medium px-4 py-2 rounded-lg bg-purple-600 text-white hover:bg-purple-700 transition-colors"
+                className="btn-neon text-sm font-semibold px-4 py-2 rounded-xl"
               >
                 Sign up free
               </Link>
@@ -53,7 +69,7 @@ export default function Navbar() {
               >
                 Log out
               </button>
-              <div className="w-8 h-8 rounded-full bg-purple-100 dark:bg-purple-900 text-purple-700 dark:text-purple-300 flex items-center justify-center text-xs font-semibold">
+              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-400 to-cyan-400 shadow-[0_0_10px_rgba(155,60,255,0.4)] text-white flex items-center justify-center text-xs font-semibold">
                 {initials}
               </div>
             </div>
