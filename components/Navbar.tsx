@@ -24,8 +24,11 @@ export default function Navbar() {
         transition: "opacity 0.5s ease, transform 0.5s ease",
       }}
     >
+      <div
+        className="absolute left-0 right-0 -bottom-6 h-6 pointer-events-none bg-gradient-to-b from-white dark:from-zinc-950 to-transparent"
+      />
       <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-        <Link href="/" className="font-bold text-lg text-zinc-900 dark:text-white">
+        <Link href={status === "authenticated" ? "/dashboard" : "/"} className="font-bold text-lg text-zinc-900 dark:text-white">
           Radiant
           <span className="bg-gradient-to-r from-purple-500 to-cyan-400 bg-clip-text text-transparent">
             Educations
