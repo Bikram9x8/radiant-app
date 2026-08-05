@@ -93,7 +93,7 @@ export default async function Home() {
             <FadeIn key={tile.label} delay={i * 80}>
               <Link
                 href={tile.href}
-                className="glass rounded-3xl p-6 hover:scale-[1.03] transition-transform flex flex-col items-center text-center gap-3 min-h-[160px] justify-center"
+                className="glass rounded-3xl p-6 hover:scale-[1.03] hover:-translate-y-1 hover:shadow-[0_8px_30px_rgba(168,85,247,0.25)] transition-all duration-300 flex flex-col items-center text-center gap-3 min-h-[160px] justify-center"
               >
                 <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${tile.gradient} ${tile.glow} flex items-center justify-center`}>
                   <tile.Icon size={26} color="white" stroke={2} />
@@ -120,7 +120,7 @@ export default async function Home() {
               <FadeIn key={o.id} delay={i * 80}>
                 <Link
                   href={`/opportunities/${o.id}`}
-                  className="glass rounded-3xl p-6 hover:scale-[1.03] transition-transform bg-gradient-to-br from-purple-50/60 to-transparent dark:from-purple-900/10"
+                  className="glass rounded-3xl p-6 hover:scale-[1.03] hover:-translate-y-1 hover:shadow-[0_8px_30px_rgba(168,85,247,0.25)] transition-all duration-300 bg-gradient-to-br from-purple-50/60 to-transparent dark:from-purple-900/10"
                 >
                   <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-purple-100 dark:bg-purple-900/50 text-purple-800 dark:text-purple-300">
                     {o.category.name}
