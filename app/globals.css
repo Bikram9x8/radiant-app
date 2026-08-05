@@ -103,3 +103,12 @@ a:active {
 .animate-huecycle {
   animation: huecycle 90s linear infinite;
 }
+:root {
+  --navbar-bg: #ffffff;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --navbar-bg: #09090b;
+  }
+}
