@@ -4,6 +4,8 @@ import { getServerSession } from "next-auth/next";
 import { redirect } from "next/navigation";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import FadeIn from "@/components/FadeIn";
+
 
 export default async function Home() {
   const session = await getServerSession(authOptions);
@@ -28,45 +30,51 @@ export default async function Home() {
       {/* Hero */}
       <div className="relative overflow-hidden">
         <div className="relative max-w-5xl mx-auto px-6 py-20 flex flex-col items-start">
-          <h1 className="text-4xl sm:text-5xl font-bold tracking-tight max-w-2xl text-zinc-900 dark:text-white">
-            Everything for your next big step.
-          </h1>
-          <p className="text-lg text-zinc-600 dark:text-zinc-400 mt-4 max-w-xl">
-            Practice tests, internships, and career tools — all in one place.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-3 mt-8">
-            <Link
-              href="/opportunities"
-              className="btn-neon rounded-2xl px-6 py-3 font-semibold"
-            >
-              Browse tests →
-            </Link>
-            <Link
-              href="/signup"
-              className="rounded-lg px-6 py-3 border border-zinc-300 dark:border-zinc-700 font-semibold hover:bg-zinc-50 dark:hover:bg-zinc-900 transition-colors"
-            >
-              Sign up as Student
-            </Link>
-            <Link
-              href="/signup/company"
-              className="rounded-lg px-6 py-3 border border-zinc-300 dark:border-zinc-700 font-semibold hover:bg-zinc-50 dark:hover:bg-zinc-900 transition-colors"
-            >
-              Sign up as Company
-            </Link>
-          </div>
+          <FadeIn>
+            <h1 className="text-4xl sm:text-5xl font-bold tracking-tight max-w-2xl text-zinc-900 dark:text-white">
+              Everything for your next big step.
+            </h1>
+            <p className="text-lg text-zinc-600 dark:text-zinc-400 mt-4 max-w-xl">
+              Practice tests, internships, and career tools — all in one place.
+            </p>
+          </FadeIn>
+          <FadeIn delay={150}>
+            <div className="flex flex-col sm:flex-row gap-3 mt-8">
+              <Link
+                href="/opportunities"
+                className="btn-neon rounded-2xl px-6 py-3 font-semibold"
+              >
+                Browse tests →
+              </Link>
+              <Link
+                href="/signup"
+                className="rounded-lg px-6 py-3 border border-zinc-300 dark:border-zinc-700 font-semibold hover:bg-zinc-50 dark:hover:bg-zinc-900 transition-colors"
+              >
+                Sign up as Student
+              </Link>
+              <Link
+                href="/signup/company"
+                className="rounded-lg px-6 py-3 border border-zinc-300 dark:border-zinc-700 font-semibold hover:bg-zinc-50 dark:hover:bg-zinc-900 transition-colors"
+              >
+                Sign up as Company
+              </Link>
+            </div>
+          </FadeIn>
         </div>
 
         {/* Stats strip */}
-        <div className="relative max-w-5xl mx-auto px-6 pb-12 grid grid-cols-2 gap-4">
-          <div className="glass text-center py-7 rounded-3xl">
-            <p className="text-3xl font-bold text-purple-600 dark:text-purple-400">{totalTests}+</p>
-            <p className="text-xs text-zinc-500 mt-1">Practice tests</p>
+        <FadeIn delay={300}>
+          <div className="relative max-w-5xl mx-auto px-6 pb-12 grid grid-cols-2 gap-4">
+            <div className="glass text-center py-7 rounded-3xl">
+              <p className="text-3xl font-bold text-purple-600 dark:text-purple-400">{totalTests}+</p>
+              <p className="text-xs text-zinc-500 mt-1">Practice tests</p>
+            </div>
+            <div className="glass text-center py-7 rounded-3xl">
+              <p className="text-3xl font-bold text-purple-600 dark:text-purple-400">{categories.length}</p>
+              <p className="text-xs text-zinc-500 mt-1">Subjects and exams</p>
+            </div>
           </div>
-          <div className="glass text-center py-7 rounded-3xl">
-            <p className="text-3xl font-bold text-purple-600 dark:text-purple-400">{categories.length}</p>
-            <p className="text-xs text-zinc-500 mt-1">Subjects and exams</p>
-          </div>
-        </div>
+        </FadeIn>
       </div>
 
       {/* Main divisions */}
@@ -81,17 +89,18 @@ export default async function Home() {
             { href: "/opportunities?division=DPP", label: "DPP", Icon: IconClipboardList, gradient: "from-amber-400 to-pink-400", glow: "shadow-[0_0_16px_rgba(251,191,36,0.5)]" },
             { href: "/opportunities?division=BOARD_LEVEL_TEST", label: "Board Level Test", Icon: IconSchool, gradient: "from-emerald-400 to-purple-400", glow: "shadow-[0_0_16px_rgba(52,211,153,0.5)]" },
             { href: "/opportunities?division=CHAPTER_WISE_TEST", label: "Chapter Wise Test", Icon: IconBook, gradient: "from-purple-400 to-pink-400", glow: "shadow-[0_0_16px_rgba(192,132,252,0.5)]" },
-          ].map((tile) => (
-            <Link
-              key={tile.label}
-              href={tile.href}
-              className="glass rounded-3xl p-6 hover:scale-[1.03] transition-transform flex flex-col items-center text-center gap-3 min-h-[160px] justify-center"
-            >
-              <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${tile.gradient} ${tile.glow} flex items-center justify-center`}>
-                <tile.Icon size={26} color="white" stroke={2} />
-              </div>
-              <p className="text-sm font-semibold text-zinc-900 dark:text-white">{tile.label}</p>
-            </Link>
+          ].map((tile, i) => (
+            <FadeIn key={tile.label} delay={i * 80}>
+              <Link
+                href={tile.href}
+                className="glass rounded-3xl p-6 hover:scale-[1.03] transition-transform flex flex-col items-center text-center gap-3 min-h-[160px] justify-center"
+              >
+                <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${tile.gradient} ${tile.glow} flex items-center justify-center`}>
+                  <tile.Icon size={26} color="white" stroke={2} />
+                </div>
+                <p className="text-sm font-semibold text-zinc-900 dark:text-white">{tile.label}</p>
+              </Link>
+            </FadeIn>
           ))}
         </div>
 
@@ -107,18 +116,19 @@ export default async function Home() {
           <p className="text-sm text-zinc-500">No tests posted yet. Check back soon.</p>
         ) : (
           <div className="grid sm:grid-cols-2 gap-4">
-            {latestOpportunities.map((o) => (
-              <Link
-                key={o.id}
-                href={`/opportunities/${o.id}`}
-                className="glass rounded-3xl p-6 hover:scale-[1.03] transition-transform bg-gradient-to-br from-purple-50/60 to-transparent dark:from-purple-900/10"
-              >
-                <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-purple-100 dark:bg-purple-900/50 text-purple-800 dark:text-purple-300">
-                  {o.category.name}
-                </span>
-                <p className="text-sm font-medium mt-3 text-zinc-900 dark:text-white">{o.title}</p>
-                <p className="text-xs text-zinc-500 mt-1 line-clamp-2">{o.description}</p>
-              </Link>
+            {latestOpportunities.map((o, i) => (
+              <FadeIn key={o.id} delay={i * 80}>
+                <Link
+                  href={`/opportunities/${o.id}`}
+                  className="glass rounded-3xl p-6 hover:scale-[1.03] transition-transform bg-gradient-to-br from-purple-50/60 to-transparent dark:from-purple-900/10"
+                >
+                  <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-purple-100 dark:bg-purple-900/50 text-purple-800 dark:text-purple-300">
+                    {o.category.name}
+                  </span>
+                  <p className="text-sm font-medium mt-3 text-zinc-900 dark:text-white">{o.title}</p>
+                  <p className="text-xs text-zinc-500 mt-1 line-clamp-2">{o.description}</p>
+                </Link>
+              </FadeIn>
             ))}
           </div>
         )}
