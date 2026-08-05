@@ -17,8 +17,9 @@ export default function Navbar() {
 
   return (
     <header
-      className="glass sticky top-0 z-50 rounded-none border-none"
+      className="relative sticky top-0 z-50"
       style={{
+        backgroundColor: "var(--navbar-bg, #ffffff)",
         opacity: visible ? 1 : 0,
         transform: visible ? "translateY(0)" : "translateY(-12px)",
         transition: "opacity 0.5s ease, transform 0.5s ease",
