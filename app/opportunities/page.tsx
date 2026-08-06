@@ -4,6 +4,7 @@ import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { IconFileText, IconTool, IconTargetArrow, IconPackage, IconClipboardList, IconSchool, IconBook, IconLock } from "@tabler/icons-react";
 import FadeIn from "@/components/FadeIn";
+import { Skeleton } from "@/components/Skeleton";
 
 const DIVISION_ICONS: Record<string, { Icon: any; gradient: string; glow: string }> = {
   TEST_SERIES: { Icon: IconFileText, gradient: "from-emerald-400 to-cyan-400", glow: "shadow-[0_0_12px_rgba(52,211,153,0.5)]" },
@@ -96,7 +97,20 @@ function OpportunitiesContent() {
         </select>
       </div>
 
-      {loading && <p className="text-zinc-600 dark:text-zinc-400">Loading...</p>}
+      {loading && (
+        <div className="flex flex-col gap-8">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="glass rounded-3xl p-6 flex items-start gap-3">
+              <Skeleton className="w-11 h-11 shrink-0" />
+              <div className="flex-1 flex flex-col gap-2">
+                <Skeleton className="h-5 w-2/3" />
+                <Skeleton className="h-3 w-1/3" />
+                <Skeleton className="h-3 w-1/4 mt-2" />
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
 
       {!loading && opportunities.length === 0 && (
         <p className="text-zinc-600 dark:text-zinc-400">No opportunities found yet. Check back soon!</p>
