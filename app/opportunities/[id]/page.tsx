@@ -2,6 +2,7 @@
 import { useSession } from "next-auth/react";
 import SecureTestViewer from "./SecureTestViewer";
 import PlainTestViewer from "./PlainTestViewer";
+import { IconLock, IconLockOpen } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
@@ -20,6 +21,7 @@ export default function OpportunityDetailPage() {
   const [redeeming, setRedeeming] = useState(false);
   const [codeError, setCodeError] = useState("");
   const [codeUnlocked, setCodeUnlocked] = useState(false);
+  const [justUnlocked, setJustUnlocked] = useState(false);
   const [alreadyLocked, setAlreadyLocked] = useState(false);
 
   const [opportunity, setOpportunity] = useState<any>(null);
@@ -68,6 +70,7 @@ export default function OpportunityDetailPage() {
     }
 
     setCodeUnlocked(true);
+    setJustUnlocked(true);
     showToast("Code redeemed — test unlocked!");
   }
 
@@ -191,6 +194,18 @@ export default function OpportunityDetailPage() {
               <SecureTestViewer opportunityId={id} pdfUrl={opportunity.externalLink} />
             ) : opportunity.requiresCode && !codeUnlocked ? (
               <div>
+                <div className="flex justify-center mb-3">
+                  <div
+                    className="w-14 h-14 rounded-full bg-zinc-200/70 dark:bg-zinc-800/60 flex items-center justify-center transition-transform duration-300"
+                    style={{ transform: justUnlocked ? "scale(1.3) rotate(-8deg)" : "scale(1)" }}
+                  >
+                    {justUnlocked ? (
+                      <IconLockOpen size={26} className="text-emerald-500" stroke={2} />
+                    ) : (
+                      <IconLock size={26} className="text-zinc-500" stroke={2} />
+                    )}
+                  </div>
+                </div>
                 <label className="block text-sm font-medium mb-2 text-zinc-900 dark:text-white">
                   Enter access code
                 </label>
