@@ -3,9 +3,11 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import FadeIn from "@/components/FadeIn";
+import { useToast } from "@/components/Toast";
 
 export default function StudentSignup() {
   const router = useRouter();
+  const { showToast } = useToast();
   const [form, setForm] = useState({ fullName: "", email: "", password: "" });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -21,6 +23,7 @@ export default function StudentSignup() {
     });
     setLoading(false);
     if (res.ok) {
+      showToast("Account created — please log in!");
       router.push("/login");
     } else {
       const data = await res.json();

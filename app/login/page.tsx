@@ -4,9 +4,11 @@ import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import FadeIn from "@/components/FadeIn";
+import { useToast } from "@/components/Toast";
 
 export default function LoginPage() {
   const router = useRouter();
+  const { showToast } = useToast();
   const [form, setForm] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -19,6 +21,7 @@ export default function LoginPage() {
     setLoading(false);
     if (res?.error) {
       setError("Invalid email or password");
+      showToast("Invalid email or password", "error");
     } else {
       router.push("/dashboard");
       router.refresh();
