@@ -3,6 +3,7 @@ import { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { IconFileText, IconTool, IconTargetArrow, IconPackage, IconClipboardList, IconSchool, IconBook, IconLock } from "@tabler/icons-react";
+import FadeIn from "@/components/FadeIn";
 
 const DIVISION_ICONS: Record<string, { Icon: any; gradient: string; glow: string }> = {
   TEST_SERIES: { Icon: IconFileText, gradient: "from-emerald-400 to-cyan-400", glow: "shadow-[0_0_12px_rgba(52,211,153,0.5)]" },
@@ -101,15 +102,15 @@ function OpportunitiesContent() {
         <p className="text-zinc-600 dark:text-zinc-400">No opportunities found yet. Check back soon!</p>
       )}
 
-      <div className="flex flex-col gap-4">
-        {opportunities.map((op) => {
+      <div className="flex flex-col gap-6">
+        {opportunities.map((op, i) => {
           const divisionStyle = DIVISION_ICONS[op.division] || DIVISION_ICONS.TEST_SERIES;
           const DivIcon = divisionStyle.Icon;
           return (
+            <FadeIn key={op.id} delay={i * 60}>
             <Link
-              key={op.id}
               href={`/opportunities/${op.id}`}
-              className="glass rounded-3xl p-6 hover:scale-[1.01] transition-transform"
+              className="glass glass-card rounded-3xl p-6"
             >
               <div className="flex justify-between items-start gap-3">
                 <div className="flex items-start gap-3">
@@ -139,6 +140,7 @@ function OpportunitiesContent() {
                 Apply by {new Date(op.applyDeadline).toLocaleDateString()}
               </p>
             </Link>
+            </FadeIn>
           );
         })}
       </div>
