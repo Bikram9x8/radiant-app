@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import FadeIn from "@/components/FadeIn";
 
 type CompanyUser = {
   id: string;
@@ -47,9 +48,10 @@ export default function CompanyApprovalTable({
   }
 
   return (
-    <div className="flex flex-col gap-4">
-      {companies.map((c) => (
-        <div key={c.id} className="glass rounded-2xl p-5">
+    <div className="flex flex-col gap-8">
+      {companies.map((c, i) => (
+        <FadeIn key={c.id} delay={i * 60}>
+        <div className="glass glass-card rounded-2xl p-5">
           <div className="flex items-start justify-between gap-4">
             <div className="min-w-0">
               <h3 className="font-semibold text-zinc-900 dark:text-white">
@@ -106,6 +108,7 @@ export default function CompanyApprovalTable({
             </div>
           </div>
         </div>
+        </FadeIn>
       ))}
     </div>
   );
