@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import FadeIn from "@/components/FadeIn";
 
 export default function CompanySignup() {
   const router = useRouter();
@@ -29,8 +30,9 @@ export default function CompanySignup() {
 
   return (
     <div className="flex-1 flex items-center justify-center px-6 py-16">
-      <div className="glass rounded-2xl p-8 w-full max-w-md">
-        <h1 className="text-2xl font-bold mb-1 text-zinc-900 dark:text-white">Company sign up</h1>
+      <FadeIn>
+      <div className="glass rounded-3xl p-10 w-full max-w-md">
+        <h1 className="text-3xl font-bold tracking-tight mb-2 text-zinc-900 dark:text-white">Company sign up</h1>
         <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-6">
           Your account needs admin approval before you can post tests or opportunities.
         </p>
@@ -38,7 +40,7 @@ export default function CompanySignup() {
           <input
             type="text"
             placeholder="Company name"
-            className="bg-white/70 dark:bg-zinc-900/70 rounded-xl px-3 py-2.5 outline-none text-zinc-900 dark:text-white placeholder:text-zinc-500"
+            className="bg-white/70 dark:bg-zinc-900/70 rounded-2xl px-4 py-3 outline-none text-zinc-900 dark:text-white placeholder:text-zinc-500"
             value={form.companyName}
             onChange={(e) => setForm({ ...form, companyName: e.target.value })}
             required
@@ -46,7 +48,7 @@ export default function CompanySignup() {
           <input
             type="email"
             placeholder="Email"
-            className="bg-white/70 dark:bg-zinc-900/70 rounded-xl px-3 py-2.5 outline-none text-zinc-900 dark:text-white placeholder:text-zinc-500"
+            className="bg-white/70 dark:bg-zinc-900/70 rounded-2xl px-4 py-3 outline-none text-zinc-900 dark:text-white placeholder:text-zinc-500"
             value={form.email}
             onChange={(e) => setForm({ ...form, email: e.target.value })}
             required
@@ -54,7 +56,7 @@ export default function CompanySignup() {
           <input
             type="password"
             placeholder="Password"
-            className="bg-white/70 dark:bg-zinc-900/70 rounded-xl px-3 py-2.5 outline-none text-zinc-900 dark:text-white placeholder:text-zinc-500"
+            className="bg-white/70 dark:bg-zinc-900/70 rounded-2xl px-4 py-3 outline-none text-zinc-900 dark:text-white placeholder:text-zinc-500"
             value={form.password}
             onChange={(e) => setForm({ ...form, password: e.target.value })}
             required
@@ -64,7 +66,7 @@ export default function CompanySignup() {
           <button
             type="submit"
             disabled={loading}
-            className="bg-purple-600 text-white rounded-xl px-3 py-2.5 font-semibold hover:bg-purple-700 transition-colors disabled:opacity-50"
+            className="btn-neon rounded-2xl px-4 py-3 font-semibold disabled:opacity-50"
           >
             {loading ? "Creating account..." : "Sign up"}
           </button>
@@ -76,6 +78,7 @@ export default function CompanySignup() {
           </Link>
         </p>
       </div>
+      </FadeIn>
     </div>
   );
 }

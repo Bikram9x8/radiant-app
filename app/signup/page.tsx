@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import FadeIn from "@/components/FadeIn";
 
 export default function StudentSignup() {
   const router = useRouter();
@@ -29,6 +30,7 @@ export default function StudentSignup() {
 
   return (
     <div className="flex-1 flex items-center justify-center px-6 py-16">
+      <FadeIn>
       <div className="glass rounded-3xl p-10 w-full max-w-md">
         <h1 className="text-3xl font-bold tracking-tight mb-2 text-zinc-900 dark:text-white">Student sign up</h1>
         <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-8">
@@ -64,7 +66,7 @@ export default function StudentSignup() {
           <button
             type="submit"
             disabled={loading}
-            className="bg-purple-600 text-white rounded-2xl px-4 py-3 font-semibold hover:bg-purple-700 transition-colors disabled:opacity-50"
+            className="btn-neon rounded-2xl px-4 py-3 font-semibold disabled:opacity-50"
           >
             {loading ? "Creating account..." : "Sign up"}
           </button>
@@ -76,6 +78,7 @@ export default function StudentSignup() {
           </Link>
         </p>
       </div>
+      </FadeIn>
     </div>
   );
 }
