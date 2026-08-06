@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import FadeIn from "@/components/FadeIn";
 
 type Category = {
   id: string;
@@ -97,6 +98,7 @@ export default function CategoryManager({
 
   return (
     <div className="flex flex-col gap-8">
+      <FadeIn>
       <form onSubmit={handleAdd} className="glass rounded-2xl p-5 flex flex-col gap-3">
         <h2 className="font-semibold text-sm text-zinc-900 dark:text-white">Add category</h2>
         <input
@@ -117,11 +119,12 @@ export default function CategoryManager({
         <button
           type="submit"
           disabled={adding}
-          className="self-start rounded-xl px-4 py-2 bg-purple-600 text-white text-sm font-semibold hover:bg-purple-700 transition-colors disabled:opacity-50"
+          className="btn-neon self-start rounded-xl px-4 py-2 text-sm font-semibold disabled:opacity-50"
         >
           {adding ? "Adding..." : "Add category"}
         </button>
       </form>
+      </FadeIn>
 
       {deleteError && (
         <p className="text-sm text-red-600 dark:text-red-400 -mt-4">{deleteError}</p>
