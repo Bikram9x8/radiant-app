@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import FadeIn from "@/components/FadeIn";
 
 type UserRow = {
   id: string;
@@ -60,6 +61,7 @@ export default function UserManager({
   }
 
   return (
+    <FadeIn>
     <div>
       <div className="flex gap-2 mb-4">
         {(["ALL", "STUDENT", "COMPANY", "ADMIN"] as const).map((f) => (
@@ -68,7 +70,7 @@ export default function UserManager({
             onClick={() => setFilter(f)}
             className={`text-sm px-3 py-1.5 rounded-xl ${
               filter === f
-                ? "bg-purple-600 text-white"
+                ? "btn-neon"
                 : "glass text-zinc-900 dark:text-white"
             }`}
           >
@@ -130,5 +132,6 @@ export default function UserManager({
         </table>
       </div>
     </div>
+    </FadeIn>
   );
 }
