@@ -8,6 +8,15 @@ import FadeIn from "@/components/FadeIn";
 
 
 export default async function Home() {
+  const DIVISION_ICONS: Record<string, { Icon: any; gradient: string; glow: string }> = {
+    TEST_SERIES: { Icon: IconFileText, gradient: "from-emerald-400 to-cyan-400", glow: "shadow-[0_0_16px_rgba(52,211,153,0.5)]" },
+    SKILL_BUILDING: { Icon: IconTool, gradient: "from-pink-400 to-purple-400", glow: "shadow-[0_0_16px_rgba(244,114,182,0.5)]" },
+    CAREER_COUNSELING: { Icon: IconTargetArrow, gradient: "from-cyan-400 to-blue-400", glow: "shadow-[0_0_16px_rgba(34,211,238,0.5)]" },
+    STUDY_PACKAGE: { Icon: IconPackage, gradient: "from-lime-400 to-emerald-400", glow: "shadow-[0_0_16px_rgba(163,230,53,0.5)]" },
+    DPP: { Icon: IconClipboardList, gradient: "from-amber-400 to-pink-400", glow: "shadow-[0_0_16px_rgba(251,191,36,0.5)]" },
+    BOARD_LEVEL_TEST: { Icon: IconSchool, gradient: "from-emerald-400 to-purple-400", glow: "shadow-[0_0_16px_rgba(52,211,153,0.5)]" },
+    CHAPTER_WISE_TEST: { Icon: IconBook, gradient: "from-purple-400 to-pink-400", glow: "shadow-[0_0_16px_rgba(192,132,252,0.5)]" },
+  };
   const session = await getServerSession(authOptions);
 
   if (session?.user) {
@@ -115,21 +124,29 @@ export default async function Home() {
         {latestOpportunities.length === 0 ? (
           <p className="text-sm text-zinc-500">No tests posted yet. Check back soon.</p>
         ) : (
-          <div className="grid sm:grid-cols-2 gap-4">
-            {latestOpportunities.map((o, i) => (
-              <FadeIn key={o.id} delay={i * 80}>
-                <Link
-                  href={`/opportunities/${o.id}`}
-                  className="glass glass-card rounded-3xl p-6 bg-gradient-to-br from-purple-50/60 to-transparent dark:from-purple-900/10"
-                >
-                  <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-purple-100 dark:bg-purple-900/50 text-purple-800 dark:text-purple-300">
-                    {o.category.name}
-                  </span>
-                  <p className="text-sm font-medium mt-3 text-zinc-900 dark:text-white">{o.title}</p>
-                  <p className="text-xs text-zinc-500 mt-1 line-clamp-2">{o.description}</p>
-                </Link>
-              </FadeIn>
-            ))}
+          <div className="grid sm:grid-cols-2 gap-x-4 gap-y-12">
+            {latestOpportunities.map((o, i) => {
+              const meta = DIVISION_ICONS[(o as any).division] ?? DIVISION_ICONS.TEST_SERIES;
+              return (
+                <FadeIn key={o.id} delay={i * 80}>
+                  <Link
+                    href={`/opportunities/${o.id}`}
+                    className="glass glass-card rounded-3xl p-6 bg-gradient-to-br from-purple-50/60 to-transparent dark:from-purple-900/10 flex gap-4 items-start"
+                  >
+                    <div className={`shrink-0 w-11 h-11 rounded-xl bg-gradient-to-br ${meta.gradient} ${meta.glow} flex items-center justify-center`}>
+                      <meta.Icon size={20} color="white" stroke={2} />
+                    </div>
+                    <div className="min-w-0">
+                      <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-purple-100 dark:bg-purple-900/50 text-purple-800 dark:text-purple-300">
+                        {o.category.name}
+                      </span>
+                      <p className="text-sm font-medium mt-3 text-zinc-900 dark:text-white">{o.title}</p>
+                      <p className="text-xs text-zinc-500 mt-1 line-clamp-2">{o.description}</p>
+                    </div>
+                  </Link>
+                </FadeIn>
+              );
+            })}
           </div>
         )}
       </div>
