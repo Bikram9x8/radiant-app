@@ -2,6 +2,7 @@ import { getServerSession } from "next-auth/next";
 import { redirect } from "next/navigation";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import FadeIn from "@/components/FadeIn";
 
 const actionStyles: Record<string, string> = {
   APPROVE_OPPORTUNITY: "bg-emerald-100/80 dark:bg-emerald-900/40 text-emerald-800 dark:text-emerald-300",
@@ -40,6 +41,7 @@ export default async function AdminLogsPage() {
           No activity yet.
         </div>
       ) : (
+        <FadeIn>
         <div className="glass rounded-2xl overflow-hidden">
           <table className="w-full text-sm">
             <thead>
@@ -80,6 +82,7 @@ export default async function AdminLogsPage() {
             </tbody>
           </table>
         </div>
+        </FadeIn>
       )}
     </div>
   );
