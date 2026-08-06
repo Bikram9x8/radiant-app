@@ -1,10 +1,13 @@
 "use client";
 
 import { useState } from "react";
+import FadeIn from "@/components/FadeIn";
+import { useToast } from "@/components/Toast";
 
 type Opportunity = { id: string; title: string };
 
 export default function AccessCodesManager({ opportunities }: { opportunities: Opportunity[] }) {
+  const { showToast } = useToast();
   const [opportunityId, setOpportunityId] = useState("");
   const [count, setCount] = useState(10);
   const [generating, setGenerating] = useState(false);
@@ -34,9 +37,11 @@ export default function AccessCodesManager({ opportunities }: { opportunities: O
 
     const data = await res.json();
     setCodes(data.codes.map((c: any) => c.code));
+    showToast(`${data.codes.length} codes generated!`);
   }
 
   return (
+    <FadeIn>
     <div className="glass rounded-2xl p-6 flex flex-col gap-5">
       {opportunities.length === 0 ? (
         <p className="text-sm text-zinc-500">
@@ -79,7 +84,7 @@ export default function AccessCodesManager({ opportunities }: { opportunities: O
           <button
             onClick={handleGenerate}
             disabled={generating}
-            className="rounded-xl px-5 py-2.5 bg-purple-600 text-white font-semibold hover:bg-purple-700 transition-colors disabled:opacity-50 self-start"
+            className="btn-neon rounded-xl px-5 py-2.5 font-semibold disabled:opacity-50 self-start"
           >
             {generating ? "Generating..." : "Generate Codes"}
           </button>
@@ -104,5 +109,6 @@ export default function AccessCodesManager({ opportunities }: { opportunities: O
         </>
       )}
     </div>
+    </FadeIn>
   );
 }
