@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import FadeIn from "@/components/FadeIn";
+import { useToast } from "@/components/Toast";
 
 type LockedCode = {
   id: string;
@@ -12,6 +14,7 @@ type LockedCode = {
 };
 
 export default function LockedTestsManager() {
+  const { showToast } = useToast();
   const [lockedCodes, setLockedCodes] = useState<LockedCode[]>([]);
   const [loading, setLoading] = useState(true);
   const [unlockingId, setUnlockingId] = useState<string | null>(null);
@@ -35,7 +38,17 @@ export default function LockedTestsManager() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ accessCodeId }),
     });
+    setUnlockingId(null);async function handleUnlock(accessCodeId: string) {
+    setUnlockingId(accessCodeId);
+    await fetch("/api/admin/locked-tests", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ accessCodeId }),
+    });
     setUnlockingId(null);
+    showToast("Student unlocked!");
+    loadData();
+  }
     loadData();
   }
 
@@ -52,6 +65,7 @@ export default function LockedTestsManager() {
   }
 
   return (
+    <FadeIn>
     <div className="glass rounded-2xl overflow-hidden">
       <table className="w-full text-sm">
         <thead>
@@ -78,7 +92,7 @@ export default function LockedTestsManager() {
                 <button
                   onClick={() => handleUnlock(lc.id)}
                   disabled={unlockingId === lc.id}
-                  className="rounded-lg px-3 py-1.5 bg-purple-600 text-white font-semibold text-xs hover:bg-purple-700 transition-colors disabled:opacity-50"
+                  className="btn-neon rounded-lg px-3 py-1.5 font-semibold text-xs disabled:opacity-50"
                 >
                   {unlockingId === lc.id ? "Unlocking..." : "Unlock"}
                 </button>
@@ -88,5 +102,6 @@ export default function LockedTestsManager() {
         </tbody>
       </table>
     </div>
+    </FadeIn>
   );
 }
