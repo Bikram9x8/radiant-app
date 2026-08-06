@@ -4,6 +4,7 @@ import { getServerSession } from "next-auth/next";
 import { redirect } from "next/navigation";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import FadeIn from "@/components/FadeIn";
 
 function StatCard({
   label,
@@ -80,17 +81,18 @@ if (user.role === "STUDENT") {
         </div>
         
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 mb-10">
-          {studentTiles.map((tile) => (
-            <Link
-              key={tile.label}
-              href={tile.href}
-              className="glass rounded-3xl p-6 hover:scale-[1.03] transition-transform flex flex-col items-center text-center gap-3 min-h-[160px] justify-center"
-            >
-              <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${tile.gradient} ${tile.glow} flex items-center justify-center`}>
-                <tile.Icon size={26} color="white" stroke={2} />
-              </div>
-              <p className="text-sm font-semibold text-zinc-900 dark:text-white">{tile.label}</p>
-            </Link>
+          {studentTiles.map((tile, i) => (
+            <FadeIn key={tile.label} delay={i * 80}>
+              <Link
+                href={tile.href}
+                className="glass glass-card block rounded-3xl p-6 flex flex-col items-center text-center gap-3 min-h-[160px] justify-center"
+              >
+                <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${tile.gradient} ${tile.glow} flex items-center justify-center`}>
+                  <tile.Icon size={26} color="white" stroke={2} />
+                </div>
+                <p className="text-sm font-semibold text-zinc-900 dark:text-white">{tile.label}</p>
+              </Link>
+            </FadeIn>
           ))}
         </div>
 
@@ -261,21 +263,22 @@ if (user.role === "STUDENT") {
         <h1 className="text-3xl font-bold tracking-tight text-zinc-900 dark:text-white mb-1">Admin Dashboard</h1>
         <p className="text-zinc-600 dark:text-zinc-400 mb-8">Manage approvals, users, and platform content.</p>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {adminLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="glass rounded-3xl p-5 hover:scale-[1.02] transition-transform flex items-start gap-4"
-            >
-              <div className={`w-12 h-12 shrink-0 rounded-xl bg-gradient-to-br ${link.gradient} ${link.glow} flex items-center justify-center`}>
-                <link.Icon size={22} color="white" stroke={2} />
-              </div>
-              <div>
-                <p className="font-semibold text-zinc-900 dark:text-white">{link.label}</p>
-                <p className="text-sm text-zinc-600 dark:text-zinc-400 mt-1">{link.desc}</p>
-              </div>
-            </Link>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {adminLinks.map((link, i) => (
+            <FadeIn key={link.href} delay={i * 60}>
+              <Link
+                href={link.href}
+                className="glass glass-card block rounded-3xl p-5 flex items-start gap-4"
+              >
+                <div className={`w-12 h-12 shrink-0 rounded-xl bg-gradient-to-br ${link.gradient} ${link.glow} flex items-center justify-center`}>
+                  <link.Icon size={22} color="white" stroke={2} />
+                </div>
+                <div>
+                  <p className="font-semibold text-zinc-900 dark:text-white">{link.label}</p>
+                  <p className="text-sm text-zinc-600 dark:text-zinc-400 mt-1">{link.desc}</p>
+                </div>
+              </Link>
+            </FadeIn>
           ))}
         </div>
       </div>
