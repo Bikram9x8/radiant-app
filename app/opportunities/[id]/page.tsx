@@ -5,6 +5,7 @@ import PlainTestViewer from "./PlainTestViewer";
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
+import FadeIn from "@/components/FadeIn";
 
 
 export default function OpportunityDetailPage() {
@@ -121,6 +122,7 @@ export default function OpportunityDetailPage() {
         ← Back to opportunities
       </Link>
 
+      <FadeIn>
       <div className="glass rounded-3xl p-8 mt-5">
         <div className="flex justify-between items-start">
           <div>
@@ -185,7 +187,7 @@ export default function OpportunityDetailPage() {
                   <button
                     onClick={handleRedeemCode}
                     disabled={redeeming || !code}
-                    className="rounded-xl px-5 py-2.5 bg-purple-600 text-white font-semibold hover:bg-purple-700 transition-colors disabled:opacity-50"
+                    className="btn-neon rounded-xl px-5 py-2.5 font-semibold disabled:opacity-50"
                   >
                     {redeeming ? "Checking..." : "Unlock"}
                   </button>
@@ -202,14 +204,14 @@ export default function OpportunityDetailPage() {
                   {status === "authenticated" ? (
                     <a
                       href={opportunity.externalLink.replace("/upload/", "/upload/fl_attachment/")}
-                      className="inline-block rounded-xl px-5 py-2.5 bg-purple-600 text-white font-semibold hover:bg-purple-700 transition-colors"
+                      className="btn-neon inline-block rounded-xl px-5 py-2.5 font-semibold"
                     >
                       Download PDF
                     </a>
                   ) : (
                     <Link
                       href="/signup"
-                      className="inline-block rounded-xl px-5 py-2.5 bg-purple-600 text-white font-semibold hover:bg-purple-700 transition-colors"
+                      className="btn-neon inline-block rounded-xl px-5 py-2.5 font-semibold"
                     >
                       Sign up to download →
                     </Link>
@@ -222,7 +224,7 @@ export default function OpportunityDetailPage() {
           ) : status !== "authenticated" ? (
             <Link
               href="/signup"
-              className="inline-block rounded-xl px-6 py-3 bg-purple-600 text-white font-semibold hover:bg-purple-700 transition-colors"
+              className="btn-neon inline-block rounded-xl px-6 py-3 font-semibold"
             >
               Sign up to apply →
             </Link>
@@ -244,7 +246,7 @@ export default function OpportunityDetailPage() {
               <button
                 onClick={handleApply}
                 disabled={applying}
-                className="rounded-xl px-5 py-2.5 bg-purple-600 text-white font-semibold hover:bg-purple-700 transition-colors disabled:opacity-50"
+                className="btn-neon rounded-xl px-5 py-2.5 font-semibold disabled:opacity-50"
               >
                 {applying ? "Applying..." : "Apply Now"}
               </button>
@@ -252,6 +254,7 @@ export default function OpportunityDetailPage() {
           )}
         </div>
       </div>
+      </FadeIn>
     </div>
   );
 }
