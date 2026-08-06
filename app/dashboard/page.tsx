@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { IconFileText, IconTool, IconTargetArrow, IconPackage, IconClipboardList, IconSchool, IconBook, IconClipboardCheck, IconBuildingSkyscraper, IconCategory, IconUsers, IconKey, IconLockSquareRounded, IconChartBar, IconHistory, IconListDetails, IconCircleCheck, IconClockHour4, IconX, IconUsersGroup, IconStar } from "@tabler/icons-react";
+import { IconFileText, IconTool, IconTargetArrow, IconPackage, IconClipboardList, IconSchool, IconBook, IconBook2, IconClipboardCheck, IconBuildingSkyscraper, IconCategory, IconUsers, IconKey, IconLockSquareRounded, IconChartBar, IconHistory, IconListDetails, IconCircleCheck, IconClockHour4, IconX, IconUsersGroup, IconStar } from "@tabler/icons-react";
 import { getServerSession } from "next-auth/next";
 import { redirect } from "next/navigation";
 import { authOptions } from "@/lib/auth";
@@ -22,7 +22,7 @@ function StatCard({
   Icon?: any;
 }) {
   return (
-    <div className="glass rounded-3xl px-5 py-6 text-center flex flex-col items-center gap-2">
+    <div className="glass glass-card rounded-3xl px-5 py-6 text-center flex flex-col items-center gap-2">
       {Icon && (
         <div className={`w-9 h-9 rounded-lg bg-gradient-to-br ${gradient} ${glow} flex items-center justify-center mb-1`}>
           <Icon size={16} color="white" stroke={2} />
@@ -62,6 +62,7 @@ export default async function DashboardPage() {
 
 if (user.role === "STUDENT") {
     const studentTiles = [
+      { href: "/opportunities?division=NCERT_SOLUTION", label: "NCERT Solution", Icon: IconBook2, gradient: "from-indigo-400 to-purple-400", glow: "shadow-[0_0_16px_rgba(129,140,248,0.5)]" },
       { href: "/opportunities", label: "Test Series", Icon: IconFileText, gradient: "from-emerald-400 to-cyan-400", glow: "shadow-[0_0_16px_rgba(52,211,153,0.5)]" },
       { href: "/opportunities?division=SKILL_BUILDING", label: "Skill Building", Icon: IconTool, gradient: "from-pink-400 to-purple-400", glow: "shadow-[0_0_16px_rgba(244,114,182,0.5)]" },
       { href: "/opportunities?division=CAREER_COUNSELING", label: "Career Counseling", Icon: IconTargetArrow, gradient: "from-cyan-400 to-blue-400", glow: "shadow-[0_0_16px_rgba(34,211,238,0.5)]" },
@@ -181,12 +182,18 @@ if (user.role === "STUDENT") {
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 mb-10">
-          <StatCard label="Total Postings" value={totalOpportunities} accent="text-purple-600 dark:text-purple-400" Icon={IconListDetails} gradient="from-purple-400 to-pink-400" glow="shadow-[0_0_12px_rgba(192,132,252,0.5)]" />
-          <StatCard label="Live" value={approvedCount} accent="text-emerald-600 dark:text-emerald-400" Icon={IconCircleCheck} gradient="from-emerald-400 to-cyan-400" glow="shadow-[0_0_12px_rgba(52,211,153,0.5)]" />
-          <StatCard label="Pending Review" value={pendingCount} accent="text-amber-600 dark:text-amber-400" Icon={IconClockHour4} gradient="from-amber-400 to-pink-400" glow="shadow-[0_0_12px_rgba(251,191,36,0.5)]" />
-          <StatCard label="Closed" value={closedCount} accent="text-zinc-500" Icon={IconX} gradient="from-zinc-400 to-zinc-500" glow="" />
-          <StatCard label="Total Applicants" value={totalApplicants} accent="text-cyan-600 dark:text-cyan-400" Icon={IconUsersGroup} gradient="from-cyan-400 to-blue-400" glow="shadow-[0_0_12px_rgba(34,211,238,0.5)]" />
-          <StatCard label="Shortlisted" value={shortlistedCount} accent="text-lime-600 dark:text-lime-400" Icon={IconStar} gradient="from-lime-400 to-emerald-400" glow="shadow-[0_0_12px_rgba(163,230,53,0.5)]" />
+          {[
+            { label: "Total Postings", value: totalOpportunities, accent: "text-purple-600 dark:text-purple-400", Icon: IconListDetails, gradient: "from-purple-400 to-pink-400", glow: "shadow-[0_0_12px_rgba(192,132,252,0.5)]" },
+            { label: "Live", value: approvedCount, accent: "text-emerald-600 dark:text-emerald-400", Icon: IconCircleCheck, gradient: "from-emerald-400 to-cyan-400", glow: "shadow-[0_0_12px_rgba(52,211,153,0.5)]" },
+            { label: "Pending Review", value: pendingCount, accent: "text-amber-600 dark:text-amber-400", Icon: IconClockHour4, gradient: "from-amber-400 to-pink-400", glow: "shadow-[0_0_12px_rgba(251,191,36,0.5)]" },
+            { label: "Closed", value: closedCount, accent: "text-zinc-500", Icon: IconX, gradient: "from-zinc-400 to-zinc-500", glow: "" },
+            { label: "Total Applicants", value: totalApplicants, accent: "text-cyan-600 dark:text-cyan-400", Icon: IconUsersGroup, gradient: "from-cyan-400 to-blue-400", glow: "shadow-[0_0_12px_rgba(34,211,238,0.5)]" },
+            { label: "Shortlisted", value: shortlistedCount, accent: "text-lime-600 dark:text-lime-400", Icon: IconStar, gradient: "from-lime-400 to-emerald-400", glow: "shadow-[0_0_12px_rgba(163,230,53,0.5)]" },
+          ].map((s, i) => (
+            <FadeIn key={s.label} delay={i * 60}>
+              <StatCard label={s.label} value={s.value} accent={s.accent} Icon={s.Icon} gradient={s.gradient} glow={s.glow} />
+            </FadeIn>
+          ))}
         </div>
 
         <div className="glass rounded-3xl overflow-hidden">

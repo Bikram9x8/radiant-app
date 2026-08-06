@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { IconFileText, IconTool, IconTargetArrow, IconPackage, IconClipboardList, IconSchool, IconBook } from "@tabler/icons-react";
+import { IconFileText, IconTool, IconTargetArrow, IconPackage, IconClipboardList, IconSchool, IconBook, IconBook2 } from "@tabler/icons-react";
 import { getServerSession } from "next-auth/next";
 import { redirect } from "next/navigation";
 import { authOptions } from "@/lib/auth";
@@ -8,7 +8,8 @@ import FadeIn from "@/components/FadeIn";
 
 
 export default async function Home() {
-  const DIVISION_ICONS: Record<string, { Icon: any; gradient: string; glow: string }> = {
+ const DIVISION_ICONS: Record<string, { Icon: any; gradient: string; glow: string }> = {
+    NCERT_SOLUTION: { Icon: IconBook2, gradient: "from-indigo-400 to-purple-400", glow: "shadow-[0_0_16px_rgba(129,140,248,0.5)]" },
     TEST_SERIES: { Icon: IconFileText, gradient: "from-emerald-400 to-cyan-400", glow: "shadow-[0_0_16px_rgba(52,211,153,0.5)]" },
     SKILL_BUILDING: { Icon: IconTool, gradient: "from-pink-400 to-purple-400", glow: "shadow-[0_0_16px_rgba(244,114,182,0.5)]" },
     CAREER_COUNSELING: { Icon: IconTargetArrow, gradient: "from-cyan-400 to-blue-400", glow: "shadow-[0_0_16px_rgba(34,211,238,0.5)]" },
@@ -91,6 +92,7 @@ export default async function Home() {
         <h2 className="text-lg font-semibold mb-4 text-zinc-900 dark:text-white">Explore</h2>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-12">
           {[
+            { href: "/opportunities?division=NCERT_SOLUTION", label: "NCERT Solution", Icon: IconBook2, gradient: "from-indigo-400 to-purple-400", glow: "shadow-[0_0_16px_rgba(129,140,248,0.5)]" },
             { href: "/opportunities", label: "Test Series", Icon: IconFileText, gradient: "from-emerald-400 to-cyan-400", glow: "shadow-[0_0_16px_rgba(52,211,153,0.5)]" },
             { href: "/opportunities?division=SKILL_BUILDING", label: "Skill Building", Icon: IconTool, gradient: "from-pink-400 to-purple-400", glow: "shadow-[0_0_16px_rgba(244,114,182,0.5)]" },
             { href: "/opportunities?division=CAREER_COUNSELING", label: "Career Counseling", Icon: IconTargetArrow, gradient: "from-cyan-400 to-blue-400", glow: "shadow-[0_0_16px_rgba(34,211,238,0.5)]" },

@@ -2,11 +2,12 @@
 import { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { IconFileText, IconTool, IconTargetArrow, IconPackage, IconClipboardList, IconSchool, IconBook, IconLock } from "@tabler/icons-react";
+import { IconFileText, IconTool, IconTargetArrow, IconPackage, IconClipboardList, IconSchool, IconBook, IconBook2, IconLock } from "@tabler/icons-react";
 import FadeIn from "@/components/FadeIn";
 import { Skeleton } from "@/components/Skeleton";
 
 const DIVISION_ICONS: Record<string, { Icon: any; gradient: string; glow: string }> = {
+  NCERT_SOLUTION: { Icon: IconBook2, gradient: "from-indigo-400 to-purple-400", glow: "shadow-[0_0_12px_rgba(129,140,248,0.5)]" },
   TEST_SERIES: { Icon: IconFileText, gradient: "from-emerald-400 to-cyan-400", glow: "shadow-[0_0_12px_rgba(52,211,153,0.5)]" },
   SKILL_BUILDING: { Icon: IconTool, gradient: "from-pink-400 to-purple-400", glow: "shadow-[0_0_12px_rgba(244,114,182,0.5)]" },
   CAREER_COUNSELING: { Icon: IconTargetArrow, gradient: "from-cyan-400 to-blue-400", glow: "shadow-[0_0_12px_rgba(34,211,238,0.5)]" },
@@ -50,7 +51,9 @@ function OpportunitiesContent() {
   return (
     <div className="max-w-4xl mx-auto mt-12 px-6 mb-12">
       <h1 className="text-4xl font-bold tracking-tight mb-8 text-zinc-900 dark:text-white">
-        {division === "DPP"
+        {division === "NCERT_SOLUTION"
+          ? "NCERT Solutions"
+          : division === "DPP"
           ? "Daily Practice Problems"
           : division === "BOARD_LEVEL_TEST"
           ? "Board Level Tests"

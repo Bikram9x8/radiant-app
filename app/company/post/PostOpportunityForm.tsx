@@ -137,6 +137,7 @@ export default function PostOpportunityForm({ categories }: { categories: Catego
 <div>
         <label className={labelClass}>Division *</label>
         <select value={division} onChange={(e) => setDivision(e.target.value)} className={inputClass}>
+          <option value="NCERT_SOLUTION">NCERT Solution</option>
           <option value="TEST_SERIES">Test Series</option>
           <option value="SKILL_BUILDING">Skill Building</option>
           <option value="CAREER_COUNSELING">Career Counseling</option>
