@@ -66,7 +66,7 @@ function OpportunitiesContent() {
           : "Opportunities"}
       </h1>
 
-      <div className="glass rounded-3xl p-5 flex flex-col sm:flex-row flex-wrap gap-3 mb-8">
+      <div className="glass rounded-3xl p-5 flex flex-col sm:flex-row flex-wrap gap-3 mb-10">
         <input
           type="text"
           placeholder="Search by title..."
@@ -102,44 +102,41 @@ function OpportunitiesContent() {
         <p className="text-zinc-600 dark:text-zinc-400">No opportunities found yet. Check back soon!</p>
       )}
 
-      <div className="flex flex-col gap-10">
+      <div className="flex flex-col gap-8">
         {opportunities.map((op, i) => {
           const divisionStyle = DIVISION_ICONS[op.division] || DIVISION_ICONS.TEST_SERIES;
           const DivIcon = divisionStyle.Icon;
           return (
             <FadeIn key={op.id} delay={i * 60}>
-            <Link
-              href={`/opportunities/${op.id}`}
-              className="glass glass-card rounded-3xl p-6"
-            >
-              <div className="flex justify-between items-start gap-3">
-                <div className="flex items-start gap-3">
-                  <div className={`w-11 h-11 shrink-0 rounded-xl bg-gradient-to-br ${divisionStyle.gradient} ${divisionStyle.glow} flex items-center justify-center`}>
-                    <DivIcon size={20} color="white" stroke={2} />
-                  </div>
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <h2 className="font-semibold text-lg text-zinc-900 dark:text-white">{op.title}</h2>
-                      {op.requiresCode && (
-                        <span className="flex items-center gap-1 text-[10px] font-semibold bg-zinc-200/70 dark:bg-zinc-700/50 text-zinc-700 dark:text-zinc-300 rounded-full px-2 py-0.5">
-                          <IconLock size={10} stroke={2.5} />
-                          Code required
-                        </span>
-                      )}
+              <Link href={`/opportunities/${op.id}`} className="glass glass-card rounded-3xl p-6 block">
+                <div className="flex justify-between items-start gap-3">
+                  <div className="flex items-start gap-3">
+                    <div className={`w-11 h-11 shrink-0 rounded-xl bg-gradient-to-br ${divisionStyle.gradient} ${divisionStyle.glow} flex items-center justify-center`}>
+                      <DivIcon size={20} color="white" stroke={2} />
                     </div>
-                    <p className="text-sm text-zinc-600 dark:text-zinc-400">
-                      {op.company?.companyName} • {op.category?.name}
-                    </p>
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <h2 className="font-semibold text-lg text-zinc-900 dark:text-white">{op.title}</h2>
+                        {op.requiresCode && (
+                          <span className="flex items-center gap-1 text-[10px] font-semibold bg-zinc-200/70 dark:bg-zinc-700/50 text-zinc-700 dark:text-zinc-300 rounded-full px-2 py-0.5">
+                            <IconLock size={10} stroke={2.5} />
+                            Code required
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-sm text-zinc-600 dark:text-zinc-400">
+                        {op.company?.companyName} • {op.category?.name}
+                      </p>
+                    </div>
                   </div>
+                  <span className="text-xs font-medium bg-purple-100/70 dark:bg-purple-900/40 text-purple-800 dark:text-purple-300 rounded-full px-3 py-1 shrink-0">
+                    {op.type}
+                  </span>
                 </div>
-                <span className="text-xs font-medium bg-purple-100/70 dark:bg-purple-900/40 text-purple-800 dark:text-purple-300 rounded-full px-3 py-1 shrink-0">
-                  {op.type}
-                </span>
-              </div>
-              <p className="text-sm text-zinc-600 dark:text-zinc-400 mt-2">
-                Apply by {new Date(op.applyDeadline).toLocaleDateString()}
-              </p>
-            </Link>
+                <p className="text-sm text-zinc-600 dark:text-zinc-400 mt-2">
+                  Apply by {new Date(op.applyDeadline).toLocaleDateString()}
+                </p>
+              </Link>
             </FadeIn>
           );
         })}
