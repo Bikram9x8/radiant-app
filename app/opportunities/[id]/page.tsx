@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import FadeIn from "@/components/FadeIn";
+import { useToast } from "@/components/Toast";
 
 
 export default function OpportunityDetailPage() {
@@ -13,6 +14,7 @@ export default function OpportunityDetailPage() {
   const router = useRouter();
   const id = params.id as string;
   const { status } = useSession();
+  const { showToast } = useToast();
   const [code, setCode] = useState("");
   const [redeeming, setRedeeming] = useState(false);
   const [codeError, setCodeError] = useState("");
@@ -65,6 +67,7 @@ export default function OpportunityDetailPage() {
     }
 
     setCodeUnlocked(true);
+    showToast("Code redeemed — test unlocked!");
   }
 
   async function handleApply() {
@@ -87,6 +90,7 @@ export default function OpportunityDetailPage() {
     if (res.ok) {
       setSuccess(true);
       setAlreadyApplied(true);
+      showToast("Application submitted!");
     } else {
       const data = await res.json();
       setError(data.error || "Something went wrong");
