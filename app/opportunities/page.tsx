@@ -102,7 +102,7 @@ function OpportunitiesContent() {
         <p className="text-zinc-600 dark:text-zinc-400">No opportunities found yet. Check back soon!</p>
       )}
 
-      <div className="flex flex-col gap-6">
+      <div className="flex flex-col gap-10">
         {opportunities.map((op, i) => {
           const divisionStyle = DIVISION_ICONS[op.division] || DIVISION_ICONS.TEST_SERIES;
           const DivIcon = divisionStyle.Icon;
