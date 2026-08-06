@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import FadeIn from "@/components/FadeIn";
+import { Skeleton } from "@/components/Skeleton";
 import { useToast } from "@/components/Toast";
 
 
@@ -99,8 +100,21 @@ export default function OpportunityDetailPage() {
 
   if (loading) {
     return (
-      <div className="flex flex-1 items-center justify-center">
-        <p className="text-zinc-600 dark:text-zinc-400">Loading...</p>
+      <div className="max-w-2xl mx-auto mt-12 px-6 mb-12">
+        <Skeleton className="h-4 w-40 mb-5" />
+        <div className="glass rounded-3xl p-8">
+          <div className="flex justify-between items-start gap-3">
+            <div className="flex-1">
+              <Skeleton className="h-8 w-3/4 mb-2" />
+              <Skeleton className="h-4 w-1/2" />
+            </div>
+            <Skeleton className="h-6 w-16 shrink-0" />
+          </div>
+          <Skeleton className="h-4 w-full mt-6" />
+          <Skeleton className="h-4 w-5/6 mt-2" />
+          <Skeleton className="h-4 w-2/3 mt-2" />
+          <Skeleton className="h-11 w-32 mt-8" />
+        </div>
       </div>
     );
   }
