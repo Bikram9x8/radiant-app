@@ -51,11 +51,9 @@ export default function Navbar() {
               }`}
             />
           </button>
-          <Link href={status === "authenticated" ? "/dashboard" : "/"} className="font-bold text-lg text-zinc-900 dark:text-white">
-            Radiant
-            <span className="bg-gradient-to-r from-purple-500 to-cyan-400 bg-clip-text text-transparent">
-              Educations
-            </span>
+          <Link href={status === "authenticated" ? "/dashboard" : "/"} className="flex items-center">
+            <img src="/logo-light.png" alt="Radiant Educations" className="h-8 w-auto dark:hidden" />
+            <img src="/logo-dark.png" alt="Radiant Educations" className="h-8 w-auto hidden dark:block" />
           </Link>
         </div>
 
