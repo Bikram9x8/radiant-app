@@ -52,8 +52,8 @@ export default function Navbar() {
             />
           </button>
             <Link href={status === "authenticated" ? "/dashboard" : "/"} className="flex items-center">
-            <img src="/logo-light.png" alt="Radiant Educations" className="h-20 w-auto dark:hidden" />
-            <img src="/logo-dark.png" alt="Radiant Educations" className="h-20 w-auto hidden dark:block" />
+            <img src="/logo-light.png" alt="Radiant Educations" className="h-11 w-auto dark:hidden" />
+            <img src="/logo-dark.png" alt="Radiant Educations" className="h-11 w-auto hidden dark:block" />
           </Link>
         </div>
 
