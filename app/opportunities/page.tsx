@@ -5,6 +5,7 @@ import Link from "next/link";
 import { IconFileText, IconTool, IconTargetArrow, IconPackage, IconClipboardList, IconSchool, IconBook, IconBook2, IconLock } from "@tabler/icons-react";
 import FadeIn from "@/components/FadeIn";
 import { Skeleton } from "@/components/Skeleton";
+import { getShortLabel } from "@/lib/categoryLabel";
 
 const DIVISION_ICONS: Record<string, { Icon: any; gradient: string; glow: string }> = {
   NCERT_SOLUTION: { Icon: IconBook2, gradient: "from-indigo-400 to-purple-400", glow: "shadow-[0_0_12px_rgba(129,140,248,0.5)]" },
@@ -159,8 +160,13 @@ function OpportunitiesContent() {
               <Link href={`/opportunities/${op.id}`} className="glass glass-card rounded-3xl p-6 block">
                 <div className="flex justify-between items-start gap-3">
                   <div className="flex items-start gap-3">
-                    <div className={`w-11 h-11 shrink-0 rounded-xl bg-gradient-to-br ${divisionStyle.gradient} ${divisionStyle.glow} flex items-center justify-center`}>
+                    <div className={`relative w-11 h-11 shrink-0 rounded-xl bg-gradient-to-br ${divisionStyle.gradient} ${divisionStyle.glow} flex items-center justify-center`}>
                       <DivIcon size={20} color="white" stroke={2} />
+                      {getShortLabel(op.category?.name) && (
+                        <span className="absolute -bottom-1 -right-1 text-[9px] font-bold bg-white dark:bg-zinc-900 text-zinc-900 dark:text-white rounded-full px-1 min-w-[16px] text-center border border-zinc-200 dark:border-zinc-700 leading-[14px]">
+                          {getShortLabel(op.category?.name)}
+                        </span>
+                      )}
                     </div>
                     <div>
                       <div className="flex items-center gap-2">
