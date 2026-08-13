@@ -50,6 +50,37 @@ function OpportunitiesContent() {
 
   return (
     <div className="max-w-4xl mx-auto mt-12 px-6 mb-12">
+      <p className="text-sm text-zinc-500 dark:text-zinc-400 mb-3">
+        <Link href="/" className="hover:text-purple-600 dark:hover:text-purple-400 hover:underline">Home</Link>
+        {division && (
+          <>
+            {" / "}
+            <span className="text-zinc-700 dark:text-zinc-300">
+              {division === "NCERT_SOLUTION"
+                ? "NCERT Solutions"
+                : division === "DPP"
+                ? "Daily Practice Problems"
+                : division === "BOARD_LEVEL_TEST"
+                ? "Board Level Tests"
+                : division === "CHAPTER_WISE_TEST"
+                ? "Chapter Wise Tests"
+                : division === "STUDY_PACKAGE"
+                ? "Study Packages"
+                : division === "SKILL_BUILDING"
+                ? "Skill Building"
+                : division === "CAREER_COUNSELING"
+                ? "Career Counseling"
+                : division.replace(/_/g, " ")}
+            </span>
+          </>
+        )}
+        {!division && (
+          <>
+            {" / "}
+            <span className="text-zinc-700 dark:text-zinc-300">Opportunities</span>
+          </>
+        )}
+      </p>
       <h1 className="text-4xl font-bold tracking-tight mb-8 text-zinc-900 dark:text-white">
         {division === "NCERT_SOLUTION"
           ? "NCERT Solutions"
