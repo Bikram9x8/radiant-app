@@ -61,15 +61,30 @@ export default async function DashboardPage() {
   }
 
 if (user.role === "STUDENT") {
-    const studentTiles = [
-      { href: "/opportunities?division=NCERT_SOLUTION", label: "NCERT Solution", Icon: IconBook2, gradient: "from-indigo-400 to-purple-400", glow: "shadow-[0_0_16px_rgba(129,140,248,0.5)]" },
-      { href: "/opportunities", label: "Test Series", Icon: IconFileText, gradient: "from-emerald-400 to-cyan-400", glow: "shadow-[0_0_16px_rgba(52,211,153,0.5)]" },
-      { href: "/opportunities?division=SKILL_BUILDING", label: "Skill Building", Icon: IconTool, gradient: "from-pink-400 to-purple-400", glow: "shadow-[0_0_16px_rgba(244,114,182,0.5)]" },
-      { href: "/opportunities?division=CAREER_COUNSELING", label: "Career Counseling", Icon: IconTargetArrow, gradient: "from-cyan-400 to-blue-400", glow: "shadow-[0_0_16px_rgba(34,211,238,0.5)]" },
-      { href: "/opportunities?division=STUDY_PACKAGE", label: "Study Package", Icon: IconPackage, gradient: "from-lime-400 to-emerald-400", glow: "shadow-[0_0_16px_rgba(163,230,53,0.5)]" },
-      { href: "/opportunities?division=DPP", label: "DPP", Icon: IconClipboardList, gradient: "from-amber-400 to-pink-400", glow: "shadow-[0_0_16px_rgba(251,191,36,0.5)]" },
-      { href: "/opportunities?division=BOARD_LEVEL_TEST", label: "Board Level Test", Icon: IconSchool, gradient: "from-emerald-400 to-purple-400", glow: "shadow-[0_0_16px_rgba(52,211,153,0.5)]" },
-      { href: "/opportunities?division=CHAPTER_WISE_TEST", label: "Chapter Wise Test", Icon: IconBook, gradient: "from-purple-400 to-pink-400", glow: "shadow-[0_0_16px_rgba(192,132,252,0.5)]" },
+    const studentTileGroups = [
+      {
+        label: "Tests",
+        tiles: [
+          { href: "/opportunities", label: "Test Series", Icon: IconFileText, gradient: "from-emerald-400 to-cyan-400", glow: "shadow-[0_0_16px_rgba(52,211,153,0.5)]" },
+          { href: "/opportunities?division=DPP", label: "DPP", Icon: IconClipboardList, gradient: "from-amber-400 to-pink-400", glow: "shadow-[0_0_16px_rgba(251,191,36,0.5)]" },
+          { href: "/opportunities?division=BOARD_LEVEL_TEST", label: "Board Level Test", Icon: IconSchool, gradient: "from-emerald-400 to-purple-400", glow: "shadow-[0_0_16px_rgba(52,211,153,0.5)]" },
+          { href: "/opportunities?division=CHAPTER_WISE_TEST", label: "Chapter Wise Test", Icon: IconBook, gradient: "from-purple-400 to-pink-400", glow: "shadow-[0_0_16px_rgba(192,132,252,0.5)]" },
+        ],
+      },
+      {
+        label: "Study material",
+        tiles: [
+          { href: "/opportunities?division=NCERT_SOLUTION", label: "NCERT Solution", Icon: IconBook2, gradient: "from-indigo-400 to-purple-400", glow: "shadow-[0_0_16px_rgba(129,140,248,0.5)]" },
+          { href: "/opportunities?division=STUDY_PACKAGE", label: "Study Package", Icon: IconPackage, gradient: "from-lime-400 to-emerald-400", glow: "shadow-[0_0_16px_rgba(163,230,53,0.5)]" },
+        ],
+      },
+      {
+        label: "Career",
+        tiles: [
+          { href: "/opportunities?division=SKILL_BUILDING", label: "Skill Building", Icon: IconTool, gradient: "from-pink-400 to-purple-400", glow: "shadow-[0_0_16px_rgba(244,114,182,0.5)]" },
+          { href: "/opportunities?division=CAREER_COUNSELING", label: "Career Counseling", Icon: IconTargetArrow, gradient: "from-cyan-400 to-blue-400", glow: "shadow-[0_0_16px_rgba(34,211,238,0.5)]" },
+        ],
+      },
     ];
 
     return (
@@ -81,21 +96,26 @@ if (user.role === "STUDENT") {
           <p className="text-zinc-600 dark:text-zinc-400">Practice tests, career tools, and more — all in one place.</p>
         </div>
         
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 mb-10">
-          {studentTiles.map((tile, i) => (
-            <FadeIn key={tile.label} delay={i * 80}>
-              <Link
-                href={tile.href}
-                className="glass glass-card block rounded-3xl p-6 flex flex-col items-center text-center gap-3 min-h-[160px] justify-center"
-              >
-                <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${tile.gradient} ${tile.glow} flex items-center justify-center`}>
-                  <tile.Icon size={26} color="white" stroke={2} />
-                </div>
-                <p className="text-sm font-semibold text-zinc-900 dark:text-white">{tile.label}</p>
-              </Link>
-            </FadeIn>
-          ))}
-        </div>
+        {studentTileGroups.map((group) => (
+          <div key={group.label} className="mb-8">
+            <p className="text-xs font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400 mb-3">{group.label}</p>
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+              {group.tiles.map((tile, i) => (
+                <FadeIn key={tile.label} delay={i * 80}>
+                  <Link
+                    href={tile.href}
+                    className="glass glass-card block rounded-3xl p-6 flex flex-col items-center text-center gap-3 min-h-[160px] justify-center"
+                  >
+                    <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${tile.gradient} ${tile.glow} flex items-center justify-center`}>
+                      <tile.Icon size={26} color="white" stroke={2} />
+                    </div>
+                    <p className="text-sm font-semibold text-zinc-900 dark:text-white">{tile.label}</p>
+                  </Link>
+                </FadeIn>
+              ))}
+            </div>
+          </div>
+        ))}
 
         <div className="flex gap-3">
           <Link
