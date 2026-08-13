@@ -2,16 +2,40 @@
 
 import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
+import { IconFileText, IconTool, IconTargetArrow, IconPackage, IconClipboardList, IconSchool, IconBook, IconBook2, IconChevronDown } from "@tabler/icons-react";
+
+const DIVISIONS = [
+  { href: "/opportunities?division=NCERT_SOLUTION", label: "NCERT Solution", Icon: IconBook2, gradient: "from-indigo-400 to-purple-400" },
+  { href: "/opportunities", label: "Test Series", Icon: IconFileText, gradient: "from-emerald-400 to-cyan-400" },
+  { href: "/opportunities?division=SKILL_BUILDING", label: "Skill Building", Icon: IconTool, gradient: "from-pink-400 to-purple-400" },
+  { href: "/opportunities?division=CAREER_COUNSELING", label: "Career Counseling", Icon: IconTargetArrow, gradient: "from-cyan-400 to-blue-400" },
+  { href: "/opportunities?division=STUDY_PACKAGE", label: "Study Package", Icon: IconPackage, gradient: "from-lime-400 to-emerald-400" },
+  { href: "/opportunities?division=DPP", label: "DPP", Icon: IconClipboardList, gradient: "from-amber-400 to-pink-400" },
+  { href: "/opportunities?division=BOARD_LEVEL_TEST", label: "Board Level Test", Icon: IconSchool, gradient: "from-emerald-400 to-purple-400" },
+  { href: "/opportunities?division=CHAPTER_WISE_TEST", label: "Chapter Wise Test", Icon: IconBook, gradient: "from-purple-400 to-pink-400" },
+];
 
 export default function Navbar() {
   const { data: session, status } = useSession();
   const user = session?.user as any;
   const [visible, setVisible] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [divisionsOpen, setDivisionsOpen] = useState(false);
+  const divisionsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setVisible(true);
+  }, []);
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (divisionsRef.current && !divisionsRef.current.contains(e.target as Node)) {
+        setDivisionsOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   const initials = user?.email ? user.email.slice(0, 2).toUpperCase() : "";
@@ -58,6 +82,32 @@ export default function Navbar() {
         </div>
 
         <nav className="flex items-center gap-4">
+          <div className="relative hidden sm:block" ref={divisionsRef}>
+            <button
+              onClick={() => setDivisionsOpen(!divisionsOpen)}
+              className="flex items-center gap-1 text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:text-purple-600 dark:hover:text-purple-400 transition-colors"
+            >
+              Explore
+              <IconChevronDown size={14} className={`transition-transform ${divisionsOpen ? "rotate-180" : ""}`} />
+            </button>
+            {divisionsOpen && (
+              <div className="absolute top-full right-0 mt-3 glass rounded-2xl p-3 grid grid-cols-2 gap-1 w-72 z-50">
+                {DIVISIONS.map((d) => (
+                  <Link
+                    key={d.label}
+                    href={d.href}
+                    onClick={() => setDivisionsOpen(false)}
+                    className="flex items-center gap-2 px-2.5 py-2 rounded-xl text-xs font-medium text-zinc-700 dark:text-zinc-300 hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-colors"
+                  >
+                    <div className={`w-6 h-6 rounded-lg bg-gradient-to-br ${d.gradient} flex items-center justify-center shrink-0`}>
+                      <d.Icon size={13} color="white" stroke={2.5} />
+                    </div>
+                    {d.label}
+                  </Link>
+                ))}
+              </div>
+            )}
+          </div>
           {status === "loading" ? null : status === "unauthenticated" ? (
             <Link
               href="/signup"
