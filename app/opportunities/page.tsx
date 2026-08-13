@@ -102,6 +102,27 @@ function OpportunitiesContent() {
           : "Opportunities"}
       </h1>
 
+      <div className="flex flex-wrap gap-2 mb-6">
+        {Object.entries(DIVISION_ICONS).map(([key, meta]) => {
+          const isActive = division === key || (!division && key === "TEST_SERIES");
+          const href = key === "TEST_SERIES" ? "/opportunities" : `/opportunities?division=${key}`;
+          return (
+            <Link
+              key={key}
+              href={href}
+              className={`flex items-center gap-1.5 text-xs font-semibold px-3 py-2 rounded-full transition-colors ${
+                isActive
+                  ? "bg-gradient-to-br " + meta.gradient + " text-white " + meta.glow
+                  : "glass text-zinc-700 dark:text-zinc-300"
+              }`}
+            >
+              <meta.Icon size={14} stroke={2.5} />
+              {key.replace(/_/g, " ")}
+            </Link>
+          );
+        })}
+      </div>
+
       <div className="glass rounded-3xl p-5 flex flex-col sm:flex-row flex-wrap gap-3 mb-10">
         <input
           type="text"
