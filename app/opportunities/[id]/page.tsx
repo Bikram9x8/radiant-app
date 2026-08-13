@@ -2,7 +2,19 @@
 import { useSession } from "next-auth/react";
 import SecureTestViewer from "./SecureTestViewer";
 import PlainTestViewer from "./PlainTestViewer";
-import { IconLock, IconLockOpen } from "@tabler/icons-react";
+import { IconLock, IconLockOpen, IconFileText, IconTool, IconTargetArrow, IconPackage, IconClipboardList, IconSchool, IconBook, IconBook2 } from "@tabler/icons-react";
+import { getShortLabel } from "@/lib/categoryLabel";
+
+const DIVISION_ICONS: Record<string, { Icon: any; gradient: string; glow: string }> = {
+  NCERT_SOLUTION: { Icon: IconBook2, gradient: "from-indigo-400 to-purple-400", glow: "shadow-[0_0_12px_rgba(129,140,248,0.5)]" },
+  TEST_SERIES: { Icon: IconFileText, gradient: "from-emerald-400 to-cyan-400", glow: "shadow-[0_0_12px_rgba(52,211,153,0.5)]" },
+  SKILL_BUILDING: { Icon: IconTool, gradient: "from-pink-400 to-purple-400", glow: "shadow-[0_0_12px_rgba(244,114,182,0.5)]" },
+  CAREER_COUNSELING: { Icon: IconTargetArrow, gradient: "from-cyan-400 to-blue-400", glow: "shadow-[0_0_12px_rgba(34,211,238,0.5)]" },
+  STUDY_PACKAGE: { Icon: IconPackage, gradient: "from-lime-400 to-emerald-400", glow: "shadow-[0_0_12px_rgba(163,230,53,0.5)]" },
+  DPP: { Icon: IconClipboardList, gradient: "from-amber-400 to-pink-400", glow: "shadow-[0_0_12px_rgba(251,191,36,0.5)]" },
+  BOARD_LEVEL_TEST: { Icon: IconSchool, gradient: "from-emerald-400 to-purple-400", glow: "shadow-[0_0_12px_rgba(52,211,153,0.5)]" },
+  CHAPTER_WISE_TEST: { Icon: IconBook, gradient: "from-purple-400 to-pink-400", glow: "shadow-[0_0_12px_rgba(192,132,252,0.5)]" },
+};
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
@@ -145,17 +157,34 @@ export default function OpportunityDetailPage() {
 
       <FadeIn>
       <div className="glass rounded-3xl p-8 mt-5">
-        <div className="flex justify-between items-start">
-          <div>
-            <h1 className="text-3xl font-bold tracking-tight text-zinc-900 dark:text-white">{opportunity.title}</h1>
-            <p className="text-zinc-600 dark:text-zinc-400 mt-1">
-              {opportunity.company?.companyName} • {opportunity.category?.name}
-            </p>
+        <div className="flex justify-between items-start gap-3">
+          <div className="flex items-start gap-3">
+            {(() => {
+              const meta = DIVISION_ICONS[opportunity.division] ?? DIVISION_ICONS.TEST_SERIES;
+              const label = getShortLabel(opportunity.category?.name);
+              return (
+                <div className={`relative shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br ${meta.gradient} ${meta.glow} flex items-center justify-center`}>
+                  <meta.Icon size={22} color="white" stroke={2} />
+                  {label && (
+                    <span className="absolute -bottom-1 -right-1 text-[9px] font-bold bg-white dark:bg-zinc-900 text-zinc-900 dark:text-white rounded-full px-1 min-w-[16px] text-center border border-zinc-200 dark:border-zinc-700 leading-[14px]">
+                      {label}
+                    </span>
+                  )}
+                </div>
+              );
+            })()}
+            <div>
+              <h1 className="text-3xl font-bold tracking-tight text-zinc-900 dark:text-white">{opportunity.title}</h1>
+              <p className="text-zinc-600 dark:text-zinc-400 mt-1">
+                {opportunity.company?.companyName} • {opportunity.category?.name}
+              </p>
+            </div>
           </div>
-          <span className="text-xs font-semibold bg-purple-100/70 dark:bg-purple-900/40 text-purple-800 dark:text-purple-300 rounded-full px-3.5 py-1.5">
+          <span className="text-xs font-semibold bg-purple-100/70 dark:bg-purple-900/40 text-purple-800 dark:text-purple-300 rounded-full px-3.5 py-1.5 shrink-0">
             {opportunity.type}
           </span>
         </div>
+        
 
         {!isQuiz && (
           <div className="mt-4 flex flex-wrap gap-4 text-sm text-zinc-600 dark:text-zinc-400">
