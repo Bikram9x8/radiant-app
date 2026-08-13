@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import FadeIn from "@/components/FadeIn";
+import { getShortLabel } from "@/lib/categoryLabel";
 
 
 export default async function Home() {
@@ -156,8 +157,13 @@ export default async function Home() {
                     href={`/opportunities/${o.id}`}
                     className="glass glass-card rounded-3xl p-6 bg-gradient-to-br from-purple-50/60 to-transparent dark:from-purple-900/10 flex gap-4 items-start"
                   >
-                    <div className={`shrink-0 w-11 h-11 rounded-xl bg-gradient-to-br ${meta.gradient} ${meta.glow} flex items-center justify-center`}>
+                    <div className={`relative shrink-0 w-11 h-11 rounded-xl bg-gradient-to-br ${meta.gradient} ${meta.glow} flex items-center justify-center`}>
                       <meta.Icon size={20} color="white" stroke={2} />
+                      {getShortLabel(o.category?.name) && (
+                        <span className="absolute -bottom-1 -right-1 text-[9px] font-bold bg-white dark:bg-zinc-900 text-zinc-900 dark:text-white rounded-full px-1 min-w-[16px] text-center border border-zinc-200 dark:border-zinc-700 leading-[14px]">
+                          {getShortLabel(o.category?.name)}
+                        </span>
+                      )}
                     </div>
                     <div className="min-w-0">
                       <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-purple-100 dark:bg-purple-900/50 text-purple-800 dark:text-purple-300">
