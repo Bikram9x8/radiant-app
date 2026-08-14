@@ -82,7 +82,8 @@ export default function UserManager({
       {error && <p className="text-sm text-red-600 dark:text-red-400 mb-4">{error}</p>}
 
       <div className="glass rounded-2xl overflow-hidden">
-        <table className="w-full text-sm">
+        <div className="overflow-x-auto">
+        <table className="w-full text-sm min-w-[600px]">
           <thead>
             <tr className="border-b border-white/20 dark:border-white/10">
               <th className="text-left px-4 py-3 font-medium text-zinc-600 dark:text-zinc-400">Name</th>
@@ -130,6 +131,7 @@ export default function UserManager({
             ))}
           </tbody>
         </table>
+        </div>
       </div>
     </div>
     </FadeIn>

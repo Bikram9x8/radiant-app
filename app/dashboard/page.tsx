@@ -229,7 +229,8 @@ if (user.role === "STUDENT") {
               You haven't posted any opportunities yet.
             </div>
           ) : (
-            <table className="w-full text-sm">
+            <div className="overflow-x-auto">
+            <table className="w-full text-sm min-w-[600px]">
               <thead>
                 <tr className="text-left text-zinc-600 dark:text-zinc-400 border-b border-white/20 dark:border-white/10">
                   <th className="px-5 py-3 font-medium">Title</th>
@@ -267,6 +268,7 @@ if (user.role === "STUDENT") {
                 ))}
               </tbody>
             </table>
+            </div>
           )}
         </div>
       </div>

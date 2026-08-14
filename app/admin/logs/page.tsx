@@ -43,7 +43,8 @@ export default async function AdminLogsPage() {
       ) : (
         <FadeIn>
         <div className="glass rounded-2xl overflow-hidden">
-          <table className="w-full text-sm">
+          <div className="overflow-x-auto">
+          <table className="w-full text-sm min-w-[600px]">
             <thead>
               <tr className="border-b border-white/20 dark:border-white/10">
                 <th className="text-left px-4 py-3 font-medium text-zinc-600 dark:text-zinc-400">Action</th>
@@ -81,6 +82,7 @@ export default async function AdminLogsPage() {
               ))}
             </tbody>
           </table>
+          </div>
         </div>
         </FadeIn>
       )}
