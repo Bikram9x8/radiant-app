@@ -20,7 +20,7 @@ export default function PlainTestViewer({ pdfUrl }: { pdfUrl: string }) {
         {isFullscreen ? "Exit Fullscreen" : "Fullscreen"}
       </button>
       <iframe
-        src={pdfUrl}
+        src={`https://docs.google.com/gview?embedded=true&url=${encodeURIComponent(pdfUrl)}`}
         className="w-full rounded-xl"
         style={{ height: isFullscreen ? "calc(100vh - 50px)" : "80vh", border: "none" }}
         title="Test PDF"
