@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
+import { sendEmail } from "@/lib/email";
 
 export async function POST(req: Request) {
   try {
@@ -30,6 +31,17 @@ export async function POST(req: Request) {
     if (role === "STUDENT") {
       await prisma.studentProfile.create({
         data: { userId: user.id, fullName: fullName || "" },
+      });
+
+      await sendEmail({
+        to: user.email,
+        subject: "Welcome to Radiant Educations!",
+        html: `
+          <p>Hi${fullName ? " " + fullName : ""},</p>
+          <p>Welcome to <strong>Radiant Educations</strong>! Your account has been created successfully.</p>
+          <p>You now have free access to Class 12 and entrance exam practice tests, study material, and career tools.</p>
+          <p><a href="https://app.radianteducareer.com/login">Log in and get started →</a></p>
+        `,
       });
     } else if (role === "COMPANY") {
       await prisma.companyProfile.create({
