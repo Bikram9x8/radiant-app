@@ -1,6 +1,5 @@
 "use client";
-import { useEffect, useState, Suspense } from "react";
-import { useSearchParams } from "next/navigation";
+import { useEffect, useState, useMemo, Suspense } from "react";import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { IconFileText, IconTool, IconTargetArrow, IconPackage, IconClipboardList, IconSchool, IconBook, IconBook2, IconLock } from "@tabler/icons-react";
 import FadeIn from "@/components/FadeIn";
@@ -30,6 +29,28 @@ function OpportunitiesContent() {
   const [search, setSearch] = useState("");
   const [type, setType] = useState("");
   const [categoryId, setCategoryId] = useState("");
+  const [selectedClass, setSelectedClass] = useState("");
+
+  const { classGroups, otherCategories } = useMemo(() => {
+    const groups: Record<string, { id: string; name: string; subject: string }[]> = {};
+    const others: any[] = [];
+    categories.forEach((c) => {
+      const m = c.name.match(/^Class\s*(\d{1,2})\s*-\s*(.+)$/i);
+      if (m) {
+        const label = `Class ${m[1]}`;
+        const subject = m[2].trim();
+        if (!groups[label]) groups[label] = [];
+        groups[label].push({ id: c.id, name: c.name, subject });
+      } else {
+        others.push(c);
+      }
+    });
+    return { classGroups: groups, otherCategories: others };
+  }, [categories]);
+
+  const classList = Object.keys(classGroups).sort(
+    (a, b) => parseInt(a.replace("Class ", "")) - parseInt(b.replace("Class ", ""))
+  );
 
   useEffect(() => {
     async function load() {
@@ -122,6 +143,48 @@ function OpportunitiesContent() {
           );
         })}
       </div>
+
+      {classList.length > 0 && (
+        <div className="flex flex-wrap gap-2 mb-3">
+          <button
+            onClick={() => { setSelectedClass(""); setCategoryId(""); }}
+            className={`text-xs font-semibold px-3 py-1.5 rounded-full transition-colors ${
+              !selectedClass ? "btn-neon" : "glass text-zinc-700 dark:text-zinc-300"
+            }`}
+          >
+            All classes
+          </button>
+          {classList.map((label) => (
+            <button
+              key={label}
+              onClick={() => { setSelectedClass(label); setCategoryId(""); }}
+              className={`text-xs font-semibold px-3 py-1.5 rounded-full transition-colors ${
+                selectedClass === label ? "btn-neon" : "glass text-zinc-700 dark:text-zinc-300"
+              }`}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+      )}
+
+      {selectedClass && classGroups[selectedClass] && (
+        <div className="flex flex-wrap gap-2 mb-6">
+          {classGroups[selectedClass].map((c) => (
+            <button
+              key={c.id}
+              onClick={() => setCategoryId(c.id)}
+              className={`text-xs font-medium px-3 py-1.5 rounded-full transition-colors ${
+                categoryId === c.id
+                  ? "bg-purple-600 text-white"
+                  : "glass text-zinc-600 dark:text-zinc-400"
+              }`}
+            >
+              {c.subject}
+            </button>
+          ))}
+        </div>
+      )}
 
       <div className="glass rounded-3xl p-5 flex flex-col sm:flex-row flex-wrap gap-3 mb-10">
         <input
