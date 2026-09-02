@@ -60,24 +60,40 @@ export default function PostOpportunityForm({ categories }: { categories: Catego
 
     if (isQuiz && linkType === "pdf" && pdfFile) {
       setUploadingPdf(true);
-      const pdfFormData = new FormData();
-      pdfFormData.append("file", pdfFile);
 
-      const uploadRes = await fetch("/api/upload-test-pdf", {
+      const urlRes = await fetch("/api/get-upload-url", {
         method: "POST",
-        body: pdfFormData,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          fileName: pdfFile.name,
+          fileType: pdfFile.type,
+        }),
       });
-      setUploadingPdf(false);
 
-      if (!uploadRes.ok) {
-        const uploadData = await uploadRes.json().catch(() => ({}));
-        setError(uploadData.error || "PDF upload failed.");
+      if (!urlRes.ok) {
+        setUploadingPdf(false);
+        setError("Could not prepare PDF upload. Please try again.");
         setSubmitting(false);
         return;
       }
 
-      const uploadData = await uploadRes.json();
-      finalExternalLink = uploadData.fileUrl;
+      const { uploadUrl, publicUrl } = await urlRes.json();
+
+      const putRes = await fetch(uploadUrl, {
+        method: "PUT",
+        headers: { "Content-Type": pdfFile.type },
+        body: pdfFile,
+      });
+
+      setUploadingPdf(false);
+
+      if (!putRes.ok) {
+        setError("PDF upload failed. Please try again.");
+        setSubmitting(false);
+        return;
+      }
+
+      finalExternalLink = publicUrl;
     }
 
     const res = await fetch("/api/opportunities", {

@@ -1,10 +1,10 @@
-import { NextResponse } from "next/server";
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/lib/auth";
+import { NextRequest, NextResponse } from "next/server";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
-import { randomUUID } from "crypto";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 
-const r2 = new S3Client({
+const s3 = new S3Client({
   region: "auto",
   endpoint: `https://${process.env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,
   credentials: {
@@ -13,43 +13,31 @@ const r2 = new S3Client({
   },
 });
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions);
-  const user = session?.user as any;
-
-  if (!user || user.role !== "COMPANY") {
+  if (!session) {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }
 
-  const formData = await req.formData();
-  const file = formData.get("file") as File | null;
+  const { fileName, fileType } = await req.json();
 
-  if (!file) {
-    return NextResponse.json({ error: "No file provided" }, { status: 400 });
+  if (!fileName || !fileType) {
+    return NextResponse.json(
+      { error: "fileName and fileType are required" },
+      { status: 400 }
+    );
   }
 
-  if (file.type !== "application/pdf") {
-    return NextResponse.json({ error: "Only PDF files are allowed" }, { status: 400 });
-  }
+  const safeFileName = `${Date.now()}-${fileName.replace(/[^a-zA-Z0-9.\-_]/g, "_")}`;
 
-  if (file.size > 25 * 1024 * 1024) {
-    return NextResponse.json({ error: "File must be under 25MB" }, { status: 400 });
-  }
+  const command = new PutObjectCommand({
+    Bucket: process.env.R2_BUCKET_NAME!,
+    Key: safeFileName,
+    ContentType: fileType,
+  });
 
-  const bytes = await file.arrayBuffer();
-  const buffer = Buffer.from(bytes);
-  const key = `test-pdfs/${randomUUID()}.pdf`;
+  const uploadUrl = await getSignedUrl(s3, command, { expiresIn: 300 });
+  const publicUrl = `${process.env.R2_PUBLIC_URL}/${safeFileName}`;
 
-  await r2.send(
-    new PutObjectCommand({
-      Bucket: process.env.R2_BUCKET_NAME!,
-      Key: key,
-      Body: buffer,
-      ContentType: "application/pdf",
-    })
-  );
-
-  const fileUrl = `${process.env.R2_PUBLIC_URL}/${key}`;
-
-  return NextResponse.json({ success: true, fileUrl });
+  return NextResponse.json({ uploadUrl, publicUrl });
 }
