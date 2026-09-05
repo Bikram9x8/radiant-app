@@ -59,7 +59,7 @@ export default function PlainTestViewer({ pdfUrl }: { pdfUrl: string }) {
 
       <div
         className="w-full rounded-xl overflow-auto flex justify-center bg-zinc-900"
-        style={{ height: isFullscreen ? "calc(100vh - 60px)" : "80vh" }}
+        style={{ maxHeight: isFullscreen ? "calc(100vh - 60px)" : "85vh" }}
         ref={(el) => {
           if (el && el.clientWidth > 0) {
             const target = Math.min(el.clientWidth - 16, 800);
