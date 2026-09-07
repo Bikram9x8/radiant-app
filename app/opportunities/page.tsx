@@ -191,6 +191,23 @@ function OpportunitiesContent() {
         </div>
       )}
 
+      {selectedClass && classGroups[selectedClass] && (
+        <div className="flex flex-wrap gap-2 mb-6">
+          {classGroups[selectedClass].map((c) => (
+            <button
+              key={c.id}
+              onClick={() => setCategoryId(c.id)}
+              className={`text-xs font-medium px-3 py-1.5 rounded-full transition-colors ${
+                categoryId === c.id
+                  ? "bg-purple-600 text-white"
+                  : "glass text-zinc-600 dark:text-zinc-400"
+              }`}
+            >
+              {c.subject}
+            </button>
+          ))}
+        </div>
+      )}
 
       {chapterList.length > 0 && (
         <div className="flex flex-wrap gap-2 mb-6">
