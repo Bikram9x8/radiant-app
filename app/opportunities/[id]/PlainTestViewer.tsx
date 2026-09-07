@@ -26,7 +26,7 @@ export default function PlainTestViewer({ pdfUrl }: { pdfUrl: string }) {
           : "glass rounded-2xl p-2"
       }
     >
-      <div className={`flex items-center justify-between mb-2 flex-wrap gap-2 ${isFullscreen ? "sticky top-0 z-10 bg-black py-1" : ""}`}>
+      <div className={`flex items-center justify-between mb-2 flex-wrap gap-2 sticky top-0 z-10 py-1 ${isFullscreen ? "bg-black" : "bg-white/90 dark:bg-zinc-900/90 backdrop-blur-sm rounded-xl px-2"}`}>
         <button
           onClick={() => setIsFullscreen(!isFullscreen)}
           className="text-sm px-3 py-1.5 rounded-lg bg-purple-600 text-white font-semibold"
