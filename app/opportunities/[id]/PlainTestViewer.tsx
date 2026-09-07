@@ -22,11 +22,11 @@ export default function PlainTestViewer({ pdfUrl }: { pdfUrl: string }) {
     <div
       className={
         isFullscreen
-          ? "fixed inset-0 z-50 bg-black p-2 overflow-y-auto"
+          ? "fixed inset-0 z-50 bg-black p-2 flex flex-col"
           : "glass rounded-2xl p-2"
       }
     >
-      <div className="flex items-center justify-between mb-2 flex-wrap gap-2">
+      <div className={`flex items-center justify-between mb-2 flex-wrap gap-2 ${isFullscreen ? "sticky top-0 z-10 bg-black py-1" : ""}`}>
         <button
           onClick={() => setIsFullscreen(!isFullscreen)}
           className="text-sm px-3 py-1.5 rounded-lg bg-purple-600 text-white font-semibold"
@@ -58,8 +58,8 @@ export default function PlainTestViewer({ pdfUrl }: { pdfUrl: string }) {
       </div>
 
       <div
-        className="w-full rounded-xl overflow-auto flex justify-center bg-zinc-900"
-        style={{ maxHeight: isFullscreen ? "calc(100vh - 60px)" : "85vh" }}
+        className={`w-full rounded-xl overflow-auto flex justify-center bg-zinc-900 ${isFullscreen ? "flex-1" : ""}`}
+        style={{ maxHeight: isFullscreen ? undefined : "85vh" }}
         ref={(el) => {
           if (el && el.clientWidth > 0) {
             const target = Math.min(el.clientWidth - 16, 800);
