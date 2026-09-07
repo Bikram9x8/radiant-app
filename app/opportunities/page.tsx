@@ -17,7 +17,17 @@ const DIVISION_ICONS: Record<string, { Icon: any; gradient: string; glow: string
   CHAPTER_WISE_TEST: { Icon: IconBook, gradient: "from-purple-400 to-pink-400", glow: "shadow-[0_0_12px_rgba(192,132,252,0.5)]" },
 };
 
-const TYPES = ["JOB", "INTERNSHIP", "COMPETITION", "QUIZ", "HACKATHON", "EVENT"];
+const TYPES = ["JOB", "INTERNSHIP", "COMPETITION", "QUIZ", "SOLUTION", "HACKATHON", "EVENT"];
+
+const TYPE_LABELS: Record<string, string> = {
+  QUIZ: "Quiz / Test",
+  SOLUTION: "Solution",
+  INTERNSHIP: "Internship",
+  JOB: "Job",
+  COMPETITION: "Competition",
+  HACKATHON: "Hackathon",
+  EVENT: "Event",
+};
 
 function OpportunitiesContent() {
   const searchParams = useSearchParams();
@@ -30,6 +40,7 @@ function OpportunitiesContent() {
   const [type, setType] = useState("");
   const [categoryId, setCategoryId] = useState("");
   const [selectedClass, setSelectedClass] = useState("");
+  const [selectedChapter, setSelectedChapter] = useState("");
 
   const { classGroups, otherCategories } = useMemo(() => {
     const groups: Record<string, { id: string; name: string; subject: string }[]> = {};
@@ -51,6 +62,18 @@ function OpportunitiesContent() {
   const classList = Object.keys(classGroups).sort(
     (a, b) => parseInt(a.replace("Class ", "")) - parseInt(b.replace("Class ", ""))
   );
+  
+  const chapterList = useMemo(() => {
+    const set = new Set<number>();
+    opportunities.forEach((op) => {
+      if (op.chapter) set.add(op.chapter);
+    });
+    return Array.from(set).sort((a, b) => a - b);
+  }, [opportunities]);
+
+  const displayedOpportunities = selectedChapter
+    ? opportunities.filter((op) => op.chapter === parseInt(selectedChapter, 10))
+    : opportunities;
 
   useEffect(() => {
     async function load() {
@@ -168,19 +191,26 @@ function OpportunitiesContent() {
         </div>
       )}
 
-      {selectedClass && classGroups[selectedClass] && (
+
+      {chapterList.length > 0 && (
         <div className="flex flex-wrap gap-2 mb-6">
-          {classGroups[selectedClass].map((c) => (
+          <button
+            onClick={() => setSelectedChapter("")}
+            className={`text-xs font-medium px-3 py-1.5 rounded-full transition-colors ${
+              !selectedChapter ? "bg-purple-600 text-white" : "glass text-zinc-600 dark:text-zinc-400"
+            }`}
+          >
+            All chapters
+          </button>
+          {chapterList.map((ch) => (
             <button
-              key={c.id}
-              onClick={() => setCategoryId(c.id)}
+              key={ch}
+              onClick={() => setSelectedChapter(String(ch))}
               className={`text-xs font-medium px-3 py-1.5 rounded-full transition-colors ${
-                categoryId === c.id
-                  ? "bg-purple-600 text-white"
-                  : "glass text-zinc-600 dark:text-zinc-400"
+                selectedChapter === String(ch) ? "bg-purple-600 text-white" : "glass text-zinc-600 dark:text-zinc-400"
               }`}
             >
-              {c.subject}
+              Chapter {ch}
             </button>
           ))}
         </div>
@@ -201,7 +231,7 @@ function OpportunitiesContent() {
         >
           <option value="">All types</option>
           {TYPES.map((t) => (
-            <option key={t} value={t}>{t}</option>
+            <option key={t} value={t}>{TYPE_LABELS[t] || t}</option>
           ))}
         </select>
         <select
@@ -236,7 +266,7 @@ function OpportunitiesContent() {
       )}
 
       <div className="flex flex-col gap-8">
-        {opportunities.map((op, i) => {
+        {displayedOpportunities.map((op, i) => {
           const divisionStyle = DIVISION_ICONS[op.division] || DIVISION_ICONS.TEST_SERIES;
           const DivIcon = divisionStyle.Icon;
           return (
@@ -262,13 +292,20 @@ function OpportunitiesContent() {
                           </span>
                         )}
                       </div>
-                      <p className="text-sm text-zinc-600 dark:text-zinc-400">
-                        {op.company?.companyName} • {op.category?.name}
+                                            <p className="text-sm text-zinc-600 dark:text-zinc-400">
+                        {op.company?.companyName} â€¢ {op.category?.name}
+                        {op.chapter ? ` â€¢ Chapter ${op.chapter}` : ""}
                       </p>
                     </div>
                   </div>
-                  <span className="text-xs font-medium bg-purple-100/70 dark:bg-purple-900/40 text-purple-800 dark:text-purple-300 rounded-full px-3 py-1 shrink-0">
-                    {op.type}
+                  <span
+                    className={`text-xs font-medium rounded-full px-3 py-1 shrink-0 ${
+                      op.type === "SOLUTION"
+                        ? "bg-indigo-100/70 dark:bg-indigo-900/40 text-indigo-800 dark:text-indigo-300"
+                        : "bg-purple-100/70 dark:bg-purple-900/40 text-purple-800 dark:text-purple-300"
+                    }`}
+                  >
+                    {TYPE_LABELS[op.type] || op.type}
                   </span>
                 </div>
                 <p className="text-sm text-zinc-600 dark:text-zinc-400 mt-2">

@@ -30,6 +30,7 @@ enum OpportunityType {
   INTERNSHIP
   COMPETITION
   QUIZ
+  SOLUTION
   HACKATHON
   EVENT
 }
@@ -176,6 +177,7 @@ model Opportunity {
   requiresCode  Boolean           @default(false)
   accessCodes   AccessCode[]
   division      Division          @default(TEST_SERIES)
+  chapter       Int?
 
   status        OpportunityStatus @default(PENDING)
   rejectionReason String?

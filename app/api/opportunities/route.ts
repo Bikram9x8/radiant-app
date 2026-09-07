@@ -9,6 +9,7 @@ export async function GET(req: Request) {
   const type = searchParams.get("type") || "";
   const categoryId = searchParams.get("categoryId") || "";
   const division = searchParams.get("division") || "";
+  const chapter = searchParams.get("chapter") || "";
 
   const opportunities = await prisma.opportunity.findMany({
     where: {
@@ -17,6 +18,7 @@ export async function GET(req: Request) {
       ...(type ? { type: type as any } : {}),
       ...(categoryId ? { categoryId } : {}),
       ...(division ? { division: division as any } : {}),
+      ...(chapter ? { chapter: parseInt(chapter, 10) } : {}),
     },
     include: {
       company: { select: { companyName: true } },
@@ -62,6 +64,7 @@ export async function POST(req: Request) {
     externalLink,
     requiresCode,
     division,
+    chapter,
   } = body;
 
   if (!title || !type || !categoryId || !description || !applyDeadline) {
@@ -84,6 +87,7 @@ export async function POST(req: Request) {
       externalLink: externalLink || null,
       requiresCode: requiresCode === true,
       division: division || "TEST_SERIES",
+      chapter: typeof chapter === "number" ? chapter : null,
       status: "PENDING",
     },
   });

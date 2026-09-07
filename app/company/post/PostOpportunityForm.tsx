@@ -31,7 +31,8 @@ export default function PostOpportunityForm({ categories }: { categories: Catego
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
 
-  const isQuiz = type === "QUIZ";
+  const isQuiz = type === "QUIZ" || type === "SOLUTION";
+  const [chapter, setChapter] = useState("");
   const showEventDate = type === "EVENT" || type === "HACKATHON";
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -113,6 +114,7 @@ export default function PostOpportunityForm({ categories }: { categories: Catego
         externalLink: finalExternalLink || null,
         requiresCode: isQuiz ? requiresCode : false,
         division,
+        chapter: type === "SOLUTION" && chapter ? parseInt(chapter, 10) : null,
       }),
     });
 
@@ -143,6 +145,7 @@ export default function PostOpportunityForm({ categories }: { categories: Catego
         <label className={labelClass}>Type *</label>
         <select value={type} onChange={(e) => setType(e.target.value)} className={inputClass}>
           <option value="QUIZ">Quiz / Test</option>
+          <option value="SOLUTION">Solution</option>
           <option value="INTERNSHIP">Internship</option>
           <option value="JOB">Job</option>
           <option value="COMPETITION">Competition</option>
@@ -176,6 +179,19 @@ export default function PostOpportunityForm({ categories }: { categories: Catego
           ))}
         </select>
       </div>
+
+      {type === "SOLUTION" && (
+        <div>
+          <label className={labelClass}>Chapter Number</label>
+          <input
+            type="number"
+            value={chapter}
+            onChange={(e) => setChapter(e.target.value)}
+            placeholder="e.g. 7"
+            className={inputClass}
+          />
+        </div>
+      )}
 
       <div>
         <label className={labelClass}>{isQuiz ? "Test Title *" : "Title *"}</label>
