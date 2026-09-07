@@ -147,8 +147,7 @@ export default function OpportunityDetailPage() {
     );
   }
 
-  const isQuiz = opportunity.type === "QUIZ";
-
+  const isQuiz = opportunity.type === "QUIZ" || opportunity.type === "SOLUTION";
   return (
     <div className="max-w-2xl mx-auto mt-12 px-6 mb-12">
       <Link href="/opportunities" className="text-sm text-purple-600 dark:text-purple-400 font-semibold">
