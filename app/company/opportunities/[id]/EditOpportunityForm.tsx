@@ -51,6 +51,9 @@ export default function EditOpportunityForm({
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
+  const [confirmingDelete, setConfirmingDelete] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState("");
 
   const isQuiz = type === "QUIZ";
   const showEventDate = type === "EVENT" || type === "HACKATHON";
@@ -103,13 +106,24 @@ export default function EditOpportunityForm({
     setTimeout(() => router.push("/dashboard"), 1500);
   }
 
-  if (success) {
-    return (
-      <div className="glass rounded-2xl p-6 text-emerald-700 dark:text-emerald-300">
-        <p className="font-semibold">Saved. Sent back for admin approval.</p>
-        <p className="text-sm mt-1">Redirecting to your dashboard...</p>
-      </div>
-    );
+
+  async function handleDelete() {
+    setDeleting(true);
+    setDeleteError("");
+
+    const res = await fetch(`/api/opportunities/${opportunity.id}`, {
+      method: "DELETE",
+    });
+
+    setDeleting(false);
+
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}));
+      setDeleteError(data.error || "Could not delete. Please try again.");
+      return;
+    }
+
+    router.push("/dashboard");
   }
 
   return (
@@ -238,6 +252,43 @@ export default function EditOpportunityForm({
       >
         {submitting ? "Saving..." : "Save Changes"}
       </button>
+
+      <div className="border-t border-white/20 dark:border-white/10 pt-5 mt-2">
+        {!confirmingDelete ? (
+          <button
+            type="button"
+            onClick={() => setConfirmingDelete(true)}
+            className="text-sm font-semibold text-red-600 dark:text-red-400 hover:underline"
+          >
+            Delete this opportunity
+          </button>
+        ) : (
+          <div className="flex flex-col gap-3">
+            <p className="text-sm text-red-600 dark:text-red-400 font-medium">
+              This will permanently delete this opportunity, along with all student applications and access codes tied to it. This cannot be undone.
+            </p>
+            <div className="flex gap-3">
+              <button
+                type="button"
+                onClick={handleDelete}
+                disabled={deleting}
+                className="rounded-xl px-4 py-2 bg-red-600 text-white font-semibold text-sm hover:bg-red-700 transition-colors disabled:opacity-50"
+              >
+                {deleting ? "Deleting..." : "Yes, delete permanently"}
+              </button>
+              <button
+                type="button"
+                onClick={() => setConfirmingDelete(false)}
+                disabled={deleting}
+                className="rounded-xl px-4 py-2 glass font-semibold text-sm text-zinc-900 dark:text-white"
+              >
+                Cancel
+              </button>
+            </div>
+            {deleteError && <p className="text-sm text-red-600 dark:text-red-400">{deleteError}</p>}
+          </div>
+        )}
+      </div>
     </form>
   );
 }
