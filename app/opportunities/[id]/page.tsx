@@ -1,7 +1,8 @@
 "use client";
 import { useSession } from "next-auth/react";
 import SecureTestViewer from "./SecureTestViewer";
-import PlainTestViewer from "./PlainTestViewer";
+import dynamic from "next/dynamic";
+const PlainTestViewer = dynamic(() => import("./PlainTestViewer"), { ssr: false });
 import { IconLock, IconLockOpen, IconFileText, IconTool, IconTargetArrow, IconPackage, IconClipboardList, IconSchool, IconBook, IconBook2 } from "@tabler/icons-react";
 import { getShortLabel } from "@/lib/categoryLabel";
 
