@@ -49,8 +49,22 @@ function ViewerBody({
             >
               Prev
             </button>
-            <span>
-              Page {pageNumber} of {numPages}
+            <span className="flex items-center gap-1">
+              Page{" "}
+              <input
+                type="number"
+                min={1}
+                max={numPages}
+                value={pageNumber}
+                onChange={(e) => {
+                  const val = parseInt(e.target.value, 10);
+                  if (!isNaN(val) && val >= 1 && val <= numPages) {
+                    setPageNumber(val);
+                  }
+                }}
+                className="w-12 text-center rounded bg-zinc-700 text-white px-1 py-0.5 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+              />{" "}
+              of {numPages}
             </span>
             <button
               onClick={() => setPageNumber((p: number) => Math.min(numPages, p + 1))}
