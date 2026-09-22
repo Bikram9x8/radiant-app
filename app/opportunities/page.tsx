@@ -75,6 +75,30 @@ function OpportunitiesContent() {
     ? opportunities.filter((op) => op.chapter === parseInt(selectedChapter, 10))
     : opportunities;
 
+  const selectedSubjectName = classGroups[selectedClass]?.find((c) => c.id === categoryId)?.subject || "";
+
+  function resetToAllClasses() {
+    setSelectedClass("");
+    setCategoryId("");
+    setSelectedChapter("");
+  }
+
+  function selectClass(label: string) {
+    setSelectedClass(label);
+    setCategoryId("");
+    setSelectedChapter("");
+  }
+
+  function selectSubject(id: string) {
+    setCategoryId(id);
+    setSelectedChapter("");
+  }
+
+  useEffect(() => {
+    resetToAllClasses();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [division]);
+
   useEffect(() => {
     async function load() {
       setLoading(true);
@@ -146,6 +170,9 @@ function OpportunitiesContent() {
           : "Opportunities"}
       </h1>
 
+      <p className="text-[11px] font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400 mb-1.5">
+        1. Division
+      </p>
       <div className="flex flex-wrap gap-2 mb-6">
         {Object.entries(DIVISION_ICONS).map(([key, meta]) => {
           const isActive = division === key || (!division && key === "TEST_SERIES");
@@ -168,69 +195,138 @@ function OpportunitiesContent() {
       </div>
 
       {classList.length > 0 && (
-        <div className="flex flex-wrap gap-2 mb-3">
-          <button
-            onClick={() => { setSelectedClass(""); setCategoryId(""); }}
-            className={`text-xs font-semibold px-3 py-1.5 rounded-full transition-colors ${
-              !selectedClass ? "btn-neon" : "glass text-zinc-700 dark:text-zinc-300"
-            }`}
-          >
-            All classes
-          </button>
-          {classList.map((label) => (
+        <>
+          <div className="flex items-center gap-2 mb-1.5">
+            <p className="text-[11px] font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
+              2. Class
+            </p>
+            {(selectedClass || categoryId || selectedChapter) && (
+              <button
+                onClick={resetToAllClasses}
+                className="text-[11px] font-semibold text-purple-600 dark:text-purple-400 hover:underline"
+              >
+                Reset
+              </button>
+            )}
+          </div>
+
+          {(selectedClass || categoryId || selectedChapter) && (
+            <div className="flex items-center flex-wrap gap-1.5 text-xs text-zinc-600 dark:text-zinc-400 mb-3">
+              <button
+                onClick={resetToAllClasses}
+                className="hover:text-purple-600 dark:hover:text-purple-400 hover:underline font-medium"
+              >
+                All classes
+              </button>
+              {selectedClass && (
+                <>
+                  <span>›</span>
+                  <button
+                    onClick={() => selectClass(selectedClass)}
+                    className={`hover:text-purple-600 dark:hover:text-purple-400 hover:underline font-medium ${
+                      !categoryId ? "text-purple-600 dark:text-purple-400" : ""
+                    }`}
+                  >
+                    {selectedClass}
+                  </button>
+                </>
+              )}
+              {selectedSubjectName && (
+                <>
+                  <span>›</span>
+                  <button
+                    onClick={() => setSelectedChapter("")}
+                    className={`hover:text-purple-600 dark:hover:text-purple-400 hover:underline font-medium ${
+                      !selectedChapter ? "text-purple-600 dark:text-purple-400" : ""
+                    }`}
+                  >
+                    {selectedSubjectName}
+                  </button>
+                </>
+              )}
+              {selectedChapter && (
+                <>
+                  <span>›</span>
+                  <span className="text-purple-600 dark:text-purple-400 font-medium">Chapter {selectedChapter}</span>
+                </>
+              )}
+            </div>
+          )}
+
+          <div className="flex flex-wrap gap-2 mb-6">
             <button
-              key={label}
-              onClick={() => { setSelectedClass(label); setCategoryId(""); }}
+              onClick={resetToAllClasses}
               className={`text-xs font-semibold px-3 py-1.5 rounded-full transition-colors ${
-                selectedClass === label ? "btn-neon" : "glass text-zinc-700 dark:text-zinc-300"
+                !selectedClass ? "btn-neon" : "glass text-zinc-700 dark:text-zinc-300"
               }`}
             >
-              {label}
+              All classes
             </button>
-          ))}
-        </div>
+            {classList.map((label) => (
+              <button
+                key={label}
+                onClick={() => selectClass(label)}
+                className={`text-xs font-semibold px-3 py-1.5 rounded-full transition-colors ${
+                  selectedClass === label ? "btn-neon" : "glass text-zinc-700 dark:text-zinc-300"
+                }`}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        </>
       )}
 
       {selectedClass && classGroups[selectedClass] && (
-        <div className="flex flex-wrap gap-2 mb-6">
-          {classGroups[selectedClass].map((c) => (
-            <button
-              key={c.id}
-              onClick={() => setCategoryId(c.id)}
-              className={`text-xs font-medium px-3 py-1.5 rounded-full transition-colors ${
-                categoryId === c.id
-                  ? "bg-purple-600 text-white"
-                  : "glass text-zinc-600 dark:text-zinc-400"
-              }`}
-            >
-              {c.subject}
-            </button>
-          ))}
-        </div>
+        <>
+          <p className="text-[11px] font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400 mb-1.5">
+            3. Subject
+          </p>
+          <div className="flex flex-wrap gap-2 mb-6">
+            {classGroups[selectedClass].map((c) => (
+              <button
+                key={c.id}
+                onClick={() => selectSubject(c.id)}
+                className={`text-xs font-medium px-3 py-1.5 rounded-full transition-colors ${
+                  categoryId === c.id
+                    ? "bg-purple-600 text-white"
+                    : "glass text-zinc-600 dark:text-zinc-400"
+                }`}
+              >
+                {c.subject}
+              </button>
+            ))}
+          </div>
+        </>
       )}
 
-      {chapterList.length > 0 && (
-        <div className="flex flex-wrap gap-2 mb-6">
-          <button
-            onClick={() => setSelectedChapter("")}
-            className={`text-xs font-medium px-3 py-1.5 rounded-full transition-colors ${
-              !selectedChapter ? "bg-purple-600 text-white" : "glass text-zinc-600 dark:text-zinc-400"
-            }`}
-          >
-            All chapters
-          </button>
-          {chapterList.map((ch) => (
+      {categoryId && chapterList.length > 0 && (
+        <>
+          <p className="text-[11px] font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400 mb-1.5">
+            4. Chapter
+          </p>
+          <div className="flex flex-wrap gap-2 mb-6">
             <button
-              key={ch}
-              onClick={() => setSelectedChapter(String(ch))}
+              onClick={() => setSelectedChapter("")}
               className={`text-xs font-medium px-3 py-1.5 rounded-full transition-colors ${
-                selectedChapter === String(ch) ? "bg-purple-600 text-white" : "glass text-zinc-600 dark:text-zinc-400"
+                !selectedChapter ? "bg-purple-600 text-white" : "glass text-zinc-600 dark:text-zinc-400"
               }`}
             >
-              Chapter {ch}
+              All chapters
             </button>
-          ))}
-        </div>
+            {chapterList.map((ch) => (
+              <button
+                key={ch}
+                onClick={() => setSelectedChapter(String(ch))}
+                className={`text-xs font-medium px-3 py-1.5 rounded-full transition-colors ${
+                  selectedChapter === String(ch) ? "bg-purple-600 text-white" : "glass text-zinc-600 dark:text-zinc-400"
+                }`}
+              >
+                Chapter {ch}
+              </button>
+            ))}
+          </div>
+        </>
       )}
 
       <div className="glass rounded-3xl p-5 flex flex-col sm:flex-row flex-wrap gap-3 mb-10">
