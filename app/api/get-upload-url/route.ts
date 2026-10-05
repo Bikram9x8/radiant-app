@@ -36,7 +36,7 @@ export async function POST(req: NextRequest) {
     ContentType: fileType,
   });
 
-  const uploadUrl = await getSignedUrl(s3, command, { expiresIn: 300 });
+  const uploadUrl = await getSignedUrl(s3, command, { expiresIn: 1800 }); // 30 minutes
   const publicUrl = `${process.env.R2_PUBLIC_URL}/${safeFileName}`;
 
   return NextResponse.json({ uploadUrl, publicUrl });
