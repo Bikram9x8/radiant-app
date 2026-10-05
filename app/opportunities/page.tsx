@@ -1,13 +1,14 @@
 "use client";
 import { useEffect, useState, useMemo, Suspense } from "react";import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { IconFileText, IconTool, IconTargetArrow, IconPackage, IconClipboardList, IconSchool, IconBook, IconBook2, IconLock } from "@tabler/icons-react";
+import { IconFileText, IconTool, IconTargetArrow, IconPackage, IconClipboardList, IconSchool, IconBook, IconBook2, IconLock, IconCertificate } from "@tabler/icons-react";
 import FadeIn from "@/components/FadeIn";
 import { Skeleton } from "@/components/Skeleton";
 import { getShortLabel } from "@/lib/categoryLabel";
 
 const DIVISION_ICONS: Record<string, { Icon: any; gradient: string; glow: string }> = {
   NCERT_SOLUTION: { Icon: IconBook2, gradient: "from-indigo-400 to-purple-400", glow: "shadow-[0_0_12px_rgba(129,140,248,0.5)]" },
+  CBSE_SAMPLE_PAPERS: { Icon: IconCertificate, gradient: "from-orange-400 to-red-400", glow: "shadow-[0_0_12px_rgba(251,146,60,0.5)]" },
   TEST_SERIES: { Icon: IconFileText, gradient: "from-emerald-400 to-cyan-400", glow: "shadow-[0_0_12px_rgba(52,211,153,0.5)]" },
   SKILL_BUILDING: { Icon: IconTool, gradient: "from-pink-400 to-purple-400", glow: "shadow-[0_0_12px_rgba(244,114,182,0.5)]" },
   CAREER_COUNSELING: { Icon: IconTargetArrow, gradient: "from-cyan-400 to-blue-400", glow: "shadow-[0_0_12px_rgba(34,211,238,0.5)]" },
@@ -127,6 +128,8 @@ function OpportunitiesContent() {
             <span className="text-zinc-700 dark:text-zinc-300">
               {division === "NCERT_SOLUTION"
                 ? "NCERT Solutions"
+                : division === "CBSE_SAMPLE_PAPERS"
+                ? "CBSE Sample Papers"
                 : division === "DPP"
                 ? "Daily Practice Problems"
                 : division === "BOARD_LEVEL_TEST"
@@ -153,6 +156,8 @@ function OpportunitiesContent() {
       <h1 className="text-4xl font-bold tracking-tight mb-8 text-zinc-900 dark:text-white">
         {division === "NCERT_SOLUTION"
           ? "NCERT Solutions"
+          : division === "CBSE_SAMPLE_PAPERS"
+          ? "CBSE Sample Papers"
           : division === "DPP"
           ? "Daily Practice Problems"
           : division === "BOARD_LEVEL_TEST"

@@ -51,6 +51,7 @@ enum ApplicationStatus {
 
 enum Division {
   NCERT_SOLUTION
+  CBSE_SAMPLE_PAPERS
   TEST_SERIES
   SKILL_BUILDING
   CAREER_COUNSELING
