@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { IconFileText, IconTool, IconTargetArrow, IconPackage, IconClipboardList, IconSchool, IconBook, IconBook2, IconClipboardCheck, IconBuildingSkyscraper, IconCategory, IconUsers, IconKey, IconLockSquareRounded, IconChartBar, IconHistory, IconListDetails, IconCircleCheck, IconClockHour4, IconX, IconUsersGroup, IconStar } from "@tabler/icons-react";
+import { IconFileText, IconTool, IconTargetArrow, IconPackage, IconClipboardList, IconSchool, IconBook, IconBook2, IconClipboardCheck, IconBuildingSkyscraper, IconCategory, IconUsers, IconKey, IconLockSquareRounded, IconChartBar, IconHistory, IconListDetails, IconCircleCheck, IconClockHour4, IconX, IconUsersGroup, IconStar, IconCertificate } from "@tabler/icons-react";
 import { getServerSession } from "next-auth/next";
 import { redirect } from "next/navigation";
 import { authOptions } from "@/lib/auth";
@@ -66,6 +66,7 @@ if (user.role === "STUDENT") {
         label: "Tests",
         tiles: [
           { href: "/opportunities", label: "Test Series", Icon: IconFileText, gradient: "from-emerald-400 to-cyan-400", glow: "shadow-[0_0_16px_rgba(52,211,153,0.5)]" },
+          { href: "/opportunities?division=CBSE_SAMPLE_PAPERS", label: "CBSE Sample Papers", Icon: IconCertificate, gradient: "from-orange-400 to-red-400", glow: "shadow-[0_0_16px_rgba(251,146,60,0.5)]" },
           { href: "/opportunities?division=DPP", label: "DPP", Icon: IconClipboardList, gradient: "from-amber-400 to-pink-400", glow: "shadow-[0_0_16px_rgba(251,191,36,0.5)]" },
           { href: "/opportunities?division=BOARD_LEVEL_TEST", label: "Board Level Test", Icon: IconSchool, gradient: "from-emerald-400 to-purple-400", glow: "shadow-[0_0_16px_rgba(52,211,153,0.5)]" },
           { href: "/opportunities?division=CHAPTER_WISE_TEST", label: "Chapter Wise Test", Icon: IconBook, gradient: "from-purple-400 to-pink-400", glow: "shadow-[0_0_16px_rgba(192,132,252,0.5)]" },

@@ -3,10 +3,10 @@
 import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
 import { useEffect, useState, useRef } from "react";
-import { IconFileText, IconTool, IconTargetArrow, IconPackage, IconClipboardList, IconSchool, IconBook, IconBook2, IconChevronDown } from "@tabler/icons-react";
-
+import { IconFileText, IconTool, IconTargetArrow, IconPackage, IconClipboardList, IconSchool, IconBook, IconBook2, IconChevronDown, IconCertificate } from "@tabler/icons-react";
 const DIVISIONS = [
   { href: "/opportunities?division=NCERT_SOLUTION", label: "NCERT Solution", Icon: IconBook2, gradient: "from-indigo-400 to-purple-400" },
+  { href: "/opportunities?division=CBSE_SAMPLE_PAPERS", label: "CBSE Sample Papers", Icon: IconCertificate, gradient: "from-orange-400 to-red-400" },
   { href: "/opportunities", label: "Test Series", Icon: IconFileText, gradient: "from-emerald-400 to-cyan-400" },
   { href: "/opportunities?division=SKILL_BUILDING", label: "Skill Building", Icon: IconTool, gradient: "from-pink-400 to-purple-400" },
   { href: "/opportunities?division=CAREER_COUNSELING", label: "Career Counseling", Icon: IconTargetArrow, gradient: "from-cyan-400 to-blue-400" },
