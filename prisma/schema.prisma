@@ -260,3 +260,35 @@ model AdminLog {
   @@index([actorId])
   @@index([targetType, targetId])
 }
+// ================= COURSE TREE =================
+// One self-referencing table for the whole structure:
+//   COURSE (CBSE / ICSE / Competitive / Vocational)
+//     -> LEVEL (Class 12, JEE, Geeta ...)
+//       -> STAGE (optional, e.g. UPSC Prelims / Mains)
+//         -> SUBJECT (Physics ...)
+//           -> CHAPTER (Chapter 2 ...)
+// Different branches can have different depth (Geeta is COURSE -> LEVEL -> CHAPTER).
+
+model CourseNode {
+  id            String       @id @default(cuid())
+  parentId      String?
+  parent        CourseNode?  @relation("CourseTree", fields: [parentId], references: [id], onDelete: Cascade)
+  children      CourseNode[] @relation("CourseTree")
+
+  name          String
+  slug          String
+  kind          String       // COURSE | LEVEL | STAGE | SUBJECT | CHAPTER
+  position      Int          @default(0)   // display order among siblings
+  chapterNo     Int?
+  bookName      String?
+  tags          String[]     @default([])  // e.g. SCIENCE_PCM, SCIENCE_PCB, COMMERCE, ARTS (Class 11-12 streams)
+  contentTypes  String[]     @default([])  // only set on COURSE nodes: the tabs shown for that course
+  isActive      Boolean      @default(true)
+
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  @@unique([parentId, slug])
+  @@index([parentId])
+  @@index([kind])
+}

@@ -1,0 +1,2 @@
+-- AlterEnum
+ALTER TYPE "Division" ADD VALUE 'CBSE_SAMPLE_PAPERS';
