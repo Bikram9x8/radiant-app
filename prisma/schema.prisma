@@ -292,3 +292,16 @@ model CourseNode {
   @@index([parentId])
   @@index([kind])
 }
+model ProblemReport {
+  id         String   @id @default(cuid())
+  category   String   // WRONG_CONTENT | FILE_PROBLEM | LOGIN_ACCOUNT | OTHER
+  message    String
+  pageUrl    String?
+  email      String?
+  userId     String?
+  status     String   @default("NEW") // NEW | IN_PROGRESS | RESOLVED
+  createdAt  DateTime @default(now())
+
+  @@index([status])
+  @@index([createdAt])
+}

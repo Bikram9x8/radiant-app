@@ -1,8 +1,16 @@
 @import "tailwindcss";
 
+/* Light theme only: turns off the automatic dark mode so every page looks the same */
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #14142b;
+  --accent: #5b33d6;
+  --accent-dark: #4a28b8;
+  --border: #e4e2ef;
+  --soft: #f6f5fb;
+  --navbar-bg: #ffffff;
 }
 
 @theme inline {
@@ -12,110 +20,60 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
-}
-button, a {
-  transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease, transform 100ms ease;
-}
-button:not(:disabled):hover,
-a:hover {
-  transform: scale(1.03);
-}
-button:not(:disabled):active,
-a:active {
-  transform: scale(0.97);
-}
-@keyframes drift1 {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  33% { transform: translate(40px, 30px) scale(1.1); }
-  66% { transform: translate(-20px, 50px) scale(0.95); }
+  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
 }
 
-@keyframes drift2 {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  33% { transform: translate(-50px, 20px) scale(1.05); }
-  66% { transform: translate(30px, -30px) scale(0.9); }
+button,
+a {
+  transition: background-color 150ms ease, border-color 150ms ease,
+    color 150ms ease, box-shadow 150ms ease, opacity 150ms ease;
 }
 
-@keyframes drift3 {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  50% { transform: translate(-30px, -40px) scale(1.15); }
+button:not(:disabled):active {
+  opacity: 0.85;
 }
 
+/* ---------- Old animated background (kept so nothing breaks, now unused) ---------- */
+@keyframes drift1 { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(20px, 20px); } }
+@keyframes drift2 { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(-20px, 20px); } }
+@keyframes drift3 { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(-20px, -20px); } }
 .animate-drift1 { animation: drift1 18s ease-in-out infinite; }
 .animate-drift2 { animation: drift2 22s ease-in-out infinite; }
 .animate-drift3 { animation: drift3 16s ease-in-out infinite; }
 
+/* ---------- Plain cards (replaces the liquid glass look) ---------- */
 .glass {
-  background: linear-gradient(160deg, rgba(255, 255, 255, 0.75), rgba(255, 255, 255, 0.35));
-  backdrop-filter: blur(22px) saturate(180%);
-  -webkit-backdrop-filter: blur(22px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.85);
-  box-shadow:
-    inset 0 1px 3px rgba(255, 255, 255, 0.9),
-    0 6px 20px rgba(120, 80, 200, 0.12);
+  background: #ffffff;
+  border: 1px solid var(--border);
+  box-shadow: 0 1px 2px rgba(20, 20, 43, 0.04);
 }
 
 .glass-card {
   position: relative;
   overflow: hidden;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.glass-card:hover {
-  transform: translateY(-4px) scale(1.03);
-  z-index: 10;
-  box-shadow:
-    inset 0 1px 3px rgba(255, 255, 255, 0.9),
-    0 0 40px rgba(168, 85, 247, 0.6);
-}
-
-@media (prefers-color-scheme: dark) {
-  .glass-card:hover {
-    box-shadow:
-      inset 0 1px 2px rgba(255, 255, 255, 0.15),
-      0 0 45px rgba(168, 85, 247, 0.7);
-  }
-}
-
-@media (prefers-color-scheme: dark) {
-  .glass {
-    background: linear-gradient(160deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.03));
-    border: 1px solid rgba(255, 255, 255, 0.14);
-    box-shadow:
-      inset 0 1px 2px rgba(255, 255, 255, 0.15),
-      0 6px 20px rgba(0, 0, 0, 0.4);
-  }
-}
-.btn-neon {
-  background: linear-gradient(135deg, #9b3cff, #22d3ee);
-  color: white;
-  box-shadow: 0 0 16px rgba(155, 60, 255, 0.45), inset 0 1px 2px rgba(255, 255, 255, 0.3);
   transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
-.btn-neon:hover {
-  box-shadow: 0 0 24px rgba(155, 60, 255, 0.65), inset 0 1px 2px rgba(255, 255, 255, 0.4);
+.glass-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(20, 20, 43, 0.12);
 }
 
-@media (prefers-color-scheme: dark) {
-  .btn-neon {
-    box-shadow: 0 0 20px rgba(155, 60, 255, 0.6), inset 0 1px 2px rgba(255, 255, 255, 0.15);
-  }
-  .btn-neon:hover {
-    box-shadow: 0 0 30px rgba(155, 60, 255, 0.8), inset 0 1px 2px rgba(255, 255, 255, 0.2);
-  }
+/* ---------- Main button (replaces the neon button) ---------- */
+.btn-neon {
+  background: var(--accent);
+  color: #ffffff;
+  box-shadow: none;
 }
+
+.btn-neon:hover {
+  background: var(--accent-dark);
+}
+
+/* ---------- Toast and misc ---------- */
 @keyframes toast-in {
   from { opacity: 0; transform: translateX(30px); }
   to { opacity: 1; transform: translateX(0); }
@@ -125,20 +83,6 @@ a:active {
   animation: toast-in 0.3s ease;
 }
 
-@keyframes huecycle {
-  0% { filter: hue-rotate(0deg); }
-  100% { filter: hue-rotate(360deg); }
-}
-
 .animate-huecycle {
-  animation: huecycle 90s linear infinite;
-}
-:root {
-  --navbar-bg: #ffffff;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --navbar-bg: #09090b;
-  }
+  animation: none;
 }
