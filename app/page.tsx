@@ -12,6 +12,10 @@ import { getServerSession } from "next-auth/next";
 import { redirect } from "next/navigation";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import ClassTiles from "@/components/ClassTiles";
+
+// How many classes are shown before the "Show all" button (CBSE and ICSE only)
+const VISIBLE_CLASSES = 6;
 
 // Pastel colours for the tiles (full class names so Tailwind keeps them)
 const TILE_COLORS = [
@@ -166,24 +170,25 @@ export default async function Home() {
           <p className="mt-6 text-sm text-zinc-500">Courses are being set up. Check back soon.</p>
         )}
 
-        {courses.map((course) => (
-          <div key={course.id} className="mt-10">
-            <h3 className="text-xl font-bold text-[#14142b]">{course.name}</h3>
-            <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-              {course.children.map((level, i) => (
-                <Link
-                  key={level.id}
-                  href={`/courses/${course.slug}/${level.slug}`}
-                  className={`block rounded-2xl p-5 transition-all hover:-translate-y-0.5 hover:shadow-md ${TILE_COLORS[i % TILE_COLORS.length]}`}
-                >
-                  <span className="block text-xs font-bold tracking-wider uppercase opacity-80">{course.name}</span>
-                  <span className="block mt-1.5 text-xl font-extrabold text-[#14142b]">{level.name}</span>
-                  <span className="block mt-3 text-sm font-bold">Open →</span>
-                </Link>
-              ))}
+        {courses.map((course) => {
+          // School courses: highest class first, and only the first few are shown
+          const isSchool = course.slug === "cbse" || course.slug === "icse";
+          const levels = isSchool ? [...course.children].reverse() : course.children;
+          const items = levels.map((level, i) => ({
+            id: level.id,
+            href: `/courses/${course.slug}/${level.slug}`,
+            name: level.name,
+            label: course.name,
+            color: TILE_COLORS[i % TILE_COLORS.length],
+          }));
+
+          return (
+            <div key={course.id} className="mt-10">
+              <h3 className="text-xl font-bold text-[#14142b]">{course.name}</h3>
+              <ClassTiles items={items} visible={isSchool ? VISIBLE_CLASSES : items.length} />
             </div>
-          </div>
-        ))}
+          );
+        })}
       </section>
 
       {/* Ad slot 2 */}
