@@ -65,10 +65,22 @@ export async function POST(req: Request) {
     requiresCode,
     division,
     chapter,
+    courseNodeId,
+    contentType,
   } = body;
+
 
   if (!title || !type || !categoryId || !description || !applyDeadline) {
     return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+  }
+
+  let linkedNodeId: string | null = null;
+  if (courseNodeId) {
+    const node = await prisma.courseNode.findUnique({ where: { id: courseNodeId } });
+    if (!node || node.kind !== "CHAPTER") {
+      return NextResponse.json({ error: "Please choose a valid chapter." }, { status: 400 });
+    }
+    linkedNodeId = node.id;
   }
 
   const opportunity = await prisma.opportunity.create({
@@ -88,6 +100,8 @@ export async function POST(req: Request) {
       requiresCode: requiresCode === true,
       division: division || "TEST_SERIES",
       chapter: typeof chapter === "number" ? chapter : null,
+      courseNodeId: linkedNodeId,
+      contentType: linkedNodeId ? contentType || null : null,
       status: "PENDING",
     },
   });

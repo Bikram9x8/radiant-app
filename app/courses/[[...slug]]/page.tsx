@@ -62,10 +62,25 @@ export default async function CoursePage({
     orderBy: { position: "asc" },
   });
 
+  // Posts (solutions, tests...) linked to this chapter
+  const chapterPosts =
+    current && current.kind === "CHAPTER"
+      ? await prisma.opportunity.findMany({
+          where: { courseNodeId: current.id, status: "APPROVED" },
+          orderBy: { createdAt: "asc" },
+          select: { id: true, title: true, contentType: true },
+        })
+      : [];
+
   const basePath = "/courses/" + slug.join("/");
   const isChapter = current?.kind === "CHAPTER";
   const chaptersMode = children.length > 0 && children[0].kind === "CHAPTER";
   const title = current ? current.name : "All courses";
+
+  const contentTypes =
+    root && root.contentTypes.length > 0
+      ? root.contentTypes
+      : ["NOTES", "SOLUTION", "TEST", "MCQ_TEST", "PYQ", "DPP"];
 
   return (
     <div className="flex-1 bg-white">
@@ -98,23 +113,35 @@ export default async function CoursePage({
 
         <div className="mt-8 flex flex-wrap gap-8 items-start">
           <div className="flex-1 basis-[480px] min-w-0">
-            {/* Chapter page */}
-            {isChapter && root && (
-              <div>
-                <p className="text-zinc-600">Study material for this chapter</p>
-                <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 gap-4">
-                  {(root.contentTypes.length > 0 ? root.contentTypes : ["NOTES", "SOLUTION", "TEST", "MCQ_TEST", "PYQ", "DPP"]).map(
-                    (t, i) => (
-                      <div
-                        key={t}
-                        className={`rounded-2xl p-5 ${TILE_COLORS[i % TILE_COLORS.length]}`}
-                      >
-                        <span className="block text-lg font-extrabold text-[#14142b]">{CONTENT_LABELS[t] ?? t}</span>
-                        <span className="block mt-2 text-sm font-semibold opacity-80">Coming soon</span>
+            {/* Chapter page: one section per content type */}
+            {isChapter && (
+              <div className="space-y-5">
+                {contentTypes.map((t, i) => {
+                  const posts = chapterPosts.filter((p) => p.contentType === t);
+                  return (
+                    <div key={t} className="border border-zinc-200 rounded-2xl overflow-hidden">
+                      <div className={`px-5 py-3 flex items-center justify-between ${TILE_COLORS[i % TILE_COLORS.length]}`}>
+                        <span className="text-lg font-extrabold text-[#14142b]">{CONTENT_LABELS[t] ?? t}</span>
+                        <span className="text-sm font-bold">{posts.length > 0 ? posts.length : ""}</span>
                       </div>
-                    )
-                  )}
-                </div>
+                      {posts.length === 0 ? (
+                        <p className="px-5 py-4 text-sm text-zinc-500">Coming soon</p>
+                      ) : (
+                        <div className="divide-y divide-zinc-200">
+                          {posts.map((p) => (
+                            <Link
+                              key={p.id}
+                              href={`/opportunities/${p.id}`}
+                              className="block px-5 py-4 bg-white hover:bg-zinc-50 text-base font-semibold text-[#14142b]"
+                            >
+                              {p.title}
+                            </Link>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
             )}
 

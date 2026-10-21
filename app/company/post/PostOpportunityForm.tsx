@@ -2,12 +2,24 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import ChapterPicker from "@/components/ChapterPicker";
 
 type Category = { id: string; name: string };
 
 const inputClass =
   "w-full rounded-xl bg-white/70 dark:bg-zinc-900/70 px-3 py-2 outline-none text-zinc-900 dark:text-white placeholder:text-zinc-500";
 const labelClass = "block text-sm font-medium mb-1 text-zinc-900 dark:text-white";
+const CONTENT_LABELS: Record<string, string> = {
+  NOTES: "Notes",
+  SOLUTION: "Solutions",
+  TEST: "Tests",
+  MCQ_TEST: "MCQ Tests",
+  PYQ: "PYQ",
+  DPP: "DPP",
+  MOCK_TEST: "Mock Tests",
+  LESSON: "Lessons",
+  VIDEO: "Videos",
+};
 
 export default function PostOpportunityForm({ categories }: { categories: Category[] }) {
   const router = useRouter();
@@ -24,6 +36,9 @@ export default function PostOpportunityForm({ categories }: { categories: Catego
   const [eventDate, setEventDate] = useState("");
   const [requiresCode, setRequiresCode] = useState(false);
   const [division, setDivision] = useState("TEST_SERIES");
+  const [courseNodeId, setCourseNodeId] = useState<string | null>(null);
+  const [courseContentTypes, setCourseContentTypes] = useState<string[]>([]);
+  const [contentType, setContentType] = useState("");
   const [linkType, setLinkType] = useState<"link" | "pdf">("link");
   const [pdfFile, setPdfFile] = useState<File | null>(null);
   const [uploadingPdf, setUploadingPdf] = useState(false);
@@ -44,6 +59,10 @@ export default function PostOpportunityForm({ categories }: { categories: Catego
 
     if (!title || !categoryId || !description || !applyDeadline) {
       setError("Please fill in all required fields.");
+      return;
+    }
+    if (courseNodeId && !contentType) {
+      setError("Please choose what this is (Solutions, Notes, Tests...).");
       return;
     }
     if (isQuiz && linkType === "link" && !externalLink) {
@@ -115,6 +134,8 @@ export default function PostOpportunityForm({ categories }: { categories: Catego
         requiresCode: isQuiz ? requiresCode : false,
         division,
         chapter: type === "SOLUTION" && chapter ? parseInt(chapter, 10) : null,
+        courseNodeId,
+        contentType: courseNodeId ? contentType : null,
       }),
     });
 
@@ -179,6 +200,30 @@ export default function PostOpportunityForm({ categories }: { categories: Catego
           ))}
         </select>
       </div>
+
+      <ChapterPicker
+        inputClass={inputClass}
+        labelClass={labelClass}
+        onChange={(id, types) => {
+          setCourseNodeId(id);
+          setCourseContentTypes(types);
+          setContentType("");
+        }}
+      />
+
+      {courseNodeId && (
+        <div>
+          <label className={labelClass}>What is this? *</label>
+          <select value={contentType} onChange={(e) => setContentType(e.target.value)} className={inputClass}>
+            <option value="">Select</option>
+            {courseContentTypes.map((t) => (
+              <option key={t} value={t}>
+                {CONTENT_LABELS[t] ?? t}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
 
       {type === "SOLUTION" && (
         <div>

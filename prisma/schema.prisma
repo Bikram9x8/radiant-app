@@ -188,9 +188,14 @@ model Opportunity {
   createdAt     DateTime          @default(now())
   updatedAt     DateTime          @updatedAt
 
+  courseNodeId  String?
+  courseNode    CourseNode?       @relation(fields: [courseNodeId], references: [id], onDelete: SetNull)
+  contentType   String?           // NOTES | SOLUTION | TEST | MCQ_TEST | PYQ | DPP ...
+
   @@index([status])
   @@index([type])
   @@index([applyDeadline])
+  @@index([courseNodeId])
 }
 model AccessCode {
   id            String       @id @default(cuid())
@@ -287,6 +292,8 @@ model CourseNode {
 
   createdAt     DateTime     @default(now())
   updatedAt     DateTime     @updatedAt
+
+  opportunities Opportunity[]
 
   @@unique([parentId, slug])
   @@index([parentId])
