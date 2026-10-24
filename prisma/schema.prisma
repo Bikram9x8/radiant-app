@@ -312,3 +312,15 @@ model ProblemReport {
   @@index([status])
   @@index([createdAt])
 }
+model PageView {
+  id            String   @id @default(cuid())
+  path          String
+  courseNodeId  String?
+  opportunityId String?
+  userId        String?
+  createdAt     DateTime @default(now())
+
+  @@index([createdAt])
+  @@index([courseNodeId])
+  @@index([opportunityId])
+}
