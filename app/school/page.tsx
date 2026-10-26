@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import ClassTiles from "@/components/ClassTiles";
+import { SchoolArt } from "@/components/Illustrations";
 export const dynamic = "force-dynamic";
 
 // How many classes are shown before the "Show all" button
@@ -61,12 +62,17 @@ export default async function SchoolPage() {
           <span className="text-zinc-900 font-semibold">School Education</span>
         </nav>
 
-        <h1 className="mt-4 text-3xl sm:text-4xl font-extrabold tracking-tight text-[#14142b]">
-          School Education
-        </h1>
-        <p className="mt-2 text-zinc-600">
-          Pick your board and class. Everything inside is arranged as class, subject, chapter.
-        </p>
+        <div className="mt-4 rounded-2xl pastel-purple p-6 sm:p-8 flex flex-wrap items-center gap-4">
+          <div className="flex-1 basis-[240px] min-w-0">
+            <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-[#14142b]">
+              School Education
+            </h1>
+            <p className="mt-2 text-zinc-700">
+              Pick your board and class. Everything inside is arranged as class, subject, chapter.
+            </p>
+          </div>
+          <SchoolArt className="w-44 sm:w-56 h-auto mx-auto" />
+        </div>
 
         {boards.length === 0 && (
           <p className="mt-6 text-sm text-zinc-500">Courses are being set up. Check back soon.</p>
@@ -103,13 +109,15 @@ export default async function SchoolPage() {
                 id: child.id,
                 href: `/courses/${course.slug}/${child.slug}`,
                 name: child.name,
-                label: course.name,
+                label: course.slug === "competitive" ? "Competitions" : course.name,
                 color: TILE_COLORS[(i + 2) % TILE_COLORS.length],
               }));
 
               return (
                 <div key={course.id} className="mt-8">
-                  <h3 className="text-xl font-bold text-[#14142b]">{course.name}</h3>
+                  <h3 className="text-xl font-bold text-[#14142b]">
+                    {course.slug === "competitive" ? "Competitions" : course.name}
+                  </h3>
                   {items.length > 0 ? (
                     <ClassTiles items={items} visible={items.length} />
                   ) : (

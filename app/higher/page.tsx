@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import HigherTabs from "@/components/HigherTabs";
+import { HigherArt } from "@/components/Illustrations";
 export const dynamic = "force-dynamic";
 
 function AdSlot({ label, className = "" }: { label: string; className?: string }) {
@@ -50,12 +51,17 @@ export default async function HigherPage() {
           <span className="text-zinc-900 font-semibold">Higher Education</span>
         </nav>
 
-        <h1 className="mt-4 text-3xl sm:text-4xl font-extrabold tracking-tight text-[#14142b]">
-          Higher Education
-        </h1>
-        <p className="mt-2 text-zinc-600">
-          Choose where you are in your studies, then pick what you need.
-        </p>
+        <div className="mt-4 rounded-2xl pastel-mint p-6 sm:p-8 flex flex-wrap items-center gap-4">
+          <div className="flex-1 basis-[240px] min-w-0">
+            <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-[#14142b]">
+              Higher Education
+            </h1>
+            <p className="mt-2 text-zinc-700">
+              Choose where you are in your studies, then pick what you need.
+            </p>
+          </div>
+          <HigherArt className="w-44 sm:w-56 h-auto mx-auto" />
+        </div>
 
         {!root && (
           <p className="mt-6 text-sm text-zinc-500">Higher Education is being set up. Check back soon.</p>

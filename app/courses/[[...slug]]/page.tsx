@@ -12,6 +12,7 @@ import {
 } from "@tabler/icons-react";
 import { prisma } from "@/lib/prisma";
 import ViewTracker from "@/components/ViewTracker";
+import { SubjectArt } from "@/components/Illustrations";
 
 const PASTELS = [
   "pastel-purple",
@@ -320,13 +321,13 @@ export default async function CoursePage({
                     href={`${basePath === "/courses/" ? "/courses" : basePath}/${c.slug}`}
                     className={`card-lift block p-5 ${PASTELS[i % PASTELS.length]}`}
                   >
+                    {isSchool && c.kind === "SUBJECT" && <SubjectArt name={c.name} className="w-10 h-10 mb-3" />}
                     <span className="block text-lg sm:text-xl font-extrabold text-[#14142b] break-words">{c.name}</span>
                     <span className="block mt-3 text-sm font-bold">Open →</span>
                   </Link>
                 ))}
               </div>
             )}
-
             {/* ---------- Nothing here yet ---------- */}
             {!isChapter && !isClassPage && children.length === 0 && (
               <ComingSoon text="Content for this section is being added. Check back soon." />

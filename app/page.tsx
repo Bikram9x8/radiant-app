@@ -14,6 +14,7 @@ import { getServerSession } from "next-auth/next";
 import { redirect } from "next/navigation";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { SchoolArt, HigherArt } from "@/components/Illustrations";
 
 const CHAPTER_ITEMS = [
   { label: "Notes", text: "Clear chapter notes to revise from.", Icon: IconFileText, color: "pastel-purple" },
@@ -159,9 +160,7 @@ export default async function Home() {
             href="/school"
             className="card-lift pastel-purple block p-6 sm:p-10"
           >
-            <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-white/70 text-violet-700 flex items-center justify-center">
-              <IconSchool size={32} stroke={2} />
-            </div>
+            <SchoolArt className="w-full max-w-[240px] h-auto" />
             <h3 className="mt-5 sm:mt-6 text-2xl sm:text-3xl font-extrabold text-[#14142b]">School Education</h3>
             <p className="mt-3 text-base text-zinc-700">Classes 9-12 | CBSE &amp; ICSE</p>
             <span className="btn btn-primary mt-6 sm:mt-8 w-full sm:w-auto">
@@ -174,9 +173,7 @@ export default async function Home() {
             href="/higher"
             className="card-lift pastel-mint block p-6 sm:p-10"
           >
-            <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-white/70 text-teal-700 flex items-center justify-center">
-              <IconCertificate size={32} stroke={2} />
-            </div>
+            <HigherArt className="w-full max-w-[240px] h-auto" />
             <h3 className="mt-5 sm:mt-6 text-2xl sm:text-3xl font-extrabold text-[#14142b]">Higher Education</h3>
             <p className="mt-3 text-base text-zinc-700">
               After 12th | Colleges, Jobs, Internships, Scholarships
