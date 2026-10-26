@@ -42,14 +42,18 @@ export default function HigherTabs({ rootSlug, stages }: { rootSlug: string; sta
   return (
     <div>
       {/* Stage tabs */}
-      <div className="flex flex-wrap gap-2" role="tablist" aria-label="Choose your stage">
+            <div
+        className="flex gap-2 overflow-x-auto sm:flex-wrap -mx-4 px-4 sm:mx-0 sm:px-0 pb-1 [scrollbar-width:none]"
+        role="tablist"
+        aria-label="Choose your stage"
+      >
         {stages.map((s, i) => (
           <button
             key={s.id}
             role="tab"
             aria-selected={i === active}
             onClick={() => setActive(i)}
-            className={`rounded-xl px-4 py-2.5 text-sm font-bold transition-colors duration-300 min-h-[44px] ${
+            className={`shrink-0 whitespace-nowrap rounded-xl px-4 py-2.5 text-sm font-bold transition-colors duration-300 min-h-[44px] ${
               i === active
                 ? "bg-[#5b33d6] text-white shadow-md"
                 : "bg-zinc-100 text-zinc-700 hover:bg-violet-100 hover:text-[#5b33d6]"
