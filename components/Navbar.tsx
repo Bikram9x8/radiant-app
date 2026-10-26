@@ -1,177 +1,208 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
-import { useEffect, useState, useRef } from "react";
-import { IconFileText, IconTool, IconTargetArrow, IconPackage, IconClipboardList, IconSchool, IconBook, IconBook2, IconChevronDown, IconCertificate } from "@tabler/icons-react";
-const DIVISIONS = [
-  { href: "/opportunities?division=NCERT_SOLUTION", label: "NCERT Solution", Icon: IconBook2, gradient: "from-indigo-400 to-purple-400" },
-  { href: "/opportunities?division=CBSE_SAMPLE_PAPERS", label: "CBSE Sample Papers", Icon: IconCertificate, gradient: "from-orange-400 to-red-400" },
-  { href: "/opportunities", label: "Test Series", Icon: IconFileText, gradient: "from-emerald-400 to-cyan-400" },
-  { href: "/opportunities?division=SKILL_BUILDING", label: "Skill Building", Icon: IconTool, gradient: "from-pink-400 to-purple-400" },
-  { href: "/opportunities?division=CAREER_COUNSELING", label: "Career Counseling", Icon: IconTargetArrow, gradient: "from-cyan-400 to-blue-400" },
-  { href: "/opportunities?division=STUDY_PACKAGE", label: "Study Package", Icon: IconPackage, gradient: "from-lime-400 to-emerald-400" },
-  { href: "/opportunities?division=DPP", label: "DPP", Icon: IconClipboardList, gradient: "from-amber-400 to-pink-400" },
-  { href: "/opportunities?division=BOARD_LEVEL_TEST", label: "Board Level Test", Icon: IconSchool, gradient: "from-emerald-400 to-purple-400" },
-  { href: "/opportunities?division=CHAPTER_WISE_TEST", label: "Chapter Wise Test", Icon: IconBook, gradient: "from-purple-400 to-pink-400" },
+import { useEffect, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { IconX } from "@tabler/icons-react";
+
+const LINKS = [
+  { href: "/school", label: "School Education" },
+  { href: "/higher", label: "Higher Education" },
+  { href: "/opportunities", label: "Tests" },
 ];
 
 export default function Navbar() {
   const { data: session, status } = useSession();
   const user = session?.user as any;
+  const pathname = usePathname();
   const [visible, setVisible] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [divisionsOpen, setDivisionsOpen] = useState(false);
-  const divisionsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setVisible(true);
   }, []);
 
+  // Close the mobile menu when the page changes
   useEffect(() => {
-    function handleClickOutside(e: MouseEvent) {
-      if (divisionsRef.current && !divisionsRef.current.contains(e.target as Node)) {
-        setDivisionsOpen(false);
-      }
+    setMenuOpen(false);
+  }, [pathname]);
+
+  // Stop the page behind the menu from scrolling, and close on Escape
+  useEffect(() => {
+    document.body.style.overflow = menuOpen ? "hidden" : "";
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "Escape") setMenuOpen(false);
     }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.body.style.overflow = "";
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [menuOpen]);
 
   const initials = user?.email ? user.email.slice(0, 2).toUpperCase() : "";
+  const isActive = (href: string) => pathname === href || pathname.startsWith(href + "/");
+  const homeHref = status === "authenticated" ? "/dashboard" : "/";
 
   return (
-    <header
-      className="relative sticky top-0 z-50 bg-white dark:bg-black"
-      style={{
-        opacity: visible ? 1 : 0,
-        transform: visible ? "translateY(0)" : "translateY(-12px)",
-        transition: "opacity 0.5s ease, transform 0.5s ease",
-      }}
-    >
-      <div
-        className="absolute left-0 right-0 -bottom-6 h-6 pointer-events-none bg-gradient-to-b from-white dark:from-black to-transparent"
-      />
-      <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <button
-            onClick={() => setMenuOpen(!menuOpen)}
-            className="w-10 h-10 flex flex-col items-center justify-center gap-[5px]"
-            aria-label="Menu"
-          >
-            <span
-              className={`h-[2px] w-6 rounded-full bg-gradient-to-r from-purple-400 to-cyan-400 shadow-[0_0_8px_rgba(155,60,255,0.8)] transition-all duration-300 ${
-                menuOpen ? "rotate-45 translate-y-[7px]" : ""
-              }`}
-            />
-            <span
-              className={`h-[2px] w-6 rounded-full bg-gradient-to-r from-purple-400 to-cyan-400 shadow-[0_0_8px_rgba(155,60,255,0.8)] transition-all duration-300 ${
-                menuOpen ? "opacity-0" : ""
-              }`}
-            />
-            <span
-              className={`h-[2px] w-6 rounded-full bg-gradient-to-r from-purple-400 to-cyan-400 shadow-[0_0_8px_rgba(155,60,255,0.8)] transition-all duration-300 ${
-                menuOpen ? "-rotate-45 -translate-y-[7px]" : ""
-              }`}
-            />
-          </button>
-            <Link href={status === "authenticated" ? "/dashboard" : "/"} className="flex items-center">
-            <img src="/logo-light.png" alt="Radiant Educations" className="h-11 w-auto dark:hidden" />
-            <img src="/logo-dark.png" alt="Radiant Educations" className="h-11 w-auto hidden dark:block" />
+    <>
+      <header
+        className="sticky top-0 z-50 bg-white border-b border-[#e4e2ef]"
+        style={{ opacity: visible ? 1 : 0, transition: "opacity 0.5s ease-in-out" }}
+      >
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
+          {/* Logo */}
+          <Link href={homeHref} className="flex items-center shrink-0">
+            <img src="/logo-light.png" alt="Radiant Educations" className="h-10 w-auto" />
           </Link>
-        </div>
 
-        <nav className="flex items-center gap-4">
-          <div className="relative hidden sm:block" ref={divisionsRef}>
-            <button
-              onClick={() => setDivisionsOpen(!divisionsOpen)}
-              className="flex items-center gap-1 text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:text-purple-600 dark:hover:text-purple-400 transition-colors"
+          {/* Desktop links */}
+          <nav className="hidden md:flex items-center gap-1">
+            {LINKS.map((l) => (
+              <Link
+                key={l.href}
+                href={l.href}
+                className={`px-4 py-2 rounded-xl text-sm font-semibold transition-colors duration-300 ${
+                  isActive(l.href)
+                    ? "bg-violet-100 text-[#5b33d6]"
+                    : "text-zinc-700 hover:bg-zinc-100 hover:text-[#5b33d6]"
+                }`}
+              >
+                {l.label}
+              </Link>
+            ))}
+          </nav>
+
+          {/* Desktop buttons */}
+          <div className="hidden md:flex items-center gap-3">
+            {status === "loading" ? null : status === "unauthenticated" ? (
+              <>
+                <Link
+                  href="/login"
+                  className="btn btn-secondary"
+                  style={{ minHeight: 40, padding: "0.5rem 1.1rem" }}
+                >
+                  Log in
+                </Link>
+                <Link
+                  href="/signup"
+                  className="btn btn-primary"
+                  style={{ minHeight: 40, padding: "0.5rem 1.1rem" }}
+                >
+                  Sign up free
+                </Link>
+              </>
+            ) : (
+              <>
+                <Link
+                  href="/dashboard"
+                  className="btn btn-secondary"
+                  style={{ minHeight: 40, padding: "0.5rem 1.1rem" }}
+                >
+                  Dashboard
+                </Link>
+                <div className="w-9 h-9 rounded-full bg-[#5b33d6] text-white flex items-center justify-center text-xs font-bold">
+                  {initials}
+                </div>
+              </>
+            )}
+          </div>
+
+          {/* Hamburger (phones and tablets) */}
+          <button
+            onClick={() => setMenuOpen(true)}
+            className="md:hidden w-11 h-11 flex flex-col items-center justify-center gap-[5px] rounded-xl hover:bg-zinc-100"
+            aria-label="Open menu"
+          >
+            <span className="h-[2px] w-6 rounded-full bg-[#14142b]" />
+            <span className="h-[2px] w-6 rounded-full bg-[#14142b]" />
+            <span className="h-[2px] w-6 rounded-full bg-[#14142b]" />
+          </button>
+        </div>
+      </header>
+
+      {/* Mobile menu: slides in from the right */}
+      <AnimatePresence>
+        {menuOpen && (
+          <>
+            <motion.div
+              key="overlay"
+              className="fixed inset-0 z-[60] bg-black/40 md:hidden"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3, ease: "easeInOut" }}
+              onClick={() => setMenuOpen(false)}
+            />
+            <motion.aside
+              key="drawer"
+              className="fixed top-0 right-0 z-[70] h-full w-[85%] max-w-sm bg-white shadow-2xl flex flex-col md:hidden"
+              initial={{ x: "100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "100%" }}
+              transition={{ duration: 0.3, ease: "easeInOut" }}
             >
-              Explore
-              <IconChevronDown size={14} className={`transition-transform ${divisionsOpen ? "rotate-180" : ""}`} />
-            </button>
-            {divisionsOpen && (
-              <div className="absolute top-full right-0 mt-3 glass rounded-2xl p-3 grid grid-cols-2 gap-1 w-72 z-50">
-                {DIVISIONS.map((d) => (
+              <div className="h-16 px-5 flex items-center justify-between border-b border-[#e4e2ef]">
+                <span className="text-lg font-extrabold text-[#14142b]">Menu</span>
+                <button
+                  onClick={() => setMenuOpen(false)}
+                  className="w-11 h-11 flex items-center justify-center rounded-xl hover:bg-zinc-100"
+                  aria-label="Close menu"
+                >
+                  <IconX size={24} />
+                </button>
+              </div>
+
+              <div className="flex-1 overflow-y-auto p-5 flex flex-col gap-2">
+                {LINKS.map((l) => (
                   <Link
-                    key={d.label}
-                    href={d.href}
-                    onClick={() => setDivisionsOpen(false)}
-                    className="flex items-center gap-2 px-2.5 py-2 rounded-xl text-xs font-medium text-zinc-700 dark:text-zinc-300 hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-colors"
+                    key={l.href}
+                    href={l.href}
+                    className={`px-4 py-3.5 rounded-2xl text-base font-semibold transition-colors duration-300 ${
+                      isActive(l.href)
+                        ? "bg-violet-100 text-[#5b33d6]"
+                        : "text-zinc-800 hover:bg-zinc-100"
+                    }`}
                   >
-                    <div className={`w-6 h-6 rounded-lg bg-gradient-to-br ${d.gradient} flex items-center justify-center shrink-0`}>
-                      <d.Icon size={13} color="white" stroke={2.5} />
-                    </div>
-                    {d.label}
+                    {l.label}
                   </Link>
                 ))}
               </div>
-            )}
-          </div>
-          {status === "loading" ? null : status === "unauthenticated" ? (
-            <Link
-              href="/signup"
-              className="btn-neon text-sm font-semibold px-4 py-2 rounded-xl"
-            >
-              Sign up free
-            </Link>
-          ) : (
-            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-400 to-cyan-400 shadow-[0_0_10px_rgba(155,60,255,0.4)] text-white flex items-center justify-center text-xs font-semibold">
-              {initials}
-            </div>
-          )}
-        </nav>
-      </div>
 
-      {menuOpen && (
-        <div className="glass mx-4 mb-4 rounded-2xl p-4 flex flex-col gap-1">
-          <Link
-            href="/opportunities"
-            onClick={() => setMenuOpen(false)}
-            className="px-3 py-2.5 rounded-xl text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-colors"
-          >
-            Tests
-          </Link>
-          {status === "authenticated" && (
-            <>
-              <Link
-                href="/dashboard"
-                onClick={() => setMenuOpen(false)}
-                className="px-3 py-2.5 rounded-xl text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-colors"
-              >
-                Dashboard
-              </Link>
-              <button
-                onClick={() => {
-                  setMenuOpen(false);
-                  signOut({ callbackUrl: "/" });
-                }}
-                className="text-left px-3 py-2.5 rounded-xl text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
-              >
-                Log out
-              </button>
-            </>
-          )}
-          {status === "unauthenticated" && (
-            <>
-              <Link
-                href="/login"
-                onClick={() => setMenuOpen(false)}
-                className="px-3 py-2.5 rounded-xl text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-colors"
-              >
-                Log in
-              </Link>
-              <Link
-                href="/signup"
-                onClick={() => setMenuOpen(false)}
-                className="px-3 py-2.5 rounded-xl text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-colors"
-              >
-                Sign up
-              </Link>
-            </>
-          )}
-        </div>
-      )}
-    </header>
+              <div className="p-5 border-t border-[#e4e2ef] flex flex-col gap-3">
+                {status === "unauthenticated" && (
+                  <>
+                    <Link href="/login" className="btn btn-secondary w-full">
+                      Log in
+                    </Link>
+                    <Link href="/signup" className="btn btn-primary w-full">
+                      Sign up free
+                    </Link>
+                  </>
+                )}
+                {status === "authenticated" && (
+                  <>
+                    <Link href="/dashboard" className="btn btn-secondary w-full">
+                      Dashboard
+                    </Link>
+                    <button
+                      onClick={() => {
+                        setMenuOpen(false);
+                        signOut({ callbackUrl: "/" });
+                      }}
+                      className="btn w-full text-red-600 border border-red-200 hover:bg-red-50"
+                    >
+                      Log out
+                    </button>
+                  </>
+                )}
+              </div>
+            </motion.aside>
+          </>
+        )}
+      </AnimatePresence>
+    </>
   );
 }
