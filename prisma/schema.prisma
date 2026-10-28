@@ -172,6 +172,7 @@ model Opportunity {
   location      String?
   mode          String            @default("Online") // Online / Offline / Hybrid
   stipendOrPrize String?
+  duration      String?           // internships, e.g. "3 months"
   applyDeadline DateTime
   eventDate     DateTime?
   externalLink  String?           // optional external application link
