@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { isDeadlinePassed } from "@/lib/internships";
 
 export async function POST(req: Request) {
   const session = await getServerSession(authOptions);
@@ -25,6 +26,10 @@ export async function POST(req: Request) {
   const opportunity = await prisma.opportunity.findUnique({ where: { id: opportunityId } });
   if (!opportunity || opportunity.status !== "APPROVED") {
     return NextResponse.json({ error: "Opportunity not available" }, { status: 404 });
+  }
+
+  if (opportunity.type === "INTERNSHIP" && isDeadlinePassed(opportunity.applyDeadline)) {
+    return NextResponse.json({ error: "Applications for this internship have closed." }, { status: 400 });
   }
 
   const latestResume = await prisma.resume.findFirst({

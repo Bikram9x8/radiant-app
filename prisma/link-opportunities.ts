@@ -48,7 +48,7 @@ async function main() {
   if (!cbse) throw new Error("CBSE course not found in the course tree.");
 
   const opps = await prisma.opportunity.findMany({
-    where: { courseNodeId: null },
+    where: { courseNodeId: null, type: { not: "INTERNSHIP" } },
     include: { category: { select: { name: true } } },
     orderBy: { createdAt: "asc" },
   });

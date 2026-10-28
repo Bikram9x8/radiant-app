@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { cleanDuration, getInternshipsCategoryId, isInternshipSubcategory } from "@/lib/internships";
 
 export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -88,16 +89,42 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
     applyDeadline,
     eventDate,
     externalLink,
+    duration,
+    courseNodeId,
   } = body;
 
-  if (!title || !type || !categoryId || !description || !applyDeadline) {
+  const isInternship = type === "INTERNSHIP";
+  if ((existing.type === "INTERNSHIP") !== isInternship) {
+    return NextResponse.json(
+      { error: "A post can't be changed to or from Internship. Please create a new post instead." },
+      { status: 400 }
+    );
+  }
+
+  if (!title || !type || (!categoryId && !isInternship) || !description || !applyDeadline) {
     return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+  }
+
+  let finalCategoryId = categoryId;
+  let nodeUpdate: { courseNodeId?: string } = {};
+  if (isInternship) {
+    const internshipsCategoryId = await getInternshipsCategoryId();
+    if (!internshipsCategoryId) {
+      return NextResponse.json({ error: "Internships category is missing." }, { status: 500 });
+    }
+    finalCategoryId = internshipsCategoryId;
+    if (courseNodeId !== undefined) {
+      if (typeof courseNodeId !== "string" || !(await isInternshipSubcategory(courseNodeId))) {
+        return NextResponse.json({ error: "Please choose a valid internship subcategory." }, { status: 400 });
+      }
+      nodeUpdate = { courseNodeId };
+    }
   }
 
   const updated = await prisma.opportunity.update({
     where: { id },
     data: {
-      categoryId,
+      categoryId: finalCategoryId,
       title,
       type,
       description,
@@ -105,6 +132,9 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
       location: location || null,
       mode: mode || "Online",
       stipendOrPrize: stipendOrPrize || null,
+      // Only touched when sent, so older clients can't blank them out.
+      duration: duration !== undefined ? cleanDuration(duration) : undefined,
+      ...nodeUpdate,
       applyDeadline: new Date(applyDeadline),
       eventDate: eventDate ? new Date(eventDate) : null,
       externalLink: externalLink || null,

@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
+import { cleanDuration, getInternshipsCategoryId, isInternshipSubcategory } from "@/lib/internships";
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
@@ -67,15 +68,28 @@ export async function POST(req: Request) {
     chapter,
     courseNodeId,
     contentType,
+    duration,
   } = body;
 
+  const isInternship = type === "INTERNSHIP";
 
-  if (!title || !type || !categoryId || !description || !applyDeadline) {
+  if (!title || !type || (!categoryId && !isInternship) || !description || !applyDeadline) {
     return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
   }
 
+  let finalCategoryId = categoryId;
   let linkedNodeId: string | null = null;
-  if (courseNodeId) {
+  if (isInternship) {
+    if (typeof courseNodeId !== "string" || !(await isInternshipSubcategory(courseNodeId))) {
+      return NextResponse.json({ error: "Please choose a valid internship subcategory." }, { status: 400 });
+    }
+    const internshipsCategoryId = await getInternshipsCategoryId();
+    if (!internshipsCategoryId) {
+      return NextResponse.json({ error: "Internships category is missing." }, { status: 500 });
+    }
+    finalCategoryId = internshipsCategoryId;
+    linkedNodeId = courseNodeId;
+  } else if (courseNodeId) {
     const node = await prisma.courseNode.findUnique({ where: { id: courseNodeId } });
     if (!node || node.kind !== "CHAPTER") {
       return NextResponse.json({ error: "Please choose a valid chapter." }, { status: 400 });
@@ -86,7 +100,7 @@ export async function POST(req: Request) {
   const opportunity = await prisma.opportunity.create({
     data: {
       companyId: companyProfile.id,
-      categoryId,
+      categoryId: finalCategoryId,
       title,
       type,
       description,
@@ -94,14 +108,15 @@ export async function POST(req: Request) {
       location: location || null,
       mode: mode || "Online",
       stipendOrPrize: stipendOrPrize || null,
+      duration: cleanDuration(duration),
       applyDeadline: new Date(applyDeadline),
       eventDate: eventDate ? new Date(eventDate) : null,
       externalLink: externalLink || null,
       requiresCode: requiresCode === true,
       division: division || "TEST_SERIES",
-      chapter: typeof chapter === "number" ? chapter : null,
+      chapter: !isInternship && typeof chapter === "number" ? chapter : null,
       courseNodeId: linkedNodeId,
-      contentType: linkedNodeId ? contentType || null : null,
+      contentType: linkedNodeId && !isInternship ? contentType || null : null,
       status: "PENDING",
     },
   });
