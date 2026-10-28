@@ -2,7 +2,13 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { cleanDuration, getInternshipsCategoryId, isInternshipSubcategory } from "@/lib/internships";
+import {
+  cleanDuration,
+  getInternshipBackLink,
+  getInternshipsCategoryId,
+  isDeadlinePassed,
+  isInternshipSubcategory,
+} from "@/lib/internships";
 
 export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -51,7 +57,15 @@ const session = await getServerSession(authOptions);
     }
   }
 
-  return NextResponse.json({ opportunity, alreadyApplied, codeUnlocked, isLocked });  
+  // Internships only: closed state and a back link to the subcategory page
+  let applicationsClosed = false;
+  let backLink: { href: string; label: string } | null = null;
+  if (opportunity.type === "INTERNSHIP") {
+    applicationsClosed = isDeadlinePassed(opportunity.applyDeadline);
+    backLink = await getInternshipBackLink(opportunity.courseNodeId, new URL(req.url).searchParams.get("level"));
+  }
+
+  return NextResponse.json({ opportunity, alreadyApplied, codeUnlocked, isLocked, applicationsClosed, backLink });
   }
 export async function PUT(req: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;

@@ -22,6 +22,7 @@ import Link from "next/link";
 import FadeIn from "@/components/FadeIn";
 import { Skeleton } from "@/components/Skeleton";
 import { useToast } from "@/components/Toast";
+import ViewTracker from "@/components/ViewTracker";
 
 
 export default function OpportunityDetailPage() {
@@ -45,10 +46,14 @@ export default function OpportunityDetailPage() {
   const [applying, setApplying] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
+  const [applicationsClosed, setApplicationsClosed] = useState(false);
+  const [backLink, setBackLink] = useState<{ href: string; label: string } | null>(null);
 
   useEffect(() => {
     async function load() {
-      const res = await fetch(`/api/opportunities/${id}`);
+      // ?level= comes from the internship cards; the API validates it before using it
+      const level = new URLSearchParams(window.location.search).get("level");
+      const res = await fetch(`/api/opportunities/${id}` + (level ? `?level=${encodeURIComponent(level)}` : ""));
       if (res.status === 404) {
         setNotFound(true);
         setLoading(false);
@@ -59,6 +64,8 @@ export default function OpportunityDetailPage() {
       setAlreadyApplied(data.alreadyApplied);
       setCodeUnlocked(data.codeUnlocked || false);
       setAlreadyLocked(data.isLocked || false);
+      setApplicationsClosed(data.applicationsClosed || false);
+      setBackLink(data.backLink || null);
       setLoading(false);
     }
     load();
@@ -149,11 +156,19 @@ export default function OpportunityDetailPage() {
   }
 
   const isQuiz = opportunity.type === "QUIZ" || opportunity.type === "SOLUTION";
+  const isInternship = opportunity.type === "INTERNSHIP";
   return (
     <div className="max-w-2xl mx-auto mt-12 px-6 mb-12">
-      <Link href="/opportunities" className="text-sm text-purple-600 dark:text-purple-400 font-semibold">
-        ← Back to opportunities
-      </Link>
+      <ViewTracker opportunityId={opportunity.id} />
+      {backLink ? (
+        <Link href={backLink.href} className="text-sm text-purple-600 dark:text-purple-400 font-semibold">
+          ← Back to {backLink.label}
+        </Link>
+      ) : (
+        <Link href="/opportunities" className="text-sm text-purple-600 dark:text-purple-400 font-semibold">
+          ← Back to opportunities
+        </Link>
+      )}
 
       <FadeIn>
       <div className="glass rounded-3xl p-8 mt-5">
@@ -190,10 +205,22 @@ export default function OpportunityDetailPage() {
           <div className="mt-4 flex flex-wrap gap-4 text-sm text-zinc-600 dark:text-zinc-400">
             <span>📍 {opportunity.location || "Not specified"} ({opportunity.mode})</span>
             <span>💰 {opportunity.stipendOrPrize || "Not disclosed"}</span>
+            {opportunity.duration && <span>⏱ {opportunity.duration}</span>}
           </div>
         )}
         <div className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
-          ⏰ {isQuiz ? "Available until" : "Apply by"} {new Date(opportunity.applyDeadline).toLocaleDateString()}
+          ⏰ {isQuiz ? "Available until" : "Apply by"}{" "}
+          {isInternship
+            ? new Date(opportunity.applyDeadline).toLocaleDateString("en-IN", {
+                day: "numeric",
+                month: "short",
+                year: "numeric",
+                timeZone: "Asia/Kolkata",
+              })
+            : new Date(opportunity.applyDeadline).toLocaleDateString()}
+          {applicationsClosed && (
+            <span className="ml-1 font-semibold text-red-600 dark:text-red-400">· Applications closed</span>
+          )}
         </div>
 
         <div className="mt-6">
@@ -283,6 +310,13 @@ export default function OpportunityDetailPage() {
             ) : (
               <p className="text-sm text-zinc-500">Test link not available.</p>
             )
+          ) : applicationsClosed && !(success || alreadyApplied) ? (
+            <div>
+              <p className="font-semibold text-red-600 dark:text-red-400">Applications closed</p>
+              <p className="text-sm text-zinc-600 dark:text-zinc-400 mt-1">
+                The deadline for this internship has passed.
+              </p>
+            </div>
           ) : status !== "authenticated" ? (
             <Link
               href="/signup"

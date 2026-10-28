@@ -126,6 +126,50 @@ export async function getOpenInternshipsForSubcategory(subcategorySlug: string) 
   return posts.filter((p) => !isDeadlinePassed(p.applyDeadline));
 }
 
+// Back link from an internship's detail page to its subcategory page. Uses the level the student
+// came from (?level=) only if that level really has the same subcategory; otherwise the post's own level.
+export async function getInternshipBackLink(
+  courseNodeId: string | null,
+  levelSlug: string | null
+): Promise<{ href: string; label: string } | null> {
+  if (!courseNodeId || !(await isInternshipSubcategory(courseNodeId))) return null;
+  const node = await prisma.courseNode.findUnique({
+    where: { id: courseNodeId },
+    select: { slug: true, name: true, parent: { select: { parent: { select: { slug: true } } } } },
+  });
+  const ownLevel = node?.parent?.parent?.slug;
+  if (!node || !ownLevel) return null;
+
+  let level = ownLevel;
+  if (levelSlug && levelSlug !== ownLevel) {
+    const match = await prisma.courseNode.findFirst({
+      where: {
+        slug: node.slug,
+        kind: "SUBJECT",
+        isActive: true,
+        parent: {
+          kind: "STAGE",
+          slug: INTERNSHIPS_STAGE_SLUG,
+          isActive: true,
+          parent: {
+            kind: "LEVEL",
+            slug: levelSlug,
+            isActive: true,
+            parent: { kind: "COURSE", slug: INTERNSHIPS_ROOT_SLUG, parentId: null },
+          },
+        },
+      },
+      select: { id: true },
+    });
+    if (match) level = levelSlug;
+  }
+
+  return {
+    href: `/courses/${INTERNSHIPS_ROOT_SLUG}/${level}/${INTERNSHIPS_STAGE_SLUG}/${node.slug}`,
+    label: node.name,
+  };
+}
+
 export async function getInternshipsCategoryId(): Promise<string | null> {
   const category = await prisma.category.findUnique({ where: { slug: INTERNSHIPS_CATEGORY_SLUG } });
   return category?.id ?? null;
