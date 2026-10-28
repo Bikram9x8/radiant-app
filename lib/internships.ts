@@ -90,6 +90,42 @@ export async function getInternshipOptions(): Promise<InternshipLevelOption[]> {
     .filter((l) => l.subcategories.length > 0);
 }
 
+// Approved, still-open internships for a subcategory. Matches by subcategory slug, not node id,
+// so a post linked under one level shows under all three levels. Newest first.
+export async function getOpenInternshipsForSubcategory(subcategorySlug: string) {
+  const posts = await prisma.opportunity.findMany({
+    where: {
+      type: "INTERNSHIP",
+      status: "APPROVED",
+      courseNode: {
+        slug: subcategorySlug,
+        kind: "SUBJECT",
+        isActive: true,
+        parent: {
+          kind: "STAGE",
+          slug: INTERNSHIPS_STAGE_SLUG,
+          parent: {
+            kind: "LEVEL",
+            parent: { kind: "COURSE", slug: INTERNSHIPS_ROOT_SLUG, parentId: null },
+          },
+        },
+      },
+    },
+    orderBy: { createdAt: "desc" },
+    select: {
+      id: true,
+      title: true,
+      duration: true,
+      stipendOrPrize: true,
+      location: true,
+      mode: true,
+      applyDeadline: true,
+      company: { select: { companyName: true } },
+    },
+  });
+  return posts.filter((p) => !isDeadlinePassed(p.applyDeadline));
+}
+
 export async function getInternshipsCategoryId(): Promise<string | null> {
   const category = await prisma.category.findUnique({ where: { slug: INTERNSHIPS_CATEGORY_SLUG } });
   return category?.id ?? null;

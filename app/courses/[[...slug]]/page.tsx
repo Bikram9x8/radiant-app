@@ -11,6 +11,12 @@ import {
   IconBulb,
 } from "@tabler/icons-react";
 import { prisma } from "@/lib/prisma";
+import {
+  INTERNSHIPS_ROOT_SLUG,
+  INTERNSHIPS_STAGE_SLUG,
+  NON_POSTABLE_INTERNSHIP_SLUGS,
+  getOpenInternshipsForSubcategory,
+} from "@/lib/internships";
 import ViewTracker from "@/components/ViewTracker";
 import { SubjectArt } from "@/components/Illustrations";
 
@@ -140,6 +146,19 @@ export default async function CoursePage({
           select: { id: true, title: true },
         })
       : [];
+
+  // Internship subcategory page: higher-education > LEVEL > internships > SUBJECT (not a guide page)
+  const isInternshipPage =
+    trail.length === 4 &&
+    trail[0].kind === "COURSE" &&
+    trail[0].slug === INTERNSHIPS_ROOT_SLUG &&
+    trail[1].kind === "LEVEL" &&
+    trail[2].kind === "STAGE" &&
+    trail[2].slug === INTERNSHIPS_STAGE_SLUG &&
+    trail[3].kind === "SUBJECT" &&
+    !NON_POSTABLE_INTERNSHIP_SLUGS.includes(trail[3].slug);
+
+  const internships = isInternshipPage ? await getOpenInternshipsForSubcategory(trail[3].slug) : [];
 
   const basePath = "/courses/" + slug.join("/");
   const chaptersMode = children.length > 0 && children[0].kind === "CHAPTER";
@@ -328,8 +347,51 @@ export default async function CoursePage({
                 ))}
               </div>
             )}
+            {/* ---------- Internship subcategory: open internships ---------- */}
+            {isInternshipPage &&
+              (internships.length === 0 ? (
+                <ComingSoon text={`Internships in ${title} are being added. Check back soon.`} />
+              ) : (
+                <div>
+                  <p className="text-sm font-semibold text-zinc-600">
+                    {internships.length} open internship{internships.length === 1 ? "" : "s"}
+                  </p>
+                  <div className="mt-4 grid gap-4 sm:grid-cols-2">
+                    {internships.map((p, i) => (
+                      <Link
+                        key={p.id}
+                        href={`/opportunities/${p.id}?level=${trail[1].slug}`}
+                        className={`card-lift block p-5 ${PASTELS[i % PASTELS.length]}`}
+                      >
+                        <span className="block text-lg font-extrabold text-[#14142b] break-words">{p.title}</span>
+                        <span className="block mt-1 text-sm text-zinc-700">{p.company.companyName}</span>
+                        <div className="mt-3 flex flex-wrap gap-2 text-xs font-semibold text-zinc-800">
+                          {p.duration && <span className="rounded-full bg-white/70 px-2.5 py-1">⏱ {p.duration}</span>}
+                          {p.stipendOrPrize && (
+                            <span className="rounded-full bg-white/70 px-2.5 py-1">₹ {p.stipendOrPrize}</span>
+                          )}
+                          <span className="rounded-full bg-white/70 px-2.5 py-1">
+                            📍 {p.location ? `${p.location} · ${p.mode}` : p.mode}
+                          </span>
+                        </div>
+                        <span className="block mt-3 text-sm font-bold">
+                          Apply by{" "}
+                          {p.applyDeadline.toLocaleDateString("en-IN", {
+                            day: "numeric",
+                            month: "short",
+                            year: "numeric",
+                            timeZone: "Asia/Kolkata",
+                          })}{" "}
+                          →
+                        </span>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              ))}
+
             {/* ---------- Nothing here yet ---------- */}
-            {!isChapter && !isClassPage && children.length === 0 && (
+            {!isChapter && !isClassPage && !isInternshipPage && children.length === 0 && (
               <ComingSoon text="Content for this section is being added. Check back soon." />
             )}
           </div>
