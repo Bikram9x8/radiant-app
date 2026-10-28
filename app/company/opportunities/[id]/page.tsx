@@ -2,6 +2,7 @@ import { getServerSession } from "next-auth/next";
 import { redirect, notFound } from "next/navigation";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { getInternshipOptions } from "@/lib/internships";
 import EditOpportunityForm from "./EditOpportunityForm";
 
 export default async function EditOpportunityPage({
@@ -36,6 +37,7 @@ export default async function EditOpportunityPage({
   const categories = await prisma.category.findMany({
     orderBy: { name: "asc" },
   });
+  const internshipOptions = await getInternshipOptions();
 
   return (
     <div className="flex-1 px-6 py-8 max-w-2xl mx-auto w-full">
@@ -43,7 +45,11 @@ export default async function EditOpportunityPage({
       <p className="text-zinc-600 dark:text-zinc-400 text-sm mb-8">
         Saving changes will send this back to admin for re-approval.
       </p>
-      <EditOpportunityForm categories={categories} opportunity={opportunity} />
+      <EditOpportunityForm
+        categories={categories}
+        opportunity={opportunity}
+        internshipOptions={internshipOptions}
+      />
     </div>
   );
 }

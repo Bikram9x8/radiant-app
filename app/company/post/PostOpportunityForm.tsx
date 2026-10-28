@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import ChapterPicker from "@/components/ChapterPicker";
+import InternshipPicker from "@/components/InternshipPicker";
+import type { InternshipLevelOption } from "@/lib/internships";
 
 type Category = { id: string; name: string };
 
@@ -21,7 +23,13 @@ const CONTENT_LABELS: Record<string, string> = {
   VIDEO: "Videos",
 };
 
-export default function PostOpportunityForm({ categories }: { categories: Category[] }) {
+export default function PostOpportunityForm({
+  categories,
+  internshipOptions,
+}: {
+  categories: Category[];
+  internshipOptions: InternshipLevelOption[];
+}) {
   const router = useRouter();
 
   const [type, setType] = useState("QUIZ");
@@ -39,6 +47,8 @@ export default function PostOpportunityForm({ categories }: { categories: Catego
   const [courseNodeId, setCourseNodeId] = useState<string | null>(null);
   const [courseContentTypes, setCourseContentTypes] = useState<string[]>([]);
   const [contentType, setContentType] = useState("");
+  const [internshipNodeId, setInternshipNodeId] = useState<string | null>(null);
+  const [duration, setDuration] = useState("");
   const [linkType, setLinkType] = useState<"link" | "pdf">("link");
   const [pdfFile, setPdfFile] = useState<File | null>(null);
   const [uploadingPdf, setUploadingPdf] = useState(false);
@@ -47,6 +57,7 @@ export default function PostOpportunityForm({ categories }: { categories: Catego
   const [success, setSuccess] = useState(false);
 
   const isQuiz = type === "QUIZ" || type === "SOLUTION";
+  const isInternship = type === "INTERNSHIP";
   const [chapter, setChapter] = useState("");
   const showEventDate = type === "EVENT" || type === "HACKATHON";
 
@@ -57,11 +68,19 @@ export default function PostOpportunityForm({ categories }: { categories: Catego
     const formData = new FormData(e.currentTarget);
     const categoryId = formData.get("categoryId") as string;
 
-    if (!title || !categoryId || !description || !applyDeadline) {
+    if (!title || (!categoryId && !isInternship) || !description || !applyDeadline) {
       setError("Please fill in all required fields.");
       return;
     }
-    if (courseNodeId && !contentType) {
+    if (isInternship && !internshipNodeId) {
+      setError("Please choose where this internship should appear.");
+      return;
+    }
+    if (isInternship && !duration.trim()) {
+      setError("Please enter the internship duration.");
+      return;
+    }
+    if (!isInternship && courseNodeId && !contentType) {
       setError("Please choose what this is (Solutions, Notes, Tests...).");
       return;
     }
@@ -134,8 +153,9 @@ export default function PostOpportunityForm({ categories }: { categories: Catego
         requiresCode: isQuiz ? requiresCode : false,
         division,
         chapter: type === "SOLUTION" && chapter ? parseInt(chapter, 10) : null,
-        courseNodeId,
-        contentType: courseNodeId ? contentType : null,
+        courseNodeId: isInternship ? internshipNodeId : courseNodeId,
+        contentType: !isInternship && courseNodeId ? contentType : null,
+        duration: isInternship ? duration : null,
       }),
     });
 
@@ -174,7 +194,8 @@ export default function PostOpportunityForm({ categories }: { categories: Catego
           <option value="EVENT">Event</option>
         </select>
       </div>
-<div>
+      {/* Hidden (not unmounted) for internships so the values survive switching type back */}
+      <div className={isInternship ? "hidden" : ""}>
         <label className={labelClass}>Division *</label>
         <select value={division} onChange={(e) => setDivision(e.target.value)} className={inputClass}>
           <option value="NCERT_SOLUTION">NCERT Solution</option>
@@ -189,7 +210,7 @@ export default function PostOpportunityForm({ categories }: { categories: Catego
       </div>
 
 
-      <div>
+      <div className={isInternship ? "hidden" : ""}>
         <label className={labelClass}>Category *</label>
         <select name="categoryId" defaultValue="" className={inputClass}>
           <option value="">Select a category</option>
@@ -201,17 +222,35 @@ export default function PostOpportunityForm({ categories }: { categories: Catego
         </select>
       </div>
 
-      <ChapterPicker
-        inputClass={inputClass}
-        labelClass={labelClass}
-        onChange={(id, types) => {
-          setCourseNodeId(id);
-          setCourseContentTypes(types);
-          setContentType("");
-        }}
-      />
+      {isInternship && (
+        <>
+          <p className="text-sm text-zinc-600 dark:text-zinc-400">
+            Category: <span className="font-medium text-zinc-900 dark:text-white">Internships</span> (set
+            automatically)
+          </p>
+          <InternshipPicker
+            options={internshipOptions}
+            value={internshipNodeId}
+            onChange={setInternshipNodeId}
+            inputClass={inputClass}
+            labelClass={labelClass}
+          />
+        </>
+      )}
 
-      {courseNodeId && (
+      <div className={isInternship ? "hidden" : ""}>
+        <ChapterPicker
+          inputClass={inputClass}
+          labelClass={labelClass}
+          onChange={(id, types) => {
+            setCourseNodeId(id);
+            setCourseContentTypes(types);
+            setContentType("");
+          }}
+        />
+      </div>
+
+      {!isInternship && courseNodeId && (
         <div>
           <label className={labelClass}>What is this? *</label>
           <select value={contentType} onChange={(e) => setContentType(e.target.value)} className={inputClass}>
@@ -403,6 +442,20 @@ export default function PostOpportunityForm({ categories }: { categories: Catego
               className={inputClass}
             />
           </div>
+
+          {isInternship && (
+            <div>
+              <label className={labelClass}>Duration *</label>
+              <input
+                type="text"
+                value={duration}
+                onChange={(e) => setDuration(e.target.value)}
+                maxLength={100}
+                placeholder="e.g. 3 months, 6 weeks, Flexible"
+                className={inputClass}
+              />
+            </div>
+          )}
         </>
       )}
 

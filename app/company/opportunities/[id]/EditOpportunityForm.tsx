@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import InternshipPicker from "@/components/InternshipPicker";
+import type { InternshipLevelOption } from "@/lib/internships";
 
 type Category = { id: string; name: string };
 type Opportunity = {
@@ -17,6 +19,8 @@ type Opportunity = {
   applyDeadline: Date;
   eventDate: Date | null;
   externalLink: string | null;
+  duration: string | null;
+  courseNodeId: string | null;
 };
 
 function toDateInputValue(d: Date | null): string {
@@ -31,9 +35,11 @@ const labelClass = "block text-sm font-medium mb-1 text-zinc-900 dark:text-white
 export default function EditOpportunityForm({
   categories,
   opportunity,
+  internshipOptions,
 }: {
   categories: Category[];
   opportunity: Opportunity;
+  internshipOptions: InternshipLevelOption[];
 }) {
   const router = useRouter();
 
@@ -47,6 +53,8 @@ export default function EditOpportunityForm({
   const [mode, setMode] = useState(opportunity.mode || "Online");
   const [stipendOrPrize, setStipendOrPrize] = useState(opportunity.stipendOrPrize || "");
   const [eventDate, setEventDate] = useState(toDateInputValue(opportunity.eventDate));
+  const [internshipNodeId, setInternshipNodeId] = useState<string | null>(opportunity.courseNodeId);
+  const [duration, setDuration] = useState(opportunity.duration || "");
 
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
@@ -55,7 +63,9 @@ export default function EditOpportunityForm({
   const [deleting, setDeleting] = useState(false);
   const [deleteError, setDeleteError] = useState("");
 
-  const isQuiz = type === "QUIZ";
+  const isQuiz = type === "QUIZ" || type === "SOLUTION";
+  // The API doesn't allow switching to/from Internship, so this is fixed for the post.
+  const isInternship = opportunity.type === "INTERNSHIP";
   const showEventDate = type === "EVENT" || type === "HACKATHON";
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -65,8 +75,16 @@ export default function EditOpportunityForm({
     const formData = new FormData(e.currentTarget);
     const categoryId = formData.get("categoryId") as string;
 
-    if (!title || !categoryId || !description || !applyDeadline) {
+    if (!title || (!categoryId && !isInternship) || !description || !applyDeadline) {
       setError("Please fill in all required fields.");
+      return;
+    }
+    if (isInternship && !internshipNodeId) {
+      setError("Please choose where this internship should appear.");
+      return;
+    }
+    if (isInternship && !duration.trim()) {
+      setError("Please enter the internship duration.");
       return;
     }
     if (isQuiz && !externalLink) {
@@ -91,6 +109,7 @@ export default function EditOpportunityForm({
         applyDeadline,
         eventDate: showEventDate && eventDate ? eventDate : null,
         externalLink: externalLink || null,
+        ...(isInternship ? { courseNodeId: internshipNodeId, duration } : {}),
       }),
     });
 
@@ -130,17 +149,44 @@ export default function EditOpportunityForm({
     <form onSubmit={handleSubmit} className="glass rounded-2xl p-6 flex flex-col gap-5">
       <div>
         <label className={labelClass}>Type *</label>
-        <select value={type} onChange={(e) => setType(e.target.value)} className={inputClass}>
-          <option value="QUIZ">Quiz / Test</option>
-          <option value="INTERNSHIP">Internship</option>
-          <option value="JOB">Job</option>
-          <option value="COMPETITION">Competition</option>
-          <option value="HACKATHON">Hackathon</option>
-          <option value="EVENT">Event</option>
-        </select>
+        {isInternship ? (
+          <>
+            <select value="INTERNSHIP" disabled className={inputClass}>
+              <option value="INTERNSHIP">Internship</option>
+            </select>
+            <p className="text-xs text-zinc-600 dark:text-zinc-400 mt-1">
+              Type can&apos;t be changed for internships.
+            </p>
+          </>
+        ) : (
+          <select value={type} onChange={(e) => setType(e.target.value)} className={inputClass}>
+            <option value="QUIZ">Quiz / Test</option>
+            <option value="SOLUTION">Solution</option>
+            <option value="JOB">Job</option>
+            <option value="COMPETITION">Competition</option>
+            <option value="HACKATHON">Hackathon</option>
+            <option value="EVENT">Event</option>
+          </select>
+        )}
       </div>
 
-      <div>
+      {isInternship && (
+        <>
+          <p className="text-sm text-zinc-600 dark:text-zinc-400">
+            Category: <span className="font-medium text-zinc-900 dark:text-white">Internships</span> (set
+            automatically)
+          </p>
+          <InternshipPicker
+            options={internshipOptions}
+            value={internshipNodeId}
+            onChange={setInternshipNodeId}
+            inputClass={inputClass}
+            labelClass={labelClass}
+          />
+        </>
+      )}
+
+      <div className={isInternship ? "hidden" : ""}>
         <label className={labelClass}>Category *</label>
         <select name="categoryId" defaultValue={opportunity.categoryId} className={inputClass}>
           <option value="">Select a category</option>
@@ -240,6 +286,20 @@ export default function EditOpportunityForm({
               className={inputClass}
             />
           </div>
+
+          {isInternship && (
+            <div>
+              <label className={labelClass}>Duration *</label>
+              <input
+                type="text"
+                value={duration}
+                onChange={(e) => setDuration(e.target.value)}
+                maxLength={100}
+                placeholder="e.g. 3 months, 6 weeks, Flexible"
+                className={inputClass}
+              />
+            </div>
+          )}
         </>
       )}
 

@@ -54,6 +54,42 @@ export async function isInternshipSubcategory(nodeId: string): Promise<boolean> 
   );
 }
 
+export type InternshipLevelOption = {
+  id: string;
+  name: string;
+  subcategories: { id: string; name: string }[];
+};
+
+// Levels under higher-education with their postable internship subcategories, in tree order.
+// Mirrors isInternshipSubcategory, so the company forms only offer nodes the API accepts.
+export async function getInternshipOptions(): Promise<InternshipLevelOption[]> {
+  const levels = await prisma.courseNode.findMany({
+    where: {
+      kind: "LEVEL",
+      isActive: true,
+      parent: { kind: "COURSE", slug: INTERNSHIPS_ROOT_SLUG, parentId: null },
+    },
+    orderBy: { position: "asc" },
+    select: {
+      id: true,
+      name: true,
+      children: {
+        where: { kind: "STAGE", slug: INTERNSHIPS_STAGE_SLUG, isActive: true },
+        select: {
+          children: {
+            where: { kind: "SUBJECT", isActive: true, slug: { notIn: NON_POSTABLE_INTERNSHIP_SLUGS } },
+            orderBy: { position: "asc" },
+            select: { id: true, name: true },
+          },
+        },
+      },
+    },
+  });
+  return levels
+    .map((l) => ({ id: l.id, name: l.name, subcategories: l.children.flatMap((s) => s.children) }))
+    .filter((l) => l.subcategories.length > 0);
+}
+
 export async function getInternshipsCategoryId(): Promise<string | null> {
   const category = await prisma.category.findUnique({ where: { slug: INTERNSHIPS_CATEGORY_SLUG } });
   return category?.id ?? null;

@@ -2,6 +2,7 @@ import { getServerSession } from "next-auth/next";
 import { redirect } from "next/navigation";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { getInternshipOptions } from "@/lib/internships";
 import PostOpportunityForm from "./PostOpportunityForm";
 
 export default async function PostOpportunityPage() {
@@ -19,6 +20,7 @@ export default async function PostOpportunityPage() {
   const categories = await prisma.category.findMany({
     orderBy: { name: "asc" },
   });
+  const internshipOptions = await getInternshipOptions();
 
   return (
     <div className="flex-1 px-6 py-8 max-w-2xl mx-auto w-full">
@@ -26,7 +28,7 @@ export default async function PostOpportunityPage() {
       <p className="text-zinc-600 dark:text-zinc-400 text-sm mb-8">
         This will be reviewed by an admin before it goes live.
       </p>
-      <PostOpportunityForm categories={categories} />
+      <PostOpportunityForm categories={categories} internshipOptions={internshipOptions} />
     </div>
   );
 }
