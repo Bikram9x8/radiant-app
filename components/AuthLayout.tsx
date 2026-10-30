@@ -52,21 +52,13 @@ export default function AuthLayout({
         className="px-6 pt-6 pb-16 lg:p-12 lg:flex lg:items-center lg:justify-center"
       >
         <div className="mx-auto w-full max-w-md grid grid-cols-[1fr_auto] items-center gap-x-4 lg:grid-cols-1 lg:gap-y-8">
-          <Link
-            href="/"
-            className="col-start-1 row-start-1 inline-flex flex-col leading-none text-[#4c1d95] w-fit"
-          >
-            <span className="text-2xl font-extrabold tracking-tight">Radiant</span>
-            <span className="text-[0.65rem] font-semibold tracking-[0.3em] mt-1">EDUCATIONS</span>
-          </Link>
+          <StudyArt className="col-start-2 row-start-1 w-24 sm:w-32 lg:col-start-1 lg:w-full lg:max-w-sm" />
 
-          <StudyArt className="col-start-2 row-start-1 row-span-2 w-24 sm:w-32 lg:col-start-1 lg:row-start-2 lg:row-span-1 lg:w-full lg:max-w-sm" />
-
-          <p className="col-start-1 row-start-2 mt-3 text-lg font-bold leading-snug text-[#14142b] lg:row-start-3 lg:mt-0 lg:text-3xl lg:tracking-tight">
+          <p className="col-start-1 row-start-1 text-lg font-bold leading-snug text-[#14142b] lg:row-start-2 lg:text-3xl lg:tracking-tight">
             {panel.heading}
           </p>
 
-          <ul className="hidden lg:flex lg:row-start-4 flex-col gap-3">
+          <ul className="hidden lg:flex lg:row-start-3 flex-col gap-3">
             {panel.benefits.map((b) => (
               <li key={b} className="flex items-start gap-3 text-[#3b3a55]">
                 <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-white text-[#6d28d9]">
