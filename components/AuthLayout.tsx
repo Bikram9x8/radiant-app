@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import { IconCheck } from "@tabler/icons-react";
+import AuthLink from "@/components/auth/AuthLink";
 
 // Shared look for the login and signup pages: pastel illustration panel on
 // the left (a short banner on phones) and a white form card on the right.
@@ -93,7 +93,7 @@ export function SignupSwitch({ current }: { current: "student" | "company" }) {
       {options.map((o) => {
         const active = o.key === current;
         return (
-          <Link
+          <AuthLink
             key={o.key}
             href={o.href}
             aria-current={active ? "page" : undefined}
@@ -104,7 +104,7 @@ export function SignupSwitch({ current }: { current: "student" | "company" }) {
             }`}
           >
             {o.label}
-          </Link>
+          </AuthLink>
         );
       })}
     </nav>

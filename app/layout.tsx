@@ -29,8 +29,10 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
+  modal,
 }: Readonly<{
   children: React.ReactNode;
+  modal: React.ReactNode;
 }>) {
   return (
     <html
@@ -38,7 +40,7 @@ export default function RootLayout({
       className={`${inter.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col relative bg-white text-[#14142b]">
-        <Providers>
+        <Providers modal={modal}>
           {children}
           <Footer />
         </Providers>
