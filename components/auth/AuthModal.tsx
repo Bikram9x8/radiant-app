@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { IconX } from "@tabler/icons-react";
 import { InAuthModalContext } from "@/components/auth/AuthLink";
+import { AuthBenefits, StudyArt, authPanels } from "@/components/AuthLayout";
 
 const FOCUSABLE =
   'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
@@ -16,8 +17,19 @@ let opener: HTMLElement | null = null;
 
 // Floating card for the login/signup forms, shown over the current page.
 // Closes with the X button, Escape or a click on the backdrop.
-export default function AuthModal({ label, children }: { label: string; children: React.ReactNode }) {
+// From md up: illustration panel on the left, form on the right. On phones the
+// panel is a short banner (heading + small illustration) above the form.
+export default function AuthModal({
+  label,
+  variant,
+  children,
+}: {
+  label: string;
+  variant: "login" | "signup";
+  children: React.ReactNode;
+}) {
   const router = useRouter();
+  const panel = authPanels[variant];
   const dialogRef = useRef<HTMLDivElement>(null);
   const pressedBackdrop = useRef(false);
   const close = useCallback(() => router.back(), [router]);
@@ -93,19 +105,31 @@ export default function AuthModal({ label, children }: { label: string; children
         aria-modal="true"
         aria-label={label}
         tabIndex={-1}
-        className="max-h-full w-full max-w-[440px] overflow-y-auto overscroll-contain rounded-[16px] bg-white p-6 shadow-[0_24px_64px_rgba(20,20,43,0.25)] outline-none sm:p-8"
+        className="relative grid max-h-full w-full max-w-[440px] overflow-y-auto overscroll-contain rounded-[16px] bg-white shadow-[0_24px_64px_rgba(20,20,43,0.25)] outline-none md:max-w-[860px] md:grid-cols-[minmax(0,5fr)_minmax(0,6fr)]"
       >
-        <div className="-mr-3 -mt-3 mb-1 flex justify-end sm:-mr-5 sm:-mt-5">
-          <button
-            type="button"
-            onClick={close}
-            aria-label="Close"
-            className="flex h-11 w-11 items-center justify-center rounded-full text-[#3b3a55] hover:bg-[#f6f5fb] hover:text-[#14142b] focus-visible:outline-2 focus-visible:outline-[#6d28d9]"
-          >
-            <IconX size={22} aria-hidden="true" />
-          </button>
+        <button
+          type="button"
+          onClick={close}
+          aria-label="Close"
+          className="absolute right-2 top-2 z-10 flex h-11 w-11 items-center justify-center rounded-full text-[#3b3a55] hover:bg-[#f6f5fb] hover:text-[#14142b] focus-visible:outline-2 focus-visible:outline-[#6d28d9]"
+        >
+          <IconX size={22} aria-hidden="true" />
+        </button>
+
+        <aside
+          style={{ background: panel.background }}
+          className="grid grid-cols-[1fr_auto] items-center gap-x-4 py-4 pl-6 pr-14 sm:pl-8 md:grid-cols-1 md:content-center md:gap-y-6 md:p-10"
+        >
+          <StudyArt className="col-start-2 row-start-1 w-20 md:col-start-1 md:mx-auto md:w-full md:max-w-[260px]" />
+          <p className="col-start-1 row-start-1 text-base font-bold leading-snug text-[#14142b] md:row-start-2 md:text-2xl md:tracking-tight">
+            {panel.heading}
+          </p>
+          <AuthBenefits variant={variant} className="hidden flex-col gap-3 text-sm md:row-start-3 md:flex" />
+        </aside>
+
+        <div className="p-6 sm:p-8 md:pt-14">
+          <InAuthModalContext.Provider value={true}>{children}</InAuthModalContext.Provider>
         </div>
-        <InAuthModalContext.Provider value={true}>{children}</InAuthModalContext.Provider>
       </div>
     </div>
   );
