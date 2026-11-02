@@ -6,8 +6,9 @@ import AuthLink from "@/components/auth/AuthLink";
 
 // Shared look for the login and signup pages: pastel illustration panel on
 // the left (a short banner on phones) and a white form card on the right.
+// The panel pieces (authPanels, StudyArt, AuthBenefits) are also used by AuthModal.
 
-const PANELS = {
+export const authPanels = {
   login: {
     background: "#ede9fe",
     heading: "Learn, practise and find internships — all in one place.",
@@ -43,7 +44,7 @@ export default function AuthLayout({
   variant: "login" | "signup";
   children: React.ReactNode;
 }) {
-  const panel = PANELS[variant];
+  const panel = authPanels[variant];
 
   return (
     <div className="flex-1 flex flex-col lg:grid lg:grid-cols-2 lg:min-h-[640px]">
@@ -58,16 +59,7 @@ export default function AuthLayout({
             {panel.heading}
           </p>
 
-          <ul className="hidden lg:flex lg:row-start-3 flex-col gap-3">
-            {panel.benefits.map((b) => (
-              <li key={b} className="flex items-start gap-3 text-[#3b3a55]">
-                <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-white text-[#6d28d9]">
-                  <IconCheck size={16} stroke={2.5} aria-hidden="true" />
-                </span>
-                {b}
-              </li>
-            ))}
-          </ul>
+          <AuthBenefits variant={variant} className="hidden lg:flex lg:row-start-3 flex-col gap-3" />
         </div>
       </aside>
 
@@ -77,6 +69,22 @@ export default function AuthLayout({
         </div>
       </main>
     </div>
+  );
+}
+
+// The three benefit lines with check marks; className sets layout and visibility
+export function AuthBenefits({ variant, className }: { variant: "login" | "signup"; className: string }) {
+  return (
+    <ul className={className}>
+      {authPanels[variant].benefits.map((b) => (
+        <li key={b} className="flex items-start gap-3 text-[#3b3a55]">
+          <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-white text-[#6d28d9]">
+            <IconCheck size={16} stroke={2.5} aria-hidden="true" />
+          </span>
+          {b}
+        </li>
+      ))}
+    </ul>
   );
 }
 
@@ -159,7 +167,7 @@ export function PasswordField({
 }
 
 // Line-art study scene: laptop, stack of books, graduation cap, small plant
-function StudyArt({ className = "" }: { className?: string }) {
+export function StudyArt({ className = "" }: { className?: string }) {
   return (
     <svg
       viewBox="0 0 320 220"
