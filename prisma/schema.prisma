@@ -113,6 +113,7 @@ model StudentProfile {
 
   resumes       Resume[]
   applications  Application[]
+  mcqAttempts   McqAttempt[]
 
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
@@ -295,6 +296,8 @@ model CourseNode {
   updatedAt     DateTime     @updatedAt
 
   opportunities Opportunity[]
+  mcqQuestions  McqQuestion[]
+  mcqTests      McqTest[]
 
   @@unique([parentId, slug])
   @@index([parentId])
@@ -324,4 +327,98 @@ model PageView {
   @@index([createdAt])
   @@index([courseNodeId])
   @@index([opportunityId])
+}
+
+// ================= MCQ TESTS =================
+
+enum McqOption {
+  A
+  B
+  C
+  D
+}
+
+// Question bank: each question belongs to one CHAPTER node (cbse, icse or competitive only;
+// enforced in the API, not the schema).
+model McqQuestion {
+  id            String     @id @default(cuid())
+  chapterId     String
+  chapter       CourseNode @relation(fields: [chapterId], references: [id], onDelete: Restrict)
+  text          String     // plain text for now; a format field can be added later for LaTeX
+  optionA       String
+  optionB       String
+  optionC       String
+  optionD       String
+  correctOption McqOption
+  explanation   String?
+  imageUrl      String?    // one optional image, shown with the question text
+  isActive      Boolean    @default(true) // deactivate instead of delete, so old attempts stay readable
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+
+  testLinks     McqTestQuestion[]
+  answers       McqAnswer[]
+
+  @@index([chapterId, isActive])
+}
+
+model McqTest {
+  id            String     @id @default(cuid())
+  title         String
+  description   String?
+  chapterId     String
+  chapter       CourseNode @relation(fields: [chapterId], references: [id], onDelete: Restrict)
+  timeLimitMin  Int?       // null = untimed
+  isPublished   Boolean    @default(false)
+  publishedAt   DateTime?
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+
+  questions     McqTestQuestion[]
+  attempts      McqAttempt[]
+
+  @@index([chapterId, isPublished])
+}
+
+// Ordered list of questions in a test
+model McqTestQuestion {
+  testId     String
+  test       McqTest     @relation(fields: [testId], references: [id], onDelete: Cascade)
+  questionId String
+  question   McqQuestion @relation(fields: [questionId], references: [id], onDelete: Restrict)
+  position   Int
+
+  @@id([testId, questionId])
+  @@index([testId, position])
+}
+
+// Only submitted attempts by logged-in students are saved (guests and abandoned tests write nothing)
+model McqAttempt {
+  id           String         @id @default(cuid())
+  studentId    String
+  student      StudentProfile @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  testId       String
+  test         McqTest        @relation(fields: [testId], references: [id], onDelete: Restrict)
+  score        Int
+  total        Int
+  timeTakenSec Int
+  isLate       Boolean        @default(false) // submitted more than 60s after the time limit; still scored
+  startedAt    DateTime       // from the server-signed start token, not the client clock
+  submittedAt  DateTime       @default(now())
+
+  answers      McqAnswer[]
+
+  @@index([studentId, submittedAt])
+  @@index([testId])
+}
+
+model McqAnswer {
+  attemptId      String
+  attempt        McqAttempt  @relation(fields: [attemptId], references: [id], onDelete: Cascade)
+  questionId     String
+  question       McqQuestion @relation(fields: [questionId], references: [id], onDelete: Restrict)
+  selectedOption McqOption?  // null = skipped
+  isCorrect      Boolean     // recorded at submit time, so later answer-key fixes don't rewrite old scores
+
+  @@id([attemptId, questionId])
 }
