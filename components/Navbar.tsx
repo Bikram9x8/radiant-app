@@ -3,9 +3,10 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { IconX } from "@tabler/icons-react";
+import ProfileMenu, { ProfileDisclosure } from "@/components/ProfileMenu";
 
 const LINKS = [
   { href: "/school", label: "School Education" },
@@ -19,6 +20,16 @@ export default function Navbar() {
   const pathname = usePathname();
   const [visible, setVisible] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
+  const hamburgerRef = useRef<HTMLButtonElement>(null);
+  const drawerRef = useRef<HTMLElement>(null);
+  const closeRef = useRef<HTMLButtonElement>(null);
+  const drawerWasOpen = useRef(false);
+
+  const closeMenu = useCallback(() => {
+    setMenuOpen(false);
+    setProfileOpen(false);
+  }, []);
 
   useEffect(() => {
     setVisible(true);
@@ -26,23 +37,53 @@ export default function Navbar() {
 
   // Close the mobile menu when the page changes
   useEffect(() => {
-    setMenuOpen(false);
-  }, [pathname]);
+    closeMenu();
+  }, [pathname, closeMenu]);
 
-  // Stop the page behind the menu from scrolling, and close on Escape
+  // Stop the page behind the menu from scrolling
   useEffect(() => {
     document.body.style.overflow = menuOpen ? "hidden" : "";
-    function onKey(e: KeyboardEvent) {
-      if (e.key === "Escape") setMenuOpen(false);
-    }
-    document.addEventListener("keydown", onKey);
     return () => {
       document.body.style.overflow = "";
-      document.removeEventListener("keydown", onKey);
     };
   }, [menuOpen]);
 
-  const initials = user?.email ? user.email.slice(0, 2).toUpperCase() : "";
+  // Move focus into the drawer when it opens, and back when it closes
+  useEffect(() => {
+    if (menuOpen) closeRef.current?.focus();
+    else if (drawerWasOpen.current) hamburgerRef.current?.focus();
+    drawerWasOpen.current = menuOpen;
+  }, [menuOpen]);
+
+  // Inside the drawer: Escape closes the profile section first, then the
+  // drawer, and Tab stays inside until the drawer is closed
+  useEffect(() => {
+    if (!menuOpen) return;
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "Escape") {
+        if (profileOpen) setProfileOpen(false);
+        else closeMenu();
+        return;
+      }
+      if (e.key !== "Tab" || !drawerRef.current) return;
+      const focusable = Array.from(
+        drawerRef.current.querySelectorAll<HTMLElement>("a[href], button:not([disabled])")
+      ).filter((el) => el.offsetParent !== null);
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last?.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first?.focus();
+      }
+    }
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [menuOpen, profileOpen, closeMenu]);
+
+  const email: string = user?.email ?? "";
   const isActive = (href: string) => pathname === href || pathname.startsWith(href + "/");
   const homeHref = status === "authenticated" ? "/dashboard" : "/";
 
@@ -66,8 +107,8 @@ export default function Navbar() {
                 href={l.href}
                 className={`px-4 py-2 rounded-xl text-sm font-semibold transition-colors duration-300 ${
                   isActive(l.href)
-                    ? "bg-violet-100 text-[#5b33d6]"
-                    : "text-zinc-700 hover:bg-zinc-100 hover:text-[#5b33d6]"
+                    ? "bg-violet-100 text-[#6d28d9]"
+                    : "text-zinc-700 hover:bg-zinc-100 hover:text-[#6d28d9]"
                 }`}
               >
                 {l.label}
@@ -95,23 +136,13 @@ export default function Navbar() {
                 </Link>
               </>
             ) : (
-              <>
-                <Link
-                  href="/dashboard"
-                  className="btn btn-secondary"
-                  style={{ minHeight: 40, padding: "0.5rem 1.1rem" }}
-                >
-                  Dashboard
-                </Link>
-                <div className="w-9 h-9 rounded-full bg-[#5b33d6] text-white flex items-center justify-center text-xs font-bold">
-                  {initials}
-                </div>
-              </>
+              <ProfileMenu email={email} role={user?.role} />
             )}
           </div>
 
           {/* Hamburger (phones and tablets) */}
           <button
+            ref={hamburgerRef}
             onClick={() => setMenuOpen(true)}
             className="md:hidden w-11 h-11 flex flex-col items-center justify-center gap-[5px] rounded-xl hover:bg-zinc-100"
             aria-label="Open menu"
@@ -134,10 +165,14 @@ export default function Navbar() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.3, ease: "easeInOut" }}
-              onClick={() => setMenuOpen(false)}
+              onClick={closeMenu}
             />
             <motion.aside
               key="drawer"
+              ref={drawerRef}
+              role="dialog"
+              aria-modal="true"
+              aria-label="Menu"
               className="fixed top-0 right-0 z-[70] h-full w-[85%] max-w-sm bg-white shadow-2xl flex flex-col md:hidden"
               initial={{ x: "100%" }}
               animate={{ x: 0 }}
@@ -147,7 +182,8 @@ export default function Navbar() {
               <div className="h-16 px-5 flex items-center justify-between border-b border-[#e4e2ef]">
                 <span className="text-lg font-extrabold text-[#14142b]">Menu</span>
                 <button
-                  onClick={() => setMenuOpen(false)}
+                  ref={closeRef}
+                  onClick={closeMenu}
                   className="w-11 h-11 flex items-center justify-center rounded-xl hover:bg-zinc-100"
                   aria-label="Close menu"
                 >
@@ -162,7 +198,7 @@ export default function Navbar() {
                     href={l.href}
                     className={`px-4 py-3.5 rounded-2xl text-base font-semibold transition-colors duration-300 ${
                       isActive(l.href)
-                        ? "bg-violet-100 text-[#5b33d6]"
+                        ? "bg-violet-100 text-[#6d28d9]"
                         : "text-zinc-800 hover:bg-zinc-100"
                     }`}
                   >
@@ -171,7 +207,7 @@ export default function Navbar() {
                 ))}
               </div>
 
-              <div className="p-5 border-t border-[#e4e2ef] flex flex-col gap-3">
+              <div className="max-h-[70%] overflow-y-auto p-5 border-t border-[#e4e2ef] flex flex-col gap-3">
                 {status === "unauthenticated" && (
                   <>
                     <Link href="/login" className="btn btn-secondary w-full">
@@ -183,20 +219,16 @@ export default function Navbar() {
                   </>
                 )}
                 {status === "authenticated" && (
-                  <>
-                    <Link href="/dashboard" className="btn btn-secondary w-full">
-                      Dashboard
-                    </Link>
-                    <button
-                      onClick={() => {
-                        setMenuOpen(false);
-                        signOut({ callbackUrl: "/" });
-                      }}
-                      className="btn w-full text-red-600 border border-red-200 hover:bg-red-50"
-                    >
-                      Log out
-                    </button>
-                  </>
+                  <ProfileDisclosure
+                    email={email}
+                    role={user?.role}
+                    open={profileOpen}
+                    onOpenChange={setProfileOpen}
+                    onLogOut={() => {
+                      closeMenu();
+                      signOut({ callbackUrl: "/" });
+                    }}
+                  />
                 )}
               </div>
             </motion.aside>
