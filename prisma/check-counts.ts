@@ -13,6 +13,17 @@ async function main() {
   console.log(`With duration NOT NULL:         ${withDuration}`);
   console.log(linked === 47 ? "OK: linked posts intact" : "WARNING: linked count changed!");
   console.log(total === 63 ? "OK: total unchanged" : "WARNING: total count changed!");
+
+  const [questions, tests, links, attempts, answers] = await Promise.all([
+    prisma.mcqQuestion.count(),
+    prisma.mcqTest.count(),
+    prisma.mcqTestQuestion.count(),
+    prisma.mcqAttempt.count(),
+    prisma.mcqAnswer.count(),
+  ]);
+  console.log(
+    `MCQ rows: ${questions} questions, ${tests} tests, ${links} test links, ${attempts} attempts, ${answers} answers`
+  );
 }
 
 main()

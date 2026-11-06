@@ -2,12 +2,14 @@
 // answer-free question shapes, signed start tokens and scoring.
 // Server only: imports prisma and NEXTAUTH_SECRET, never import from client components.
 import { createHmac, timingSafeEqual } from "crypto";
+import { getServerSession } from "next-auth/next";
 import { z } from "zod";
 import type { McqOption, Prisma } from "@prisma/client";
+import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { MCQ_COURSE_SLUGS, MCQ_OPTIONS, QUESTION_LIMITS } from "@/lib/mcq-shared";
 
-export const MCQ_COURSE_SLUGS = ["cbse", "icse", "competitive"];
-export const MCQ_OPTIONS = ["A", "B", "C", "D"] as const;
+export { MCQ_COURSE_SLUGS, MCQ_OPTIONS };
 export const LATE_GRACE_SEC = 60;
 export const START_TOKEN_MAX_AGE_SEC = 24 * 60 * 60;
 const CLOCK_SKEW_MS = 5000;
@@ -25,13 +27,13 @@ const optionalText = (max: number) =>
 
 export const questionInput = z.object({
   chapterId: z.string().trim().min(1),
-  text: z.string().trim().min(1).max(2000),
-  optionA: z.string().trim().min(1).max(500),
-  optionB: z.string().trim().min(1).max(500),
-  optionC: z.string().trim().min(1).max(500),
-  optionD: z.string().trim().min(1).max(500),
+  text: z.string().trim().min(1).max(QUESTION_LIMITS.text),
+  optionA: z.string().trim().min(1).max(QUESTION_LIMITS.option),
+  optionB: z.string().trim().min(1).max(QUESTION_LIMITS.option),
+  optionC: z.string().trim().min(1).max(QUESTION_LIMITS.option),
+  optionD: z.string().trim().min(1).max(QUESTION_LIMITS.option),
   correctOption: z.enum(MCQ_OPTIONS),
-  explanation: optionalText(3000),
+  explanation: optionalText(QUESTION_LIMITS.explanation),
   imageUrl: optionalText(1000).refine((v) => v === null || /^https:\/\/\S+$/.test(v), {
     message: "Image URL must start with https://",
   }),
@@ -55,6 +57,15 @@ export const testQuestionsInput = z.object({
     .refine((ids) => new Set(ids).size === ids.length, { message: "A question is listed twice" }),
 });
 
+export const questionActiveInput = z.object({ isActive: z.boolean() });
+
+// First validation problem as a short message for API responses
+export function zodMessage(error: z.ZodError): string {
+  const issue = error.issues[0];
+  if (!issue) return "Invalid input";
+  return issue.path.length > 0 ? `${issue.path.join(".")}: ${issue.message}` : issue.message;
+}
+
 export const submitInput = z.object({
   token: z.string().min(1).max(500),
   answers: z
@@ -62,6 +73,50 @@ export const submitInput = z.object({
     .refine((a) => Object.keys(a).length <= 200, { message: "Too many answers" }),
 });
 export type SubmitInput = z.infer<typeof submitInput>;
+
+// ================= ADMIN =================
+
+// The logged-in admin's user id, or null for anyone else
+export async function getAdminUserId(): Promise<string | null> {
+  const session = await getServerSession(authOptions);
+  const user = session?.user as { id?: string; role?: string } | undefined;
+  return user?.role === "ADMIN" && user.id ? user.id : null;
+}
+
+// Full question for admin pages, with how widely it is used
+export const ADMIN_QUESTION_SELECT = {
+  id: true,
+  chapterId: true,
+  text: true,
+  optionA: true,
+  optionB: true,
+  optionC: true,
+  optionD: true,
+  correctOption: true,
+  explanation: true,
+  imageUrl: true,
+  isActive: true,
+  testLinks: { select: { test: { select: { isPublished: true } } } },
+  _count: { select: { answers: true } },
+} satisfies Prisma.McqQuestionSelect;
+
+type AdminQuestionRow = Prisma.McqQuestionGetPayload<{ select: typeof ADMIN_QUESTION_SELECT }>;
+
+export type AdminQuestion = Omit<AdminQuestionRow, "testLinks" | "_count"> & {
+  usedInTests: number;
+  usedInPublished: number;
+  answerCount: number;
+};
+
+export function toAdminQuestion(q: AdminQuestionRow): AdminQuestion {
+  const { testLinks, _count, ...rest } = q;
+  return {
+    ...rest,
+    usedInTests: testLinks.length,
+    usedInPublished: testLinks.filter((l) => l.test.isPublished).length,
+    answerCount: _count.answers,
+  };
+}
 
 // ================= CHAPTERS =================
 
