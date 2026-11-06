@@ -68,6 +68,42 @@ export function HigherArt({ className = "" }: { className?: string }) {
   );
 }
 
+export function TestArt({ className = "" }: { className?: string }) {
+  // Four answer rows; each number is the bubble filled in on that row
+  const answers = [1, 3, 0, 2];
+
+  return (
+    <svg viewBox="0 0 240 180" className={className} role="img" aria-label="A multiple choice answer sheet with a pencil">
+      <circle cx="120" cy="96" r="76" fill="#FFFFFF" opacity="0.55" />
+      <circle cx="38" cy="42" r="12" fill="#FDBA74" />
+      <ellipse cx="200" cy="36" rx="20" ry="8" fill="#FFFFFF" />
+      <rect x="20" y="152" width="200" height="8" rx="4" fill="#FCD34D" />
+      {/* answer sheet */}
+      <rect x="66" y="24" width="108" height="128" rx="6" fill="#FFFFFF" stroke="#3B3A55" strokeWidth="3" />
+      <rect x="80" y="38" width="48" height="6" rx="3" fill="#C4B5FD" />
+      {answers.flatMap((filled, row) =>
+        [0, 1, 2, 3].map((col) => (
+          <circle
+            key={`${row}-${col}`}
+            cx={88 + col * 21}
+            cy={64 + row * 22}
+            r="7"
+            fill={col === filled ? "#6D28D9" : "#FFFFFF"}
+            stroke={col === filled ? "#6D28D9" : "#A1A1AA"}
+            strokeWidth="2"
+          />
+        ))
+      )}
+      {/* pencil */}
+      <g transform="rotate(25 196 112)">
+        <rect x="190" y="72" width="12" height="46" rx="2" fill="#F472B6" />
+        <rect x="190" y="72" width="12" height="9" rx="2" fill="#3B3A55" />
+        <polygon points="190,118 202,118 196,130" fill="#FDE68A" />
+      </g>
+    </svg>
+  );
+}
+
 // Small line drawing for a subject. It takes the colour of the text around it.
 export function SubjectArt({ name, className = "" }: { name: string; className?: string }) {
   const n = name.toLowerCase();
