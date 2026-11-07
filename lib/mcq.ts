@@ -7,9 +7,10 @@ import { z } from "zod";
 import type { McqOption, Prisma } from "@prisma/client";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { MCQ_COURSE_SLUGS, MCQ_OPTIONS, QUESTION_LIMITS } from "@/lib/mcq-shared";
+import { MCQ_COURSE_SLUGS, MCQ_OPTIONS, QUESTION_LIMITS, type McqChapter } from "@/lib/mcq-shared";
 
 export { MCQ_COURSE_SLUGS, MCQ_OPTIONS };
+export type { McqChapter };
 export const LATE_GRACE_SEC = 60;
 export const START_TOKEN_MAX_AGE_SEC = 24 * 60 * 60;
 const CLOCK_SKEW_MS = 5000;
@@ -108,6 +109,13 @@ export type AdminQuestion = Omit<AdminQuestionRow, "testLinks" | "_count"> & {
   answerCount: number;
 };
 
+// Activity Log entry for publishing, unpublishing or deleting a test
+export function mcqTestLog(actorId: string, action: "PUBLISH_MCQ_TEST" | "UNPUBLISH_MCQ_TEST" | "DELETE_MCQ_TEST", testId: string, title: string) {
+  return prisma.adminLog.create({
+    data: { actorId, action, targetType: "McqTest", targetId: testId, notes: title },
+  });
+}
+
 export function toAdminQuestion(q: AdminQuestionRow): AdminQuestion {
   const { testLinks, _count, ...rest } = q;
   return {
@@ -129,14 +137,6 @@ const NODE_SELECT = {
   parentId: true,
   chapterNo: true,
 } satisfies Prisma.CourseNodeSelect;
-
-export type McqChapter = {
-  id: string;
-  name: string;
-  chapterNo: number | null;
-  // Ancestors from the course down to the chapter's parent (e.g. CBSE > Class 10 > Mathematics)
-  trail: { id: string; name: string; slug: string; kind: string }[];
-};
 
 // An active CHAPTER whose course is cbse, icse or competitive (and whose ancestors are active), else null.
 // Tree depth differs between courses, so this follows parent links instead of assuming a depth.

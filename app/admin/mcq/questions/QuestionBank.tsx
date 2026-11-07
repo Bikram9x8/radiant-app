@@ -3,14 +3,22 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import ChapterPicker from "@/components/ChapterPicker";
-import type { AdminQuestion, McqChapter } from "@/lib/mcq";
-import { MCQ_COURSE_SLUGS, MCQ_OPTIONS } from "@/lib/mcq-shared";
-import QuestionForm, { mcqInputClass, mcqLabelClass } from "../QuestionForm";
-
-export function chapterLabel(chapter: McqChapter): string {
-  const name = chapter.chapterNo ? `Ch ${chapter.chapterNo}. ${chapter.name}` : chapter.name;
-  return [...chapter.trail.map((n) => n.name), name].join(" › ");
-}
+import type { AdminQuestion } from "@/lib/mcq";
+import { MCQ_COURSE_SLUGS, MCQ_OPTIONS, chapterLabel, type McqChapter } from "@/lib/mcq-shared";
+import QuestionForm from "../QuestionForm";
+import {
+  badgeDraft,
+  badgeInfo,
+  dangerButton,
+  errorText,
+  focusRing,
+  inputClass,
+  labelClass,
+  mutedText,
+  primaryButton,
+  rowButton,
+  rowDangerButton,
+} from "../ui";
 
 export default function QuestionBank({
   chapter,
@@ -31,6 +39,7 @@ export default function QuestionBank({
 
   const visible = questions.filter((q) => showInactive || q.isActive);
   const inactiveCount = questions.filter((q) => !q.isActive).length;
+  const activeCount = questions.length - inactiveCount;
 
   function replace(updated: AdminQuestion) {
     setQuestions((prev) => prev.map((q) => (q.id === updated.id ? updated : q)));
@@ -65,43 +74,43 @@ export default function QuestionBank({
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="glass rounded-2xl p-5 flex flex-col gap-3">
+      <section aria-label="Chapter" className="card p-5 sm:p-6 flex flex-col gap-4">
         {chapter ? (
-          <p className="text-sm text-zinc-900 dark:text-white">
-            <span className="font-semibold">Chapter:</span> {chapterLabel(chapter)}
+          <p className="text-[#14142b]">
+            <span className="font-bold">Chapter:</span> {chapterLabel(chapter)}
           </p>
         ) : invalidChapter ? (
-          <p className="text-sm text-red-600 dark:text-red-400">
+          <p role="alert" className={errorText}>
             That isn&apos;t a chapter in CBSE, ICSE or Competitive. Please choose another.
           </p>
         ) : (
-          <p className="text-sm text-zinc-600 dark:text-zinc-400">Choose a chapter to see its questions.</p>
+          <p className={mutedText}>Choose a chapter to see its questions.</p>
         )}
         <ChapterPicker
           rootSlugs={MCQ_COURSE_SLUGS}
-          inputClass={mcqInputClass}
-          labelClass={mcqLabelClass}
+          inputClass={inputClass}
+          labelClass={labelClass}
           onChange={(id) => {
             if (id) router.push(`/admin/mcq/questions?chapterId=${id}`);
           }}
         />
-      </div>
+      </section>
 
       {chapter && (
         <>
           <div className="flex flex-wrap items-center justify-between gap-3">
-            <p className="text-sm text-zinc-600 dark:text-zinc-400">
-              {questions.length - inactiveCount} active question{questions.length - inactiveCount === 1 ? "" : "s"}
+            <p className={mutedText}>
+              {activeCount} active question{activeCount === 1 ? "" : "s"}
               {inactiveCount > 0 && `, ${inactiveCount} deactivated`}
             </p>
-            <div className="flex items-center gap-4">
+            <div className="flex flex-wrap items-center gap-4">
               {inactiveCount > 0 && (
-                <label className="flex items-center gap-2 text-sm text-zinc-900 dark:text-white">
+                <label className="flex min-h-[44px] items-center gap-2 text-sm font-semibold text-[#14142b]">
                   <input
                     type="checkbox"
                     checked={showInactive}
                     onChange={(e) => setShowInactive(e.target.checked)}
-                    className="w-4 h-4"
+                    className={`h-5 w-5 accent-[#6d28d9] ${focusRing}`}
                   />
                   Show deactivated
                 </label>
@@ -113,15 +122,19 @@ export default function QuestionBank({
                     setAdding(true);
                     setEditingId(null);
                   }}
-                  className="btn-neon rounded-xl px-4 py-2 text-sm font-semibold"
+                  className={primaryButton}
                 >
-                  + Add question
+                  Add question
                 </button>
               )}
             </div>
           </div>
 
-          {error && <p className="text-sm text-red-600 dark:text-red-400">{error}</p>}
+          {error && (
+            <p role="alert" className={errorText}>
+              {error}
+            </p>
+          )}
 
           {adding && (
             <QuestionForm
@@ -135,9 +148,9 @@ export default function QuestionBank({
           )}
 
           {visible.length === 0 && !adding && (
-            <p className="glass rounded-2xl p-5 text-sm text-zinc-600 dark:text-zinc-400">
-              No questions in this chapter yet.
-            </p>
+            <div className="card p-5 sm:p-6">
+              <p className="text-[#3b3a55]">No questions in this chapter yet. Add the first one.</p>
+            </div>
           )}
 
           <ol className="flex flex-col gap-4">
@@ -155,53 +168,47 @@ export default function QuestionBank({
                   />
                 </li>
               ) : (
-                <li key={q.id} className={`glass rounded-2xl p-5 ${q.isActive ? "" : "opacity-60"}`}>
+                <li key={q.id} className={`card p-5 sm:p-6 ${q.isActive ? "" : "bg-[#f6f5fb]"}`}>
                   <div className="flex flex-wrap items-start justify-between gap-3">
-                    <p className="text-sm font-semibold text-zinc-900 dark:text-white whitespace-pre-line flex-1 min-w-[200px]">
+                    <p className="flex-1 min-w-[200px] whitespace-pre-line font-semibold text-[#14142b]">
                       {i + 1}. {q.text}
                     </p>
-                    <div className="flex flex-wrap gap-2 text-xs">
-                      {!q.isActive && (
-                        <span className="rounded-full px-2 py-0.5 bg-zinc-200 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300">
-                          Deactivated
-                        </span>
-                      )}
-                      <span className="rounded-full px-2 py-0.5 bg-purple-100/70 dark:bg-purple-900/40 text-purple-800 dark:text-purple-300">
+                    <div className="flex flex-wrap gap-2">
+                      {!q.isActive && <span className={badgeDraft}>Deactivated</span>}
+                      <span className={badgeInfo}>
                         {q.usedInTests === 0
                           ? "Not in any test"
-                          : `In ${q.usedInTests} test${q.usedInTests === 1 ? "" : "s"} (${q.usedInPublished} published)`}
+                          : `In ${q.usedInTests} test${q.usedInTests === 1 ? "" : "s"}, ${q.usedInPublished} published`}
                       </span>
                     </div>
                   </div>
 
                   {q.imageUrl && (
                     // eslint-disable-next-line @next/next/no-img-element -- R2 URL, not in next/image config
-                    <img src={q.imageUrl} alt="" className="mt-3 max-h-40 rounded-lg border border-white/30" />
+                    <img src={q.imageUrl} alt="" className="mt-3 max-h-40 rounded-xl border border-[#e4e2ef]" />
                   )}
 
-                  <ul className="mt-3 grid gap-1.5 sm:grid-cols-2 text-sm">
+                  <ul className="mt-3 grid gap-2 sm:grid-cols-2 text-sm">
                     {MCQ_OPTIONS.map((o) => {
                       const isCorrect = q.correctOption === o;
                       return (
                         <li
                           key={o}
-                          className={`rounded-lg px-3 py-1.5 ${
-                            isCorrect
-                              ? "bg-emerald-100/80 dark:bg-emerald-900/40 text-emerald-900 dark:text-emerald-200 font-semibold"
-                              : "bg-white/40 dark:bg-zinc-900/40 text-zinc-800 dark:text-zinc-200"
+                          className={`rounded-xl px-3 py-2 ${
+                            isCorrect ? "pastel-mint font-semibold" : "bg-[#f6f5fb] text-[#14142b]"
                           }`}
                         >
                           {o}. {q[`option${o}`]}
                           {isCorrect && <span className="sr-only"> (correct)</span>}
-                          {isCorrect && " ✓"}
+                          {isCorrect && <span aria-hidden="true"> ✓</span>}
                         </li>
                       );
                     })}
                   </ul>
 
                   {q.explanation && (
-                    <p className="mt-3 text-sm text-zinc-700 dark:text-zinc-300 whitespace-pre-line">
-                      <span className="font-semibold">Explanation:</span> {q.explanation}
+                    <p className="mt-3 whitespace-pre-line text-sm text-[#3b3a55]">
+                      <span className="font-semibold text-[#14142b]">Explanation:</span> {q.explanation}
                     </p>
                   )}
 
@@ -212,41 +219,26 @@ export default function QuestionBank({
                         setEditingId(q.id);
                         setAdding(false);
                       }}
-                      className="text-xs px-2 py-1 rounded-lg glass text-zinc-900 dark:text-white"
+                      className={rowButton}
                     >
                       Edit
                     </button>
-                    <button
-                      type="button"
-                      onClick={() => toggleActive(q)}
-                      className="text-xs px-2 py-1 rounded-lg glass text-zinc-900 dark:text-white"
-                    >
+                    <button type="button" onClick={() => toggleActive(q)} className={rowButton}>
                       {q.isActive ? "Deactivate" : "Reactivate"}
                     </button>
-                    {q.usedInTests === 0 && q.answerCount === 0 &&
+                    {q.usedInTests === 0 &&
+                      q.answerCount === 0 &&
                       (confirmDeleteId === q.id ? (
                         <>
-                          <button
-                            type="button"
-                            onClick={() => handleDelete(q.id)}
-                            className="text-xs px-2 py-1 rounded-lg bg-red-600 text-white"
-                          >
+                          <button type="button" onClick={() => handleDelete(q.id)} className={dangerButton}>
                             Yes, delete permanently
                           </button>
-                          <button
-                            type="button"
-                            onClick={() => setConfirmDeleteId(null)}
-                            className="text-xs px-2 py-1 rounded-lg glass text-zinc-900 dark:text-white"
-                          >
+                          <button type="button" onClick={() => setConfirmDeleteId(null)} className={rowButton}>
                             Cancel
                           </button>
                         </>
                       ) : (
-                        <button
-                          type="button"
-                          onClick={() => setConfirmDeleteId(q.id)}
-                          className="text-xs px-2 py-1 rounded-lg glass text-red-600 dark:text-red-400"
-                        >
+                        <button type="button" onClick={() => setConfirmDeleteId(q.id)} className={rowDangerButton}>
                           Delete
                         </button>
                       ))}

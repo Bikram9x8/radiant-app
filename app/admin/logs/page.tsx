@@ -11,6 +11,9 @@ const actionStyles: Record<string, string> = {
   REJECT_COMPANY: "bg-red-100/80 dark:bg-red-900/40 text-red-800 dark:text-red-300",
   BLOCK_USER: "bg-red-100/80 dark:bg-red-900/40 text-red-800 dark:text-red-300",
   UNBLOCK_USER: "bg-emerald-100/80 dark:bg-emerald-900/40 text-emerald-800 dark:text-emerald-300",
+  PUBLISH_MCQ_TEST: "bg-emerald-100/80 dark:bg-emerald-900/40 text-emerald-800 dark:text-emerald-300",
+  UNPUBLISH_MCQ_TEST: "bg-amber-100/80 dark:bg-amber-900/40 text-amber-800 dark:text-amber-300",
+  DELETE_MCQ_TEST: "bg-red-100/80 dark:bg-red-900/40 text-red-800 dark:text-red-300",
 };
 
 export default async function AdminLogsPage() {

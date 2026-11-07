@@ -8,10 +8,15 @@ import {
   QUESTION_LIMITS,
   type McqOptionKey,
 } from "@/lib/mcq-shared";
-
-export const mcqInputClass =
-  "w-full rounded-xl bg-white/70 dark:bg-zinc-900/70 px-3 py-2 outline-none text-sm text-zinc-900 dark:text-white placeholder:text-zinc-500";
-export const mcqLabelClass = "block text-sm font-medium mb-1 text-zinc-900 dark:text-white";
+import {
+  errorText,
+  focusRing,
+  inputClass,
+  labelClass,
+  primaryButton,
+  rowDangerButton,
+  secondaryButton,
+} from "./ui";
 
 const IMAGE_TYPES = ["image/png", "image/jpeg", "image/webp", "image/gif"];
 
@@ -114,13 +119,11 @@ export default function QuestionForm({
   }
 
   return (
-    <form onSubmit={handleSubmit} className="glass rounded-2xl p-5 flex flex-col gap-4">
-      <h2 className="font-semibold text-sm text-zinc-900 dark:text-white">
-        {question ? "Edit question" : "New question"}
-      </h2>
+    <form onSubmit={handleSubmit} className="card p-5 sm:p-6 flex flex-col gap-5">
+      <h3 className="text-lg font-bold text-[#14142b]">{question ? "Edit question" : "New question"}</h3>
 
       {question && question.usedInPublished > 0 && (
-        <p className="text-sm rounded-xl bg-amber-100/80 dark:bg-amber-900/40 text-amber-900 dark:text-amber-200 px-3 py-2">
+        <p className="pastel-yellow rounded-xl px-4 py-3 text-sm font-semibold">
           This question is in {question.usedInPublished} published test
           {question.usedInPublished === 1 ? "" : "s"}. Changes apply to future attempts; past scores stay as they
           were.
@@ -128,8 +131,8 @@ export default function QuestionForm({
       )}
 
       <div>
-        <label htmlFor="mcq-text" className={mcqLabelClass}>
-          Question *
+        <label htmlFor="mcq-text" className={labelClass}>
+          Question
         </label>
         <textarea
           id="mcq-text"
@@ -137,12 +140,12 @@ export default function QuestionForm({
           onChange={(e) => setText(e.target.value)}
           rows={3}
           maxLength={QUESTION_LIMITS.text}
-          className={mcqInputClass}
+          className={inputClass}
         />
       </div>
 
-      <fieldset className="flex flex-col gap-2">
-        <legend className={mcqLabelClass}>Options * (mark the correct one)</legend>
+      <fieldset className="flex flex-col gap-2.5">
+        <legend className={labelClass}>Options (select the correct one)</legend>
         {MCQ_OPTIONS.map((o) => (
           <div key={o} className="flex items-center gap-3">
             <input
@@ -151,10 +154,10 @@ export default function QuestionForm({
               id={`mcq-correct-${o}`}
               checked={correct === o}
               onChange={() => setCorrect(o)}
-              className="w-4 h-4 shrink-0"
+              className={`h-5 w-5 shrink-0 accent-[#6d28d9] ${focusRing}`}
               aria-label={`Option ${o} is correct`}
             />
-            <label htmlFor={`mcq-option-${o}`} className="w-5 shrink-0 text-sm font-semibold text-zinc-900 dark:text-white">
+            <label htmlFor={`mcq-option-${o}`} className="w-5 shrink-0 text-sm font-bold text-[#14142b]">
               {o}
             </label>
             <input
@@ -163,14 +166,14 @@ export default function QuestionForm({
               value={options[o]}
               onChange={(e) => setOptions((prev) => ({ ...prev, [o]: e.target.value }))}
               maxLength={QUESTION_LIMITS.option}
-              className={mcqInputClass}
+              className={inputClass}
             />
           </div>
         ))}
       </fieldset>
 
       <div>
-        <label htmlFor="mcq-explanation" className={mcqLabelClass}>
+        <label htmlFor="mcq-explanation" className={labelClass}>
           Explanation (optional, shown after submitting)
         </label>
         <textarea
@@ -179,23 +182,19 @@ export default function QuestionForm({
           onChange={(e) => setExplanation(e.target.value)}
           rows={2}
           maxLength={QUESTION_LIMITS.explanation}
-          className={mcqInputClass}
+          className={inputClass}
         />
       </div>
 
       <div>
-        <label htmlFor="mcq-image" className={mcqLabelClass}>
-          Image (optional, PNG/JPG/WebP/GIF, max 2 MB)
+        <label htmlFor="mcq-image" className={labelClass}>
+          Image (optional: PNG, JPG, WebP or GIF, up to 2 MB)
         </label>
         {imageUrl ? (
-          <div className="flex items-start gap-3">
+          <div className="flex flex-wrap items-start gap-3">
             {/* eslint-disable-next-line @next/next/no-img-element -- R2 URL, not in next/image config */}
-            <img src={imageUrl} alt="Question image preview" className="max-h-40 rounded-lg border border-white/30" />
-            <button
-              type="button"
-              onClick={() => setImageUrl(null)}
-              className="text-xs px-2 py-1 rounded-lg glass text-red-600 dark:text-red-400"
-            >
+            <img src={imageUrl} alt="Question image preview" className="max-h-40 rounded-xl border border-[#e4e2ef]" />
+            <button type="button" onClick={() => setImageUrl(null)} className={rowDangerButton}>
               Remove image
             </button>
           </div>
@@ -206,27 +205,23 @@ export default function QuestionForm({
             accept={IMAGE_TYPES.join(",")}
             onChange={(e) => handleImage(e.target.files?.[0] ?? null)}
             disabled={uploading}
-            className={mcqInputClass}
+            className={`${inputClass} file:mr-3 file:rounded-lg file:border-0 file:bg-[#f6f5fb] file:px-3 file:py-1.5 file:text-sm file:font-semibold file:text-[#6d28d9]`}
           />
         )}
-        {uploading && <p className="text-xs text-zinc-600 dark:text-zinc-400 mt-1">Uploading image...</p>}
+        {uploading && <p className="mt-1.5 text-sm text-[#3b3a55]">Uploading image...</p>}
       </div>
 
-      {error && <p className="text-sm text-red-600 dark:text-red-400">{error}</p>}
+      {error && (
+        <p role="alert" className={errorText}>
+          {error}
+        </p>
+      )}
 
-      <div className="flex gap-2">
-        <button
-          type="submit"
-          disabled={saving || uploading}
-          className="btn-neon rounded-xl px-4 py-2 text-sm font-semibold disabled:opacity-50"
-        >
+      <div className="flex flex-wrap gap-3">
+        <button type="submit" disabled={saving || uploading} className={primaryButton}>
           {saving ? "Saving..." : question ? "Save changes" : "Add question"}
         </button>
-        <button
-          type="button"
-          onClick={onCancel}
-          className="rounded-xl px-4 py-2 text-sm font-semibold glass text-zinc-900 dark:text-white"
-        >
+        <button type="button" onClick={onCancel} className={secondaryButton}>
           Cancel
         </button>
       </div>

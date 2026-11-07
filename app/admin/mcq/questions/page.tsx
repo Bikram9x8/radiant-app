@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { ADMIN_QUESTION_SELECT, getAdminUserId, getMcqChapter, toAdminQuestion } from "@/lib/mcq";
 import QuestionBank from "./QuestionBank";
+import { backLink, pageIntro, pageTitle } from "../ui";
 
 export default async function AdminMcqQuestionsPage({
   searchParams,
@@ -26,12 +27,12 @@ export default async function AdminMcqQuestionsPage({
     : [];
 
   return (
-    <div className="flex-1 px-6 py-8 max-w-3xl mx-auto w-full">
-      <Link href="/dashboard" className="text-sm text-purple-600 dark:text-purple-400 font-semibold">
-        ← Back to dashboard
+    <div className="flex-1 w-full max-w-3xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
+      <Link href="/admin/mcq" className={backLink}>
+        ← MCQ tests
       </Link>
-      <h1 className="text-2xl font-bold mt-4 mb-1 text-zinc-900 dark:text-white">MCQ Question Bank</h1>
-      <p className="text-zinc-600 dark:text-zinc-400 text-sm mb-8">
+      <h1 className={pageTitle}>Question bank</h1>
+      <p className={`${pageIntro} mb-6`}>
         Questions for CBSE, ICSE and Competitive chapters. Tests are built from these questions.
       </p>
       {/* key: a new chapter gets fresh component state */}
