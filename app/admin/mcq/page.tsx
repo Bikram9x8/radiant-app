@@ -67,6 +67,9 @@ export default async function AdminMcqTestsPage({
           <Link href="/admin/mcq/questions" className={secondaryButton}>
             Question bank
           </Link>
+          <Link href="/admin/mcq/import" className={secondaryButton}>
+            Import questions
+          </Link>
           <Link href="/admin/mcq/tests/new" className={primaryButton}>
             New test
           </Link>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import ChapterPicker from "@/components/ChapterPicker";
 import type { AdminQuestion } from "@/lib/mcq";
@@ -18,6 +19,7 @@ import {
   primaryButton,
   rowButton,
   rowDangerButton,
+  secondaryButton,
 } from "../ui";
 
 export default function QuestionBank({
@@ -115,6 +117,9 @@ export default function QuestionBank({
                   Show deactivated
                 </label>
               )}
+              <Link href={`/admin/mcq/import?chapterId=${chapter.id}`} className={secondaryButton}>
+                Import from Excel or CSV
+              </Link>
               {!adding && (
                 <button
                   type="button"
