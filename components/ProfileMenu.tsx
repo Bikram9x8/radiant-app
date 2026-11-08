@@ -12,6 +12,7 @@ import {
   IconLogout,
   IconUser,
 } from "@tabler/icons-react";
+import s from "@/components/site-chrome.module.css";
 
 type ProfileMenuProps = {
   email: string;
@@ -43,15 +44,14 @@ function Avatar({ email }: { email: string }) {
   return (
     <span
       aria-hidden="true"
-      className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#6d28d9] text-xs font-bold text-white"
+      className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-[3px] border-(--hp-ink) bg-(--hp-purple) text-xs font-extrabold text-white"
     >
       {initialsOf(email)}
     </span>
   );
 }
 
-const focusRing =
-  "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#6d28d9]";
+// Focus ring comes from site-chrome.module.css (.chrome :focus-visible); menu rows use .menuItem.
 
 // Desktop: the avatar button and its dropdown
 export default function ProfileMenu({ email, role }: ProfileMenuProps) {
@@ -158,8 +158,7 @@ export default function ProfileMenu({ email, role }: ProfileMenuProps) {
     }
   }
 
-  const itemClass =
-    "flex min-h-[44px] w-full items-center gap-3 rounded-xl px-3 text-left text-sm font-semibold outline-none hover:bg-[#f6f5fb] focus-visible:bg-[#ede9fe] focus-visible:text-[#6d28d9]";
+  const itemClass = `${s.menuItem} flex min-h-[44px] w-full items-center gap-3 rounded-xl px-3 text-left text-[15px] font-bold`;
 
   return (
     <div ref={rootRef} className="relative">
@@ -172,9 +171,9 @@ export default function ProfileMenu({ email, role }: ProfileMenuProps) {
         aria-controls={open ? menuId : undefined}
         onClick={() => (open ? setOpen(false) : openMenu("first"))}
         onKeyDown={onButtonKeyDown}
-        className={`flex h-11 w-11 items-center justify-center rounded-full hover:bg-[#ede9fe] ${
-          open ? "bg-[#ede9fe]" : ""
-        } ${focusRing}`}
+        className={`flex h-11 w-11 items-center justify-center rounded-full hover:bg-(--hp-lavender-soft) ${
+          open ? "bg-(--hp-lavender-soft)" : ""
+        }`}
       >
         <Avatar email={email} />
       </button>
@@ -187,12 +186,12 @@ export default function ProfileMenu({ email, role }: ProfileMenuProps) {
             animate={{ opacity: 1, y: 0 }}
             exit={reduceMotion ? { opacity: 0 } : { opacity: 0, y: -6 }}
             transition={{ duration: 0.15, ease: "easeOut" }}
-            className="absolute right-0 top-[calc(100%+8px)] w-64 rounded-[16px] border border-[#e4e2ef] bg-white p-2 shadow-[0_12px_32px_rgba(20,20,43,0.14)]"
+            className={`${s.menuPanel} absolute right-0 top-[calc(100%+10px)] w-64 p-2`}
           >
-            <p className="truncate px-3 py-2 text-sm text-[#3b3a55]" title={email}>
+            <p className="truncate px-3 py-2 text-sm font-semibold text-(--hp-muted)" title={email}>
               {email}
             </p>
-            <div className="my-1 border-t border-[#e4e2ef]" />
+            <div className="my-1 border-t-2 border-(--hp-line)" />
 
             <div
               ref={menuRef}
@@ -211,7 +210,7 @@ export default function ProfileMenu({ email, role }: ProfileMenuProps) {
                     tabIndex={-1}
                     aria-current={current ? "page" : undefined}
                     onClick={() => setOpen(false)}
-                    className={`${itemClass} ${current ? "text-[#6d28d9]" : "text-[#14142b]"}`}
+                    className={itemClass}
                   >
                     <Icon size={18} stroke={2} aria-hidden="true" />
                     {label}
@@ -219,14 +218,14 @@ export default function ProfileMenu({ email, role }: ProfileMenuProps) {
                 );
               })}
 
-              <div role="separator" className="my-1 border-t border-[#e4e2ef]" />
+              <div role="separator" className="my-1 border-t-2 border-(--hp-line)" />
 
               <button
                 type="button"
                 role="menuitem"
                 tabIndex={-1}
                 onClick={() => signOut({ callbackUrl: "/" })}
-                className={`${itemClass} text-[#14142b]`}
+                className={itemClass}
               >
                 <IconLogout size={18} stroke={2} aria-hidden="true" />
                 Log out
@@ -276,7 +275,7 @@ export function ProfileDisclosure({
     return () => document.removeEventListener("click", onClick);
   }, [open, onOpenChange]);
 
-  const rowClass = `flex min-h-[44px] w-full items-center gap-3 rounded-xl px-3 text-left text-base font-semibold hover:bg-[#f6f5fb] ${focusRing}`;
+  const rowClass = `${s.menuItem} flex min-h-[48px] w-full items-center gap-3 rounded-2xl px-3 text-left text-base font-bold`;
 
   return (
     <div ref={rootRef}>
@@ -287,15 +286,15 @@ export function ProfileDisclosure({
         aria-controls={listId}
         aria-label={`Profile menu for ${email}`}
         onClick={() => onOpenChange(!open)}
-        className={`flex min-h-[52px] w-full items-center gap-3 rounded-xl px-2 text-left hover:bg-[#f6f5fb] ${focusRing}`}
+        className="flex min-h-[56px] w-full items-center gap-3 rounded-2xl border-[3px] border-(--hp-ink) bg-white px-2 text-left"
       >
         <Avatar email={email} />
-        <span className="min-w-0 flex-1 truncate text-sm font-semibold text-[#14142b]">{email}</span>
+        <span className="min-w-0 flex-1 truncate text-[15px] font-bold text-(--hp-ink)">{email}</span>
         <IconChevronDown
           size={20}
-          stroke={2}
+          stroke={2.4}
           aria-hidden="true"
-          className={`shrink-0 text-[#3b3a55] motion-safe:transition-transform ${open ? "rotate-180" : ""}`}
+          className={`shrink-0 text-(--hp-ink) motion-safe:transition-transform ${open ? "rotate-180" : ""}`}
         />
       </button>
 
@@ -307,7 +306,7 @@ export function ProfileDisclosure({
               <Link
                 href={href}
                 aria-current={current ? "page" : undefined}
-                className={`${rowClass} ${current ? "text-[#6d28d9]" : "text-[#14142b]"}`}
+                className={rowClass}
               >
                 <Icon size={20} stroke={2} aria-hidden="true" />
                 {label}
@@ -316,7 +315,7 @@ export function ProfileDisclosure({
           );
         })}
         <li>
-          <button type="button" onClick={onLogOut} className={`${rowClass} text-[#14142b]`}>
+          <button type="button" onClick={onLogOut} className={rowClass}>
             <IconLogout size={20} stroke={2} aria-hidden="true" />
             Log out
           </button>

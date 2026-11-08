@@ -1,4 +1,7 @@
 import Link from "next/link";
+import { fredoka, nunito } from "@/components/home/fonts";
+import s from "@/components/site-chrome.module.css";
+import RadiantLogo from "@/components/brand/RadiantLogo";
 
 const SECTIONS = [
   {
@@ -49,39 +52,39 @@ const SECTIONS = [
 
 export default function Footer() {
   return (
-    <footer className="bg-[#1b1740] text-[#e9e6fb] mt-auto">
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 pt-12 sm:pt-14 pb-8">
+    <footer className={`${fredoka.variable} ${nunito.variable} ${s.chrome} ${s.footer} mt-auto`}>
+      <div className="mx-auto max-w-[1200px] px-4 pt-10 pb-8 sm:px-8 md:pt-14">
         {/* Brand */}
         <div className="max-w-md">
-          <Link href="/" className="inline-block">
-            <img src="/logo-dark.png" alt="Radiant Educations" className="h-11 w-auto" />
+          <Link href="/" className="inline-flex rounded-xl">
+            <RadiantLogo compact className="h-20 md:h-24" />
           </Link>
-          <p className="mt-4 text-[15px] text-[#b7b2dd]">
-            Notes, solutions, tests and guidance for school and higher education, organised class by
-            class and chapter by chapter.
+          <p className="mt-4 text-[15px] leading-relaxed font-semibold text-(--hp-muted)">
+            Notes, solutions, tests and guidance for school and higher education, organised class by class
+            and chapter by chapter.
           </p>
         </div>
 
         {/* Links */}
-        <div className="mt-10 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-6 gap-y-8">
+        <nav aria-label="Footer" className="mt-8 grid grid-cols-2 gap-x-6 gap-y-8 md:grid-cols-3 lg:grid-cols-5">
           {SECTIONS.map((section) => (
             <div key={section.title}>
               {section.href ? (
                 <Link
                   href={section.href}
-                  className="text-sm font-extrabold uppercase tracking-wider text-white hover:text-[#c9bcff] transition-colors duration-300"
+                  className={`${s.display} ${s.footerTitle} inline-flex min-h-11 items-center text-lg font-bold`}
                 >
                   {section.title}
                 </Link>
               ) : (
-                <p className="text-sm font-extrabold uppercase tracking-wider text-white">{section.title}</p>
+                <p className={`${s.display} m-0 flex min-h-11 items-center text-lg font-bold`}>{section.title}</p>
               )}
-              <ul className="mt-4 space-y-2.5">
+              <ul className="m-0 list-none p-0">
                 {section.links.map((l) => (
                   <li key={l.label}>
                     <Link
                       href={l.href}
-                      className="text-[15px] text-[#e9e6fb] hover:text-white hover:underline transition-colors duration-300"
+                      className={`${s.footerLink} inline-flex min-h-11 items-center text-[15px] font-bold`}
                     >
                       {l.label}
                     </Link>
@@ -90,9 +93,9 @@ export default function Footer() {
               </ul>
             </div>
           ))}
-        </div>
+        </nav>
 
-        <p className="mt-10 pt-5 border-t border-[#3a3466] text-sm text-[#b7b2dd]">
+        <p className="mt-8 border-t-2 border-(--hp-line) pt-5 text-sm font-semibold text-(--hp-muted)">
           © {new Date().getFullYear()} Radiant Educations
         </p>
       </div>

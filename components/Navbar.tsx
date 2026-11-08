@@ -4,9 +4,15 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { IconX } from "@tabler/icons-react";
 import ProfileMenu, { ProfileDisclosure } from "@/components/ProfileMenu";
+import { fredoka, nunito } from "@/components/home/fonts";
+import s from "@/components/site-chrome.module.css";
+import RadiantLogo from "@/components/brand/RadiantLogo";
+
+// Fonts + colour tokens for the header and the drawer (the drawer renders outside <header>)
+const chrome = `${fredoka.variable} ${nunito.variable} ${s.chrome}`;
 
 const LINKS = [
   { href: "/school", label: "School Education" },
@@ -18,6 +24,7 @@ export default function Navbar() {
   const { data: session, status } = useSession();
   const user = session?.user as any;
   const pathname = usePathname();
+  const reduceMotion = useReducedMotion();
   const [visible, setVisible] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
@@ -86,30 +93,37 @@ export default function Navbar() {
   const email: string = user?.email ?? "";
   const isActive = (href: string) => pathname === href || pathname.startsWith(href + "/");
   const homeHref = status === "authenticated" ? "/dashboard" : "/";
+  // Drawer slide/fade: instant when the visitor asks for reduced motion
+  const drawerTransition = reduceMotion ? { duration: 0 } : { duration: 0.3, ease: "easeInOut" as const };
 
   return (
     <>
       <header
-        className="sticky top-0 z-50 bg-white border-b border-[#e4e2ef]"
-        style={{ opacity: visible ? 1 : 0, transition: "opacity 0.5s ease-in-out" }}
+        className={`${chrome} ${s.header} sticky top-0 z-50`}
+        style={{ opacity: visible ? 1 : 0, transition: reduceMotion ? "none" : "opacity 0.5s ease-in-out" }}
       >
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
-          {/* Logo */}
-          <Link href={homeHref} className="flex items-center shrink-0">
-            <img src="/logo-light.png" alt="Radiant Educations" className="h-10 w-auto" />
+        {/* Desktop layout from lg (1024px): logo + 3 nav pills + 2 buttons need ~930px */}
+        <div className="mx-auto flex h-[68px] max-w-[1200px] items-center justify-between gap-3 px-4 sm:px-8 lg:h-20 lg:gap-6">
+          {/* Compact logo. Phones/tablets: no EDUCATIONS, sized by width so it shrinks to fit at 320px
+              (max 160px wide = 44px tall). Desktop: with EDUCATIONS, 60px tall in the 80px bar.
+              The plane flies once on page load; still when reduced motion is on. */}
+          <Link href={homeHref} className="flex min-w-0 flex-1 items-center rounded-xl lg:flex-none">
+            <span className="flex w-full min-w-0 lg:hidden">
+              <RadiantLogo compact edu={false} animated once className="w-full max-w-[160px]" />
+            </span>
+            <span className="hidden lg:flex">
+              <RadiantLogo compact animated once className="h-[60px]" />
+            </span>
           </Link>
 
           {/* Desktop links */}
-          <nav className="hidden md:flex items-center gap-1">
+          <nav aria-label="Main" className="hidden items-center gap-1 lg:flex">
             {LINKS.map((l) => (
               <Link
                 key={l.href}
                 href={l.href}
-                className={`px-4 py-2 rounded-xl text-sm font-semibold transition-colors duration-300 ${
-                  isActive(l.href)
-                    ? "bg-violet-100 text-[#6d28d9]"
-                    : "text-zinc-700 hover:bg-zinc-100 hover:text-[#6d28d9]"
-                }`}
+                aria-current={isActive(l.href) ? "page" : undefined}
+                className={`${s.navLink} h-11 px-4 text-[15px]`}
               >
                 {l.label}
               </Link>
@@ -117,20 +131,18 @@ export default function Navbar() {
           </nav>
 
           {/* Desktop buttons */}
-          <div className="hidden md:flex items-center gap-3">
+          <div className="hidden items-center gap-2 lg:flex">
             {status === "loading" ? null : status === "unauthenticated" ? (
               <>
                 <Link
                   href="/login"
-                  className="btn btn-secondary"
-                  style={{ minHeight: 40, padding: "0.5rem 1.1rem" }}
+                  className={`${s.flat} flex h-11 items-center rounded-full border-[3px] border-(--hp-ink) bg-white px-5 font-extrabold text-(--hp-ink) no-underline`}
                 >
                   Log in
                 </Link>
                 <Link
                   href="/signup"
-                  className="btn btn-primary"
-                  style={{ minHeight: 40, padding: "0.5rem 1.1rem" }}
+                  className={`${s.flat} flex h-11 items-center rounded-full bg-(--hp-ink) px-5 font-extrabold text-white no-underline`}
                 >
                   Sign up free
                 </Link>
@@ -140,17 +152,33 @@ export default function Navbar() {
             )}
           </div>
 
-          {/* Hamburger (phones and tablets) */}
-          <button
-            ref={hamburgerRef}
-            onClick={() => setMenuOpen(true)}
-            className="md:hidden w-11 h-11 flex flex-col items-center justify-center gap-[5px] rounded-xl hover:bg-zinc-100"
-            aria-label="Open menu"
-          >
-            <span className="h-[2px] w-6 rounded-full bg-[#14142b]" />
-            <span className="h-[2px] w-6 rounded-full bg-[#14142b]" />
-            <span className="h-[2px] w-6 rounded-full bg-[#14142b]" />
-          </button>
+          {/* Phones and tablets: sign-up pill (logged out) + hamburger */}
+          <div className="flex shrink-0 items-center gap-2 lg:hidden">
+            {status === "unauthenticated" && (
+              <Link
+                href="/signup"
+                className={`${s.flat} flex h-11 items-center rounded-full bg-(--hp-ink) px-4 text-[15px] font-extrabold whitespace-nowrap text-white no-underline`}
+              >
+                Sign up free
+              </Link>
+            )}
+            <button
+              ref={hamburgerRef}
+              type="button"
+              onClick={() => setMenuOpen(true)}
+              className={`${s.flat} flex h-11 w-11 items-center justify-center rounded-full border-[3px] border-(--hp-ink) bg-white`}
+              aria-label="Open menu"
+            >
+              <svg aria-hidden="true" width="18" height="18" viewBox="0 0 18 18">
+                <path
+                  d="M3 5 h12 M3 9 h12 M3 13 h12"
+                  stroke="var(--hp-ink)"
+                  strokeWidth="2.4"
+                  strokeLinecap="round"
+                />
+              </svg>
+            </button>
+          </div>
         </div>
       </header>
 
@@ -160,11 +188,11 @@ export default function Navbar() {
           <>
             <motion.div
               key="overlay"
-              className="fixed inset-0 z-[60] bg-black/40 md:hidden"
+              className={`${s.overlay} fixed inset-0 z-[60] lg:hidden`}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 0.3, ease: "easeInOut" }}
+              transition={drawerTransition}
               onClick={closeMenu}
             />
             <motion.aside
@@ -173,47 +201,51 @@ export default function Navbar() {
               role="dialog"
               aria-modal="true"
               aria-label="Menu"
-              className="fixed top-0 right-0 z-[70] h-full w-[85%] max-w-sm bg-white shadow-2xl flex flex-col md:hidden"
+              className={`${chrome} ${s.drawer} fixed top-0 right-0 z-[70] flex h-full w-[85%] max-w-sm flex-col lg:hidden`}
               initial={{ x: "100%" }}
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
-              transition={{ duration: 0.3, ease: "easeInOut" }}
+              transition={drawerTransition}
             >
-              <div className="h-16 px-5 flex items-center justify-between border-b border-[#e4e2ef]">
-                <span className="text-lg font-extrabold text-[#14142b]">Menu</span>
+              <div className="flex h-[68px] shrink-0 items-center justify-between border-b-[3px] border-(--hp-ink) px-5">
+                <span className={`${s.display} text-[22px] font-bold`}>Menu</span>
                 <button
                   ref={closeRef}
+                  type="button"
                   onClick={closeMenu}
-                  className="w-11 h-11 flex items-center justify-center rounded-xl hover:bg-zinc-100"
+                  className={`${s.flat} flex h-11 w-11 items-center justify-center rounded-full border-[3px] border-(--hp-ink) bg-white`}
                   aria-label="Close menu"
                 >
-                  <IconX size={24} />
+                  <IconX size={20} stroke={2.6} aria-hidden="true" />
                 </button>
               </div>
 
-              <div className="flex-1 overflow-y-auto p-5 flex flex-col gap-2">
+              <nav aria-label="Main" className="flex flex-1 flex-col gap-2 overflow-y-auto p-5">
                 {LINKS.map((l) => (
                   <Link
                     key={l.href}
                     href={l.href}
-                    className={`px-4 py-3.5 rounded-2xl text-base font-semibold transition-colors duration-300 ${
-                      isActive(l.href)
-                        ? "bg-violet-100 text-[#6d28d9]"
-                        : "text-zinc-800 hover:bg-zinc-100"
-                    }`}
+                    aria-current={isActive(l.href) ? "page" : undefined}
+                    className={`${s.navLink} min-h-[52px] px-5 text-lg`}
                   >
                     {l.label}
                   </Link>
                 ))}
-              </div>
+              </nav>
 
-              <div className="max-h-[70%] overflow-y-auto p-5 border-t border-[#e4e2ef] flex flex-col gap-3">
+              <div className="flex max-h-[70%] flex-col gap-3 overflow-y-auto border-t-[3px] border-(--hp-ink) p-5">
                 {status === "unauthenticated" && (
                   <>
-                    <Link href="/login" className="btn btn-secondary w-full">
+                    <Link
+                      href="/login"
+                      className={`${s.flat} flex h-[52px] w-full items-center justify-center rounded-full border-[3px] border-(--hp-ink) bg-white text-[17px] font-extrabold text-(--hp-ink) no-underline`}
+                    >
                       Log in
                     </Link>
-                    <Link href="/signup" className="btn btn-primary w-full">
+                    <Link
+                      href="/signup"
+                      className={`${s.flat} flex h-[52px] w-full items-center justify-center rounded-full bg-(--hp-ink) text-[17px] font-extrabold text-white no-underline`}
+                    >
                       Sign up free
                     </Link>
                   </>
