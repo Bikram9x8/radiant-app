@@ -17,6 +17,7 @@ import {
   labelClass,
   mutedText,
   primaryButton,
+  questionText,
   rowButton,
   rowDangerButton,
   secondaryButton,
@@ -269,6 +270,11 @@ export default function TestEditor({
           <button type="button" onClick={togglePublish} disabled={!!busy} className={primaryButton}>
             {busy === "publish" ? "Saving..." : isPublished ? "Unpublish" : "Publish"}
           </button>
+          {isPublished && (
+            <Link href={`/tests/${test.id}`} target="_blank" className={secondaryButton}>
+              Open as a student
+            </Link>
+          )}
         </div>
       </section>
 
@@ -314,10 +320,10 @@ export default function TestEditor({
                 <li key={q.id} className="py-4 first:pt-0 last:pb-0">
                   <div className="flex flex-wrap items-start justify-between gap-3">
                     <div className="flex-1 min-w-[200px]">
-                      <p className={`whitespace-pre-line font-semibold ${q.isActive ? "text-[#14142b]" : "text-[#3b3a55]"}`}>
+                      <p className={`${questionText} whitespace-pre-line font-semibold ${q.isActive ? "text-[#14142b]" : "text-[#3b3a55]"}`}>
                         {i + 1}. {q.text}
                       </p>
-                      <p className={`${mutedText} mt-1`}>
+                      <p className={`${mutedText} ${questionText} mt-1`}>
                         Answer {q.correctOption}: {q[`option${q.correctOption}`]}
                         {q.imageUrl && ". Has an image"}
                       </p>
@@ -415,7 +421,7 @@ export default function TestEditor({
             <ul className="divide-y divide-[#e4e2ef]">
               {available.map((q) => (
                 <li key={q.id} className="py-3 first:pt-0 last:pb-0 flex flex-wrap items-center justify-between gap-3">
-                  <p className="flex-1 min-w-[200px] whitespace-pre-line text-[#14142b]">{q.text}</p>
+                  <p className={`${questionText} flex-1 min-w-[200px] whitespace-pre-line text-[#14142b]`}>{q.text}</p>
                   <button
                     type="button"
                     onClick={() => setList((prev) => [...prev, q])}

@@ -1,7 +1,7 @@
 // Shared server-side code for MCQ tests: input validation, chapter checks,
 // answer-free question shapes, signed start tokens and scoring.
 // Server only: imports prisma and NEXTAUTH_SECRET, never import from client components.
-import { createHmac, timingSafeEqual } from "crypto";
+import { createHmac, randomUUID, timingSafeEqual } from "crypto";
 import { getServerSession } from "next-auth/next";
 import { z } from "zod";
 import type { McqOption, Prisma } from "@prisma/client";
@@ -156,7 +156,7 @@ export async function getMcqChapter(chapterId: string): Promise<McqChapter | nul
 
   const root = trail[0];
   if (!root || root.kind !== "COURSE" || !MCQ_COURSE_SLUGS.includes(root.slug)) return null;
-  return { id: chapter.id, name: chapter.name, chapterNo: chapter.chapterNo, trail };
+  return { id: chapter.id, name: chapter.name, slug: chapter.slug, chapterNo: chapter.chapterNo, trail };
 }
 
 // ================= QUESTION SHAPES =================
@@ -236,6 +236,57 @@ export async function getTestWithAnswers(testId: string) {
   });
   if (!test) return null;
   return { ...test, questions: test.questions.map((tq) => tq.question) };
+}
+
+// ================= STUDENTS =================
+
+export type McqViewer = { kind: "guest" } | { kind: "student"; studentId: string } | { kind: "other" };
+
+// Who is taking a test: only STUDENT accounts with a profile get attempts saved
+export async function getMcqViewer(): Promise<McqViewer> {
+  const session = await getServerSession(authOptions);
+  const user = session?.user as { id?: string; role?: string } | undefined;
+  if (!user?.id) return { kind: "guest" };
+  if (user.role !== "STUDENT") return { kind: "other" };
+  const profile = await prisma.studentProfile.findUnique({ where: { userId: user.id }, select: { id: true } });
+  return profile ? { kind: "student", studentId: profile.id } : { kind: "other" };
+}
+
+// The attempt and every answer in one transaction
+export async function saveAttempt(data: {
+  studentId: string;
+  testId: string;
+  score: number;
+  total: number;
+  timeTakenSec: number;
+  isLate: boolean;
+  startedAt: Date;
+  results: QuestionResult[];
+}): Promise<string> {
+  const id = randomUUID();
+  await prisma.$transaction([
+    prisma.mcqAttempt.create({
+      data: {
+        id,
+        studentId: data.studentId,
+        testId: data.testId,
+        score: data.score,
+        total: data.total,
+        timeTakenSec: data.timeTakenSec,
+        isLate: data.isLate,
+        startedAt: data.startedAt,
+      },
+    }),
+    prisma.mcqAnswer.createMany({
+      data: data.results.map((r) => ({
+        attemptId: id,
+        questionId: r.questionId,
+        selectedOption: r.selected,
+        isCorrect: r.isCorrect,
+      })),
+    }),
+  ]);
+  return id;
 }
 
 // ================= START TOKEN =================
@@ -322,6 +373,41 @@ export type ReviewQuestion = PublicQuestion & {
   selected: McqOption | null;
   isCorrect: boolean;
 };
+
+type Graded =
+  | { ok: false; status: number; error: string }
+  | {
+      ok: true;
+      testId: string;
+      startedAt: Date;
+      result: ReturnType<typeof scoreAttempt>;
+      review: ReviewQuestion[];
+    };
+
+// Checks a submission and scores it on the server. Saves nothing.
+export async function gradeSubmission(testId: string, body: unknown, now: Date = new Date()): Promise<Graded> {
+  const parsed = submitInput.safeParse(body);
+  if (!parsed.success) return { ok: false, status: 400, error: "The answers couldn't be read. Please try again." };
+
+  const test = await getTestWithAnswers(testId);
+  if (!test) return { ok: false, status: 404, error: "This test is no longer available." };
+  if (test.questions.length === 0) return { ok: false, status: 409, error: "This test has no questions right now." };
+
+  const startedAt = verifyStartToken(parsed.data.token, testId, now);
+  if (!startedAt) {
+    return { ok: false, status: 400, error: "This test session has expired. Please start the test again." };
+  }
+
+  const result = scoreAttempt({
+    questions: test.questions.map((q) => ({ id: q.id, correctOption: q.correctOption })),
+    answers: parsed.data.answers,
+    startedAt,
+    now,
+    timeLimitMin: test.timeLimitMin,
+  });
+  const review = test.questions.map((q, i) => toReviewQuestion(q, result.results[i]));
+  return { ok: true, testId, startedAt, result, review };
+}
 
 // Shown only after submitting
 export function toReviewQuestion(q: AnswerKeyRow, result: QuestionResult): ReviewQuestion {

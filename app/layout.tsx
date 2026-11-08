@@ -1,6 +1,6 @@
 import Providers from "./providers";
 import type { Metadata } from "next";
-import { Inter, Geist_Mono } from "next/font/google";
+import { Inter, Geist_Mono, Noto_Sans_Devanagari, Noto_Sans_Gurmukhi } from "next/font/google";
 import "./globals.css";
 import Footer from "@/components/Footer";
 
@@ -13,6 +13,24 @@ const inter = Inter({
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+});
+
+// Hindi and Punjabi for MCQ question text (the font-question class). Not preloaded: thanks to the
+// subsets' unicode-range, a browser only downloads them when Devanagari/Gurmukhi text is on screen.
+const notoDevanagari = Noto_Sans_Devanagari({
+  variable: "--font-devanagari",
+  subsets: ["devanagari"],
+  weight: ["400", "600", "700"],
+  display: "swap",
+  preload: false,
+});
+
+const notoGurmukhi = Noto_Sans_Gurmukhi({
+  variable: "--font-gurmukhi",
+  subsets: ["gurmukhi"],
+  weight: ["400", "600", "700"],
+  display: "swap",
+  preload: false,
 });
 
 export const metadata: Metadata = {
@@ -37,7 +55,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${inter.variable} ${geistMono.variable} ${notoDevanagari.variable} ${notoGurmukhi.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col relative bg-white text-[#14142b]">
         <Providers modal={modal}>

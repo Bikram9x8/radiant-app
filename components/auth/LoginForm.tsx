@@ -5,8 +5,11 @@ import { useRouter } from "next/navigation";
 import { PasswordField, authButton, authInput, authLabel, authLink } from "@/components/AuthLayout";
 import AuthLink from "@/components/auth/AuthLink";
 import { useToast } from "@/components/Toast";
+import { safeReturnTo, withReturnTo } from "@/lib/return-to";
 
-export default function LoginForm() {
+// returnTo: set only when login was opened from a page that wants the user back (MCQ test results)
+export default function LoginForm({ returnTo: rawReturnTo = null }: { returnTo?: string | null }) {
+  const returnTo = safeReturnTo(rawReturnTo);
   const router = useRouter();
   const { showToast } = useToast();
   const [form, setForm] = useState({ email: "", password: "" });
@@ -23,6 +26,9 @@ export default function LoginForm() {
     if (res?.error) {
       setError("Invalid email or password");
       showToast("Invalid email or password", "error");
+    } else if (returnTo) {
+      // Full load: closes the modal and shows the page fresh with the new session
+      window.location.assign(returnTo);
     } else {
       router.push("/dashboard");
       router.refresh();
@@ -65,7 +71,7 @@ export default function LoginForm() {
       </form>
       <p className="mt-6 text-center text-sm text-[#52516b]">
         New here?{" "}
-        <AuthLink href="/signup" className={authLink}>
+        <AuthLink href={withReturnTo("/signup", returnTo)} className={authLink}>
           Create a free account
         </AuthLink>
       </p>

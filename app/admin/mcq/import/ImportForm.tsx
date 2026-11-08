@@ -16,6 +16,7 @@ import {
   labelClass,
   mutedText,
   primaryButton,
+  questionText,
   secondaryButton,
   sectionTitle,
   successText,
@@ -332,13 +333,13 @@ export default function ImportForm({
                         </span>
                       </td>
                       <td className="px-4 py-3 text-[#14142b]">
-                        <span dir="auto" className="line-clamp-2 max-w-[340px] whitespace-pre-line">
+                        <span dir="auto" className={`${questionText} line-clamp-2 max-w-[340px] whitespace-pre-line`}>
                           {r.question || <span className="text-[#3b3a55]">(empty)</span>}
                         </span>
                       </td>
                       <td className="px-4 py-3 text-[#14142b]">
                         {r.correct ? (
-                          <span dir="auto">
+                          <span dir="auto" className={questionText}>
                             {r.correct}
                             {r.correctText ? `: ${r.correctText}` : ""}
                           </span>

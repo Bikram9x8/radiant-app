@@ -20,10 +20,16 @@ export function parseTimeLimit(value: string): number | null | "invalid" {
 export type McqChapter = {
   id: string;
   name: string;
+  slug: string;
   chapterNo: number | null;
   // Ancestors from the course down to the chapter's parent (e.g. CBSE > Class 10 > Mathematics)
   trail: { id: string; name: string; slug: string; kind: string }[];
 };
+
+// The chapter's page in the course tree, e.g. /courses/cbse/class-11/mathematics/chapter-9
+export function chapterPath(chapter: McqChapter): string {
+  return "/courses/" + [...chapter.trail.map((n) => n.slug), chapter.slug].join("/");
+}
 
 // e.g. "CBSE › Class 11 › Mathematics › Ch 9. Straight Lines"
 export function chapterLabel(chapter: McqChapter): string {

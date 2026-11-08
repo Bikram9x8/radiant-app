@@ -14,6 +14,7 @@ import {
   inputClass,
   labelClass,
   primaryButton,
+  questionText,
   rowDangerButton,
   secondaryButton,
 } from "./ui";
@@ -140,7 +141,7 @@ export default function QuestionForm({
           onChange={(e) => setText(e.target.value)}
           rows={3}
           maxLength={QUESTION_LIMITS.text}
-          className={inputClass}
+          className={`${inputClass} ${questionText}`}
         />
       </div>
 
@@ -166,7 +167,7 @@ export default function QuestionForm({
               value={options[o]}
               onChange={(e) => setOptions((prev) => ({ ...prev, [o]: e.target.value }))}
               maxLength={QUESTION_LIMITS.option}
-              className={inputClass}
+              className={`${inputClass} ${questionText}`}
             />
           </div>
         ))}
@@ -182,7 +183,7 @@ export default function QuestionForm({
           onChange={(e) => setExplanation(e.target.value)}
           rows={2}
           maxLength={QUESTION_LIMITS.explanation}
-          className={inputClass}
+          className={`${inputClass} ${questionText}`}
         />
       </div>
 

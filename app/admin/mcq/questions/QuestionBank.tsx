@@ -17,6 +17,7 @@ import {
   labelClass,
   mutedText,
   primaryButton,
+  questionText,
   rowButton,
   rowDangerButton,
   secondaryButton,
@@ -175,7 +176,7 @@ export default function QuestionBank({
               ) : (
                 <li key={q.id} className={`card p-5 sm:p-6 ${q.isActive ? "" : "bg-[#f6f5fb]"}`}>
                   <div className="flex flex-wrap items-start justify-between gap-3">
-                    <p className="flex-1 min-w-[200px] whitespace-pre-line font-semibold text-[#14142b]">
+                    <p className={`${questionText} flex-1 min-w-[200px] whitespace-pre-line font-semibold text-[#14142b]`}>
                       {i + 1}. {q.text}
                     </p>
                     <div className="flex flex-wrap gap-2">
@@ -199,7 +200,7 @@ export default function QuestionBank({
                       return (
                         <li
                           key={o}
-                          className={`rounded-xl px-3 py-2 ${
+                          className={`${questionText} rounded-xl px-3 py-2 ${
                             isCorrect ? "pastel-mint font-semibold" : "bg-[#f6f5fb] text-[#14142b]"
                           }`}
                         >
@@ -212,7 +213,7 @@ export default function QuestionBank({
                   </ul>
 
                   {q.explanation && (
-                    <p className="mt-3 whitespace-pre-line text-sm text-[#3b3a55]">
+                    <p className={`${questionText} mt-3 whitespace-pre-line text-sm text-[#3b3a55]`}>
                       <span className="font-semibold text-[#14142b]">Explanation:</span> {q.explanation}
                     </p>
                   )}
