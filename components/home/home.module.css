@@ -1,0 +1,219 @@
+/* Homepage-only styles ("Option B · Light & playful").
+   Everything here is scoped under .home or uses local class names, so no other page is affected.
+   Motion rule: only transform-type properties (translate/rotate/scale) and opacity animate.
+   The one approved exception is the score ring's stroke-dashoffset. */
+
+.home {
+  --hp-cream: #fffaf2;
+  --hp-ink: #241a3d;
+  --hp-muted: #4a3f66;
+  --hp-purple: #6d28d9;
+  --hp-purple-deep: #4c1d95;
+  --hp-link: #5b21b6;
+  --hp-yellow: #ffd84d;
+  --hp-mint: #8ef0c0;
+  --hp-pink: #ffb3d6;
+  --hp-lavender: #c9b6ff;
+  --hp-coral: #ffb3a0;
+  --hp-sky: #a8dcff;
+  --hp-orange: #ff6b3d;
+  --hp-butter: #fff3c4;
+  --hp-mint-soft: #d8fbe9;
+  --hp-lavender-soft: #ede6ff;
+  --hp-line: #ebe4f5;
+
+  font-family: var(--font-nunito), system-ui, sans-serif;
+  background: var(--hp-cream);
+  color: var(--hp-ink);
+  overflow-x: clip; /* tilted shapes never cause sideways scroll */
+}
+
+/* The global stylesheet fades colours and shadows on every link and button.
+   On the homepage only transform and opacity animate, so switch that off here. */
+.home :where(a, button, input) {
+  transition: none;
+}
+
+.home :focus-visible {
+  outline: 3px solid var(--hp-purple);
+  outline-offset: 3px;
+}
+
+.display {
+  font-family: var(--font-fredoka), var(--font-nunito), sans-serif;
+}
+
+/* ---------- Hero headline highlights: pop in one after another ---------- */
+.hl {
+  display: inline-block;
+  padding: 0 0.26em;
+  border-radius: 0.34em;
+  rotate: var(--rot, 0deg);
+  /* Scale only: the words stay fully opaque, so the h1 is readable from the first frame */
+  animation: hl-pop 620ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  animation-delay: var(--delay, 0ms);
+}
+
+@keyframes hl-pop {
+  from { scale: 0.84; }
+  to { scale: 1; }
+}
+
+/* ---------- Sticker buttons and cards: the face presses into a fixed shadow ---------- */
+/* Markup: <a class="press"><span class="face">…</span></a>
+   The shadow is a pseudo-element that never moves; only the face moves (translate).
+   Offsets/colour/radius are set per element with Tailwind arbitrary properties
+   ([--sy:5px] etc.). Defaults live in var() fallbacks, not here: this file is
+   unlayered, so declaring them here would always beat Tailwind's layered utilities. */
+.press {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  border-radius: var(--radius, 999px);
+  text-decoration: none;
+}
+
+.press::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: var(--shadow, var(--hp-ink));
+  translate: var(--sx, 6px) var(--sy, 6px);
+}
+
+.face {
+  display: flex;
+  width: 100%;
+  border-radius: inherit;
+  transition: translate 160ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+@media (hover: hover) {
+  .press:hover .face {
+    translate: calc(var(--sx, 6px) * 0.5) calc(var(--sy, 6px) * 0.5);
+  }
+}
+
+.press:active .face {
+  translate: var(--sx, 6px) var(--sy, 6px);
+}
+
+/* Flat buttons (no sticker shadow): a small squash when pressed */
+.flat {
+  transition: scale 140ms ease-out;
+}
+
+.flat:active {
+  scale: 0.97;
+}
+
+/* ---------- Path cards: slight tilt on hover, mouse/trackpad only ---------- */
+.tilt {
+  transition: rotate 260ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .tilt:hover {
+    rotate: var(--tilt, -1.2deg);
+  }
+}
+
+/* ---------- Hero illustration: slow, out-of-step floating ---------- */
+.floatCard {
+  animation: float-card 7s ease-in-out infinite;
+}
+
+.floatBlob {
+  animation: float-blob 9s ease-in-out infinite;
+}
+
+.floatBadge {
+  animation: float-badge 6s ease-in-out infinite;
+  animation-delay: -2s;
+}
+
+.floatStar {
+  animation: float-star 8s ease-in-out infinite;
+  animation-delay: -3s;
+}
+
+@keyframes float-card {
+  0%, 100% { translate: 0 0; rotate: 0deg; }
+  50% { translate: 0 -8px; rotate: -0.8deg; }
+}
+
+@keyframes float-blob {
+  0%, 100% { translate: 0 0; rotate: 0deg; }
+  50% { translate: 4px 6px; rotate: 1.5deg; }
+}
+
+@keyframes float-badge {
+  0%, 100% { translate: 0 0; rotate: 0deg; }
+  50% { translate: 0 -6px; rotate: -2deg; }
+}
+
+@keyframes float-star {
+  0%, 100% { translate: 0 0; rotate: -6deg; }
+  50% { translate: 0 -5px; rotate: 8deg; }
+}
+
+/* ---------- Sections fade up when scrolled into view ---------- */
+/* Server HTML is always visible. Reveal.tsx only hides a section after hydration
+   if it is still below the fold, then shows it when it scrolls in. */
+.reveal[data-reveal="hidden"] {
+  opacity: 0;
+  translate: 0 16px;
+}
+
+.reveal[data-reveal="shown"] {
+  opacity: 1;
+  translate: none;
+  transition: opacity 600ms ease-out, translate 600ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+/* ---------- Score ring: fills 0 → 82% when scrolled into view ---------- */
+.ringArc {
+  transition: stroke-dashoffset 1300ms cubic-bezier(0.25, 0.8, 0.25, 1), opacity 120ms linear;
+}
+
+.ringArc[data-ring="empty"] {
+  stroke-dashoffset: 100;
+  opacity: 0; /* hides the round-cap dot while the ring is empty */
+  transition: none;
+}
+
+/* ---------- Search box ---------- */
+.search:focus-within {
+  outline: 3px solid var(--hp-purple);
+  outline-offset: 3px;
+}
+
+.search input:focus-visible {
+  outline: none;
+}
+
+/* ---------- Reduced motion: no animation at all ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .home *,
+  .home *::before,
+  .home *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .reveal[data-reveal] {
+    opacity: 1 !important;
+    translate: none !important;
+  }
+
+  .ringArc[data-ring] {
+    stroke-dashoffset: 18 !important;
+    opacity: 1 !important;
+  }
+
+  .tilt:hover {
+    rotate: none !important;
+  }
+}
