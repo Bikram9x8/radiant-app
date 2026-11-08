@@ -4,7 +4,7 @@ import Reveal from "./Reveal";
 
 export default function JoinBanner() {
   return (
-    <Reveal aria-labelledby="home-join" className="border-y-[3px] border-(--hp-ink) bg-(--hp-yellow)">
+    <Reveal aria-labelledby="home-join" className="border-t-[3px] border-(--hp-ink) bg-(--hp-yellow)">
       <div className="mx-auto flex max-w-[1200px] flex-col gap-[18px] px-4 py-9 sm:px-8 md:flex-row md:flex-wrap md:items-center md:justify-between md:gap-6 md:py-14">
         <h2
           id="home-join"
