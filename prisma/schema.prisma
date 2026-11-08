@@ -353,6 +353,7 @@ model McqQuestion {
   explanation   String?
   imageUrl      String?    // one optional image, shown with the question text
   isActive      Boolean    @default(true) // deactivate instead of delete, so old attempts stay readable
+  keepOptionOrder Boolean  @default(false) // true = never shuffle the options (e.g. "All of the above")
   createdAt     DateTime   @default(now())
   updatedAt     DateTime   @updatedAt
 
@@ -371,6 +372,7 @@ model McqTest {
   timeLimitMin  Int?       // null = untimed
   isPublished   Boolean    @default(false)
   publishedAt   DateTime?
+  shuffleQuestions Boolean @default(false) // true = each attempt gets its own question order
   createdAt     DateTime   @default(now())
   updatedAt     DateTime   @updatedAt
 
@@ -419,6 +421,8 @@ model McqAnswer {
   question       McqQuestion @relation(fields: [questionId], references: [id], onDelete: Restrict)
   selectedOption McqOption?  // null = skipped
   isCorrect      Boolean     // recorded at submit time, so later answer-key fixes don't rewrite old scores
+  optionOrder    String?     // original options in the order shown, e.g. "CADB"; null = A-B-C-D (older attempts)
+  position       Int?        // 1-based place of this question in the order shown; null = the test's order
 
   @@id([attemptId, questionId])
 }
