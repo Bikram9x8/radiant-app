@@ -19,7 +19,7 @@ export default function RecentlyAdded({ items }: { items: RecentItem[] }) {
               Recently added
             </h2>
             <Link
-              href="/opportunities"
+              href="/search"
               className="inline-flex min-h-11 items-center px-1 text-[15px] font-extrabold text-(--hp-link) underline-offset-4 hover:underline"
             >
               View all →

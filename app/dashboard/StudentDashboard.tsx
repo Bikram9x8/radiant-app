@@ -57,7 +57,7 @@ const linkGroups = [
     colour: "pastel-yellow",
     links: [
       { href: "/opportunities", label: "Test Series", Icon: IconFileText },
-      { href: "/opportunities?division=CBSE_SAMPLE_PAPERS", label: "CBSE Sample Papers", Icon: IconCertificate },
+      { href: "/search?division=CBSE_SAMPLE_PAPERS", label: "CBSE Sample Papers", Icon: IconCertificate },
       { href: "/opportunities?division=DPP", label: "DPP", Icon: IconClipboardList },
       { href: "/opportunities?division=BOARD_LEVEL_TEST", label: "Board Level Test", Icon: IconSchool },
       { href: "/opportunities?division=CHAPTER_WISE_TEST", label: "Chapter Wise Test", Icon: IconBook },
@@ -67,16 +67,16 @@ const linkGroups = [
     label: "Study material",
     colour: "pastel-purple",
     links: [
-      { href: "/opportunities?division=NCERT_SOLUTION", label: "NCERT Solution", Icon: IconBook2 },
-      { href: "/opportunities?division=STUDY_PACKAGE", label: "Study Package", Icon: IconPackage },
+      { href: "/search?division=NCERT_SOLUTION", label: "NCERT Solution", Icon: IconBook2 },
+      { href: "/search?division=STUDY_PACKAGE", label: "Study Package", Icon: IconPackage },
     ],
   },
   {
     label: "Career",
     colour: "pastel-pink",
     links: [
-      { href: "/opportunities?division=SKILL_BUILDING", label: "Skill Building", Icon: IconTool },
-      { href: "/opportunities?division=CAREER_COUNSELING", label: "Career Counseling", Icon: IconTargetArrow },
+      { href: "/search?division=SKILL_BUILDING", label: "Skill Building", Icon: IconTool },
+      { href: "/search?division=CAREER_COUNSELING", label: "Career Counseling", Icon: IconTargetArrow },
     ],
   },
 ];

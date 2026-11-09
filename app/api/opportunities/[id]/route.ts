@@ -9,6 +9,7 @@ import {
   isDeadlinePassed,
   isInternshipSubcategory,
 } from "@/lib/internships";
+import { isTestPost } from "@/lib/test-posts";
 
 export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -70,6 +71,12 @@ const session = await getServerSession(authOptions);
   } else if (place?.isChapter) {
     // Notes, solutions, tests, PYQs... posted to a chapter: back to that chapter page
     backLink = { href: place.href, label: "chapter" };
+  } else if (isTestPost(opportunity)) {
+    // Tests not linked to a chapter: back to the Tests page
+    backLink = { href: "/opportunities", label: "tests" };
+  } else {
+    // Other material not linked to a chapter (e.g. solutions): back to Search
+    backLink = { href: "/search", label: "search" };
   }
 
   // Header menu item for this post: School Education for school/competitive/vocational courses,
