@@ -10,6 +10,7 @@ import ProfileMenu, { ProfileDisclosure } from "@/components/ProfileMenu";
 import { fredoka, nunito } from "@/components/home/fonts";
 import s from "@/components/site-chrome.module.css";
 import RadiantLogo from "@/components/brand/RadiantLogo";
+import { useNavSection } from "@/components/nav-section";
 
 // Fonts + colour tokens for the header and the drawer (the drawer renders outside <header>)
 const chrome = `${fredoka.variable} ${nunito.variable} ${s.chrome}`;
@@ -24,6 +25,7 @@ export default function Navbar() {
   const { data: session, status } = useSession();
   const user = session?.user as any;
   const pathname = usePathname();
+  const navSection = useNavSection();
   const reduceMotion = useReducedMotion();
   const [visible, setVisible] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -91,7 +93,19 @@ export default function Navbar() {
   }, [menuOpen, profileOpen, closeMenu]);
 
   const email: string = user?.email ?? "";
-  const isActive = (href: string) => pathname === href || pathname.startsWith(href + "/");
+  const under = (prefix: string) => pathname === prefix || pathname.startsWith(prefix + "/");
+  const isActive = (href: string) => {
+    // A single post: the page reports its section (School / Higher / Tests) once loaded
+    if (pathname.startsWith("/opportunities/")) return navSection === href;
+    // Course pages: higher-education belongs to Higher Education; every other course
+    // (CBSE, ICSE, competitive, vocational: the ones listed on /school) to School Education
+    if (pathname.startsWith("/courses/")) {
+      if (href === "/higher") return under("/courses/higher-education");
+      if (href === "/school") return !under("/courses/higher-education");
+      return false;
+    }
+    return under(href);
+  };
   const homeHref = status === "authenticated" ? "/dashboard" : "/";
   // Drawer slide/fade: instant when the visitor asks for reduced motion
   const drawerTransition = reduceMotion ? { duration: 0 } : { duration: 0.3, ease: "easeInOut" as const };

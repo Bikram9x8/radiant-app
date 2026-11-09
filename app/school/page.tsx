@@ -2,30 +2,23 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import ClassTiles from "@/components/ClassTiles";
 import { SchoolArt } from "@/components/Illustrations";
+import AdSlot from "@/components/home/AdSlot";
+import { fredoka, nunito } from "@/components/home/fonts";
+import s from "@/components/school/school.module.css";
 export const dynamic = "force-dynamic";
 
 // How many classes are shown before the "Show all" button
 const VISIBLE_CLASSES = 6;
 
+// Option B pastels for the class tiles (background only; text stays ink for contrast)
 const TILE_COLORS = [
-  "bg-violet-100 text-violet-700",
-  "bg-blue-100 text-blue-700",
-  "bg-teal-100 text-teal-700",
-  "bg-orange-100 text-orange-700",
-  "bg-pink-100 text-pink-700",
-  "bg-green-100 text-green-700",
+  "bg-(--hp-yellow)",
+  "bg-(--hp-mint)",
+  "bg-(--hp-lavender)",
+  "bg-(--hp-coral)",
+  "bg-(--hp-sky)",
+  "bg-(--hp-pink)",
 ];
-
-function AdSlot({ label, className = "" }: { label: string; className?: string }) {
-  return (
-    <div
-      className={`mx-auto w-full border border-dashed border-zinc-300 rounded-lg bg-zinc-50 flex flex-col items-center justify-center text-center ${className}`}
-    >
-      <span className="text-[11px] font-bold uppercase tracking-wider text-zinc-500">Advertisement</span>
-      <span className="text-sm text-zinc-500">{label}</span>
-    </div>
-  );
-}
 
 export default async function SchoolPage() {
   const boards = await prisma.courseNode.findMany({
@@ -50,32 +43,33 @@ export default async function SchoolPage() {
   });
 
   return (
-    <div className="flex-1 bg-white">
-      <div className="max-w-5xl mx-auto px-6 pt-4">
-        <AdSlot label="728 × 90 banner space" className="max-w-[728px] h-[90px]" />
+    <div className={`${fredoka.variable} ${nunito.variable} ${s.page} flex-1`}>
+      <div className="mx-auto max-w-[1200px] px-4 pt-4 sm:px-8">
+        <AdSlot label="728 × 90 banner space" className="h-[90px] max-w-[728px]" />
       </div>
 
-      <div className="max-w-5xl mx-auto px-6 py-8">
-        <nav className="text-sm text-zinc-500 flex flex-wrap items-center gap-x-2">
-          <Link href="/" className="hover:underline">Home</Link>
-          <span>/</span>
-          <span className="text-zinc-900 font-semibold">School Education</span>
+      <div className="mx-auto max-w-[1200px] px-4 pt-6 pb-14 sm:px-8 md:pt-8">
+        <nav aria-label="Breadcrumb" className={`${s.crumbs} flex flex-wrap items-center gap-x-2 text-[15px] font-bold text-(--hp-muted)`}>
+          <Link href="/" className="inline-flex min-h-11 items-center">Home</Link>
+          <span aria-hidden="true">/</span>
+          <span aria-current="page" className="text-(--hp-ink)">School Education</span>
         </nav>
 
-        <div className="mt-4 rounded-2xl pastel-purple p-6 sm:p-8 flex flex-wrap items-center gap-4">
-          <div className="flex-1 basis-[240px] min-w-0">
-            <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-[#14142b]">
+        {/* Hero card */}
+        <div className="mt-3 flex flex-wrap items-center gap-6 rounded-[28px] border-[3px] border-(--hp-ink) bg-(--hp-lavender) p-6 shadow-[6px_6px_0_var(--hp-ink)] sm:p-8 md:rounded-[36px] md:p-10">
+          <div className="min-w-0 flex-1 basis-[260px]">
+            <h1 className={`${s.display} m-0 text-[38px] leading-[1.1] font-bold sm:text-[46px] md:text-[56px]`}>
               School Education
             </h1>
-            <p className="mt-2 text-zinc-700">
+            <p className="mt-3 max-w-[46ch] text-[17px] leading-[1.55] font-semibold md:text-lg">
               Pick your board and class. Everything inside is arranged as class, subject, chapter.
             </p>
           </div>
-          <SchoolArt className="w-44 sm:w-56 h-auto mx-auto" />
+          <SchoolArt className="mx-auto h-auto w-40 sm:w-52" />
         </div>
 
         {boards.length === 0 && (
-          <p className="mt-6 text-sm text-zinc-500">Courses are being set up. Check back soon.</p>
+          <p className="mt-8 text-base font-semibold text-(--hp-muted)">Courses are being set up. Check back soon.</p>
         )}
 
         {boards.map((board) => {
@@ -90,19 +84,23 @@ export default async function SchoolPage() {
           }));
 
           return (
-            <div key={board.id} className="mt-10">
-              <h2 className="text-xl font-bold text-[#14142b]">{board.name}</h2>
+            <section key={board.id} className="mt-12" aria-labelledby={`board-${board.id}`}>
+              <h2 id={`board-${board.id}`} className={`${s.display} m-0 text-[28px] font-bold md:text-[34px]`}>
+                {board.name}
+              </h2>
               <ClassTiles items={items} visible={VISIBLE_CLASSES} />
-            </div>
+            </section>
           );
         })}
 
         {others.length > 0 && (
-          <div className="mt-14 pt-10 border-t border-zinc-200">
-            <h2 className="text-2xl font-extrabold tracking-tight text-[#14142b]">
+          <div className="mt-16 border-t-[3px] border-dashed border-(--hp-ink)/25 pt-12">
+            <h2 className={`${s.display} m-0 text-[30px] leading-tight font-bold md:text-[40px]`}>
               Competitions &amp; Vocational
             </h2>
-            <p className="mt-2 text-zinc-600">Exams, contests and skill courses beyond the classroom.</p>
+            <p className="mt-2 text-[17px] font-semibold text-(--hp-muted)">
+              Exams, contests and skill courses beyond the classroom.
+            </p>
 
             {others.map((course) => {
               const items = course.children.map((child, i) => ({
@@ -114,8 +112,8 @@ export default async function SchoolPage() {
               }));
 
               return (
-                <div key={course.id} className="mt-8">
-                  <h3 className="text-xl font-bold text-[#14142b]">
+                <div key={course.id} className="mt-9">
+                  <h3 className={`${s.display} m-0 text-2xl font-bold md:text-[28px]`}>
                     {course.slug === "competitive" ? "Competitions" : course.name}
                   </h3>
                   {items.length > 0 ? (
@@ -123,9 +121,11 @@ export default async function SchoolPage() {
                   ) : (
                     <Link
                       href={`/courses/${course.slug}`}
-                      className="mt-4 inline-block rounded-2xl bg-violet-100 text-violet-700 px-6 py-4 font-bold hover:-translate-y-0.5 hover:shadow-md transition-all"
+                      className={`${s.press} mt-4 inline-flex [--radius:999px]`}
                     >
-                      Open {course.name} →
+                      <span className={`${s.face} min-h-12 items-center bg-(--hp-lavender) px-6 text-[17px] font-extrabold`}>
+                        Open {course.name} →
+                      </span>
                     </Link>
                   )}
                 </div>

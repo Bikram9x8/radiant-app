@@ -19,14 +19,18 @@ import {
 } from "@/lib/internships";
 import ViewTracker from "@/components/ViewTracker";
 import { SubjectArt } from "@/components/Illustrations";
+import AdSlot from "@/components/home/AdSlot";
+import { fredoka, nunito } from "@/components/home/fonts";
+import s from "@/components/school/school.module.css";
 
+// Option B pastels (backgrounds only; text stays ink for contrast)
 const PASTELS = [
-  "pastel-purple",
-  "pastel-blue",
-  "pastel-mint",
-  "pastel-peach",
-  "pastel-pink",
-  "pastel-yellow",
+  "bg-(--hp-lavender)",
+  "bg-(--hp-sky)",
+  "bg-(--hp-mint)",
+  "bg-(--hp-coral)",
+  "bg-(--hp-pink)",
+  "bg-(--hp-yellow)",
 ];
 
 const SCHOOL_SLUGS = ["cbse", "icse"];
@@ -63,20 +67,9 @@ const CLASS_SECTIONS = [
   { slug: "revision-notes", label: "Revision Notes", text: "Quick notes for last-minute revision.", type: "REVISION_NOTES", Icon: IconBulb },
 ];
 
-function AdSlot({ label, className = "" }: { label: string; className?: string }) {
-  return (
-    <div
-      className={`mx-auto w-full border border-dashed border-zinc-300 rounded-2xl bg-zinc-50 flex flex-col items-center justify-center text-center ${className}`}
-    >
-      <span className="text-[11px] font-bold uppercase tracking-wider text-zinc-500">Advertisement</span>
-      <span className="text-sm text-zinc-500">{label}</span>
-    </div>
-  );
-}
-
 function ComingSoon({ text }: { text: string }) {
   return (
-    <div className="card p-8 sm:p-10 text-center">
+    <div className="rounded-[28px] border-[3px] border-(--hp-ink) bg-white p-8 text-center sm:p-10">
       <svg viewBox="0 0 120 100" className="float-gentle mx-auto w-32 h-auto" aria-hidden="true">
         <circle cx="60" cy="52" r="40" fill="#EDE9FE" />
         <rect x="34" y="34" width="52" height="40" rx="5" fill="#5B33D6" />
@@ -86,8 +79,8 @@ function ComingSoon({ text }: { text: string }) {
         <path d="M92 20l2.5 6 6 2.5-6 2.5-2.5 6-2.5-6-6-2.5 6-2.5z" fill="#F59E0B" />
         <circle cx="26" cy="30" r="4" fill="#FBCFE8" />
       </svg>
-      <h3 className="mt-4 text-xl font-extrabold text-[#14142b]">Coming Soon</h3>
-      <p className="mt-2 text-sm text-zinc-600">{text}</p>
+      <h3 className={`${s.display} mt-4 text-2xl font-bold`}>Coming Soon</h3>
+      <p className="mx-auto mt-2 max-w-[42ch] text-base font-semibold text-(--hp-muted)">{text}</p>
     </div>
   );
 }
@@ -173,26 +166,29 @@ export default async function CoursePage({
   const labelFor = (t: string) => (isSchool && SCHOOL_LABELS[t]) || CONTENT_LABELS[t] || t;
 
   return (
-    <div className="flex-1 bg-white">
+    <div className={`${fredoka.variable} ${nunito.variable} ${s.page} flex-1`}>
       {current && <ViewTracker courseNodeId={current.id} />}
 
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 pt-4">
-        <AdSlot label="728 × 90 banner space" className="max-w-[728px] h-[90px]" />
+      <div className="mx-auto max-w-[1200px] px-4 pt-4 sm:px-8">
+        <AdSlot label="728 × 90 banner space" className="h-[90px] max-w-[728px]" />
       </div>
 
-      <div className="fade-up max-w-5xl mx-auto px-4 sm:px-6 py-8">
+      <div className="mx-auto max-w-[1200px] px-4 pt-6 pb-14 sm:px-8 md:pt-8">
         {/* Breadcrumb */}
-        <nav className="text-sm text-zinc-500 flex flex-wrap items-center gap-x-2 gap-y-1">
-          <Link href="/" className="hover:underline">Home</Link>
-          <span>/</span>
-          <Link href="/courses" className="hover:underline">Courses</Link>
+        <nav
+          aria-label="Breadcrumb"
+          className={`${s.crumbs} flex flex-wrap items-center gap-x-2 text-[15px] font-bold text-(--hp-muted)`}
+        >
+          <Link href="/" className="inline-flex min-h-11 items-center">Home</Link>
+          <span aria-hidden="true">/</span>
+          <Link href="/courses" className="inline-flex min-h-11 items-center">Courses</Link>
           {trail.map((n, i) => (
             <span key={n.id} className="flex items-center gap-2">
-              <span>/</span>
+              <span aria-hidden="true">/</span>
               {i === trail.length - 1 && !activeSection ? (
-                <span className="text-zinc-900 font-semibold">{n.name}</span>
+                <span aria-current="page" className="text-(--hp-ink)">{n.name}</span>
               ) : (
-                <Link href={"/courses/" + slug.slice(0, i + 1).join("/")} className="hover:underline">
+                <Link href={"/courses/" + slug.slice(0, i + 1).join("/")} className="inline-flex min-h-11 items-center">
                   {n.name}
                 </Link>
               )}
@@ -200,35 +196,37 @@ export default async function CoursePage({
           ))}
           {activeSection && (
             <span className="flex items-center gap-2">
-              <span>/</span>
-              <span className="text-zinc-900 font-semibold">{activeSection.label}</span>
+              <span aria-hidden="true">/</span>
+              <span aria-current="page" className="text-(--hp-ink)">{activeSection.label}</span>
             </span>
           )}
         </nav>
 
-        <h1 className="mt-4 text-3xl sm:text-4xl font-extrabold tracking-tight text-[#14142b]">
+        <h1 className={`${s.display} mt-2 text-[34px] leading-[1.12] font-bold sm:text-[42px] md:text-[52px]`}>
           {activeSection ? `${title}: ${activeSection.label}` : title}
         </h1>
-        {current?.bookName && <p className="mt-2 text-zinc-600">Book: {current.bookName}</p>}
+        {current?.bookName && (
+          <p className="mt-3 inline-flex rounded-full border-2 border-(--hp-ink) bg-(--hp-butter) px-4 py-1.5 text-[15px] font-bold">
+            Book: {current.bookName}
+          </p>
+        )}
 
-        <div className="mt-8 flex flex-wrap gap-8 items-start">
-          <div className="flex-1 basis-[300px] sm:basis-[480px] min-w-0">
+        <div className="mt-8 flex flex-wrap items-start gap-8">
+          <div className="min-w-0 flex-1 basis-[300px] sm:basis-[480px]">
             {/* ---------- School class page: the 7 cards ---------- */}
             {isClassPage && !activeSection && (
               <div className="grid gap-5 sm:grid-cols-2">
-                {CLASS_SECTIONS.map((s, i) => (
-                  <Link
-                    key={s.slug}
-                    href={`${basePath}?section=${s.slug}`}
-                    className={`card-lift block p-6 ${PASTELS[i % PASTELS.length]}`}
-                  >
-                    <div className="w-12 h-12 rounded-2xl bg-white/70 flex items-center justify-center">
-                      <s.Icon size={26} stroke={2} />
-                    </div>
-                    <h3 className="mt-4 text-xl font-extrabold text-[#14142b]">{s.label}</h3>
-                    <p className="mt-1.5 text-sm text-zinc-700">{s.text}</p>
-                    <span className="btn btn-primary mt-4" style={{ padding: "0.5rem 1.1rem" }}>
-                      Open →
+                {CLASS_SECTIONS.map((sec, i) => (
+                  <Link key={sec.slug} href={`${basePath}?section=${sec.slug}`} className={`${s.press} [--radius:24px]`}>
+                    <span className={`${s.face} ${PASTELS[i % PASTELS.length]} flex-col p-6`}>
+                      <span className="flex h-12 w-12 items-center justify-center rounded-2xl border-2 border-(--hp-ink) bg-white">
+                        <sec.Icon size={26} stroke={2} aria-hidden="true" />
+                      </span>
+                      <span className={`${s.display} mt-4 block text-2xl font-bold`}>{sec.label}</span>
+                      <span className="mt-1.5 block text-[15px] font-semibold">{sec.text}</span>
+                      <span className="mt-4 inline-flex h-11 items-center self-start rounded-full bg-(--hp-ink) px-5 font-extrabold text-white">
+                        Open →
+                      </span>
                     </span>
                   </Link>
                 ))}
@@ -238,7 +236,10 @@ export default async function CoursePage({
             {/* ---------- School class page: a chosen card ---------- */}
             {isClassPage && activeSection && (
               <div>
-                <Link href={basePath} className="text-sm font-bold text-[#5b33d6] hover:underline">
+                <Link
+                  href={basePath}
+                  className="inline-flex min-h-11 items-center text-[15px] font-extrabold text-(--hp-link) underline-offset-4 hover:underline"
+                >
                   ← Back to {title}
                 </Link>
 
@@ -248,15 +249,15 @@ export default async function CoursePage({
                       <ComingSoon text="Subjects for this class are being added. Check back soon." />
                     </div>
                   ) : (
-                    <div className="mt-5 grid grid-cols-2 sm:grid-cols-3 gap-4">
+                    <div className="mt-5 grid grid-cols-2 gap-4 sm:grid-cols-3 md:gap-5">
                       {children.map((c, i) => (
-                        <Link
-                          key={c.id}
-                          href={`${basePath}/${c.slug}`}
-                          className={`card-lift block p-5 ${PASTELS[i % PASTELS.length]}`}
-                        >
-                          <span className="block text-lg sm:text-xl font-extrabold text-[#14142b] break-words">{c.name}</span>
-                          <span className="block mt-3 text-sm font-bold">Open →</span>
+                        <Link key={c.id} href={`${basePath}/${c.slug}`} className={`${s.press} [--radius:22px]`}>
+                          <span className={`${s.face} ${PASTELS[i % PASTELS.length]} min-h-[120px] flex-col p-5`}>
+                            <span className={`${s.display} block text-xl leading-tight font-bold break-words sm:text-[22px]`}>
+                              {c.name}
+                            </span>
+                            <span className="mt-auto block pt-3 text-sm font-extrabold">Open →</span>
+                          </span>
                         </Link>
                       ))}
                     </div>
@@ -266,14 +267,11 @@ export default async function CoursePage({
                     <ComingSoon text={`${activeSection.label} for ${title} are being added. Check back soon.`} />
                   </div>
                 ) : (
-                  <div className="card mt-5 overflow-hidden divide-y divide-zinc-200">
+                  <div className={`${s.listCard} mt-5`}>
                     {classPosts.map((p) => (
-                      <Link
-                        key={p.id}
-                        href={`/opportunities/${p.id}`}
-                        className="block px-5 py-4 bg-white hover:bg-zinc-50 text-base font-semibold text-[#14142b]"
-                      >
-                        {p.title}
+                      <Link key={p.id} href={`/opportunities/${p.id}`} className={s.row}>
+                        <span className="min-w-0 break-words">{p.title}</span>
+                        <span aria-hidden="true" className={s.rowArrow}>→</span>
                       </Link>
                     ))}
                   </div>
@@ -283,31 +281,34 @@ export default async function CoursePage({
 
             {/* ---------- Chapter page: one section per content type ---------- */}
             {isChapter && (
-              <div className="space-y-5">
+              <div className="space-y-6">
                 {contentTypes.map((t, i) => {
                   const posts = chapterPosts.filter((p) => p.contentType === t);
                   return (
-                    <div key={t} className="card overflow-hidden">
-                      <div className={`px-5 py-3 flex items-center justify-between ${PASTELS[i % PASTELS.length]}`}>
-                        <span className="text-lg font-extrabold text-[#14142b]">{labelFor(t)}</span>
-                        <span className="text-sm font-bold">{posts.length > 0 ? posts.length : ""}</span>
+                    <section key={t} className={s.listCard} aria-label={labelFor(t)}>
+                      <div
+                        className={`flex min-h-14 items-center justify-between gap-3 border-b-[3px] border-(--hp-ink) px-5 py-3 ${PASTELS[i % PASTELS.length]}`}
+                      >
+                        <h2 className={`${s.display} m-0 text-[22px] font-bold`}>{labelFor(t)}</h2>
+                        {posts.length > 0 && (
+                          <span className="inline-flex min-w-8 justify-center rounded-full border-2 border-(--hp-ink) bg-white px-2.5 py-0.5 text-sm font-extrabold">
+                            {posts.length}
+                          </span>
+                        )}
                       </div>
                       {posts.length === 0 ? (
-                        <p className="px-5 py-4 text-sm text-zinc-500">Coming soon</p>
+                        <p className="m-0 px-5 py-4 text-[15px] font-semibold text-(--hp-muted)">Coming soon</p>
                       ) : (
-                        <div className="divide-y divide-zinc-200">
+                        <div>
                           {posts.map((p) => (
-                            <Link
-                              key={p.id}
-                              href={`/opportunities/${p.id}`}
-                              className="block px-5 py-4 bg-white hover:bg-zinc-50 text-base font-semibold text-[#14142b]"
-                            >
-                              {p.title}
+                            <Link key={p.id} href={`/opportunities/${p.id}`} className={s.row}>
+                              <span className="min-w-0 text-[17px] break-words">{p.title}</span>
+                              <span aria-hidden="true" className={s.rowArrow}>→</span>
                             </Link>
                           ))}
                         </div>
                       )}
-                    </div>
+                    </section>
                   );
                 })}
               </div>
@@ -315,17 +316,16 @@ export default async function CoursePage({
 
             {/* ---------- Chapters list ---------- */}
             {!isChapter && !isClassPage && chaptersMode && (
-              <div className="card overflow-hidden divide-y divide-zinc-200">
+              <div className={s.listCard}>
                 {children.map((c) => (
-                  <Link
-                    key={c.id}
-                    href={`${basePath}/${c.slug}`}
-                    className="flex items-center gap-4 px-5 py-4 bg-white hover:bg-zinc-50"
-                  >
-                    <span className="shrink-0 w-9 h-9 rounded-xl bg-violet-100 text-violet-700 font-bold flex items-center justify-center text-sm">
+                  <Link key={c.id} href={`${basePath}/${c.slug}`} className={s.row}>
+                    <span
+                      className={`${s.display} flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-2 border-(--hp-ink) bg-(--hp-yellow) text-base font-bold`}
+                    >
                       {c.chapterNo}
                     </span>
-                    <span className="text-base font-semibold text-[#14142b]">{c.name}</span>
+                    <span className="min-w-0 text-[17px] break-words">{c.name}</span>
+                    <span aria-hidden="true" className={s.rowArrow}>→</span>
                   </Link>
                 ))}
               </div>
@@ -333,16 +333,24 @@ export default async function CoursePage({
 
             {/* ---------- Tiles for courses, stages, subjects ---------- */}
             {!isChapter && !isClassPage && !chaptersMode && children.length > 0 && (
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+              <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:gap-5">
                 {children.map((c, i) => (
                   <Link
                     key={c.id}
                     href={`${basePath === "/courses/" ? "/courses" : basePath}/${c.slug}`}
-                    className={`card-lift block p-5 ${PASTELS[i % PASTELS.length]}`}
+                    className={`${s.press} [--radius:22px]`}
                   >
-                    {isSchool && c.kind === "SUBJECT" && <SubjectArt name={c.name} className="w-10 h-10 mb-3" />}
-                    <span className="block text-lg sm:text-xl font-extrabold text-[#14142b] break-words">{c.name}</span>
-                    <span className="block mt-3 text-sm font-bold">Open →</span>
+                    <span className={`${s.face} ${PASTELS[i % PASTELS.length]} min-h-[120px] flex-col p-4 sm:p-5`}>
+                      {isSchool && c.kind === "SUBJECT" && (
+                        <span className="mb-3 flex h-12 w-12 items-center justify-center rounded-2xl border-2 border-(--hp-ink) bg-white">
+                          <SubjectArt name={c.name} className="h-9 w-9" />
+                        </span>
+                      )}
+                      <span className={`${s.display} block text-xl leading-tight font-bold break-words sm:text-[22px]`}>
+                        {c.name}
+                      </span>
+                      <span className="mt-auto block pt-3 text-sm font-extrabold">Open →</span>
+                    </span>
                   </Link>
                 ))}
               </div>
@@ -353,36 +361,40 @@ export default async function CoursePage({
                 <ComingSoon text={`Internships in ${title} are being added. Check back soon.`} />
               ) : (
                 <div>
-                  <p className="text-sm font-semibold text-zinc-600">
+                  <p className="text-[15px] font-bold text-(--hp-muted)">
                     {internships.length} open internship{internships.length === 1 ? "" : "s"}
                   </p>
-                  <div className="mt-4 grid gap-4 sm:grid-cols-2">
+                  <div className="mt-4 grid gap-5 sm:grid-cols-2">
                     {internships.map((p, i) => (
                       <Link
                         key={p.id}
                         href={`/opportunities/${p.id}?level=${trail[1].slug}`}
-                        className={`card-lift block p-5 ${PASTELS[i % PASTELS.length]}`}
+                        className={`${s.press} [--radius:24px]`}
                       >
-                        <span className="block text-lg font-extrabold text-[#14142b] break-words">{p.title}</span>
-                        <span className="block mt-1 text-sm text-zinc-700">{p.company.companyName}</span>
-                        <div className="mt-3 flex flex-wrap gap-2 text-xs font-semibold text-zinc-800">
-                          {p.duration && <span className="rounded-full bg-white/70 px-2.5 py-1">⏱ {p.duration}</span>}
-                          {p.stipendOrPrize && (
-                            <span className="rounded-full bg-white/70 px-2.5 py-1">₹ {p.stipendOrPrize}</span>
-                          )}
-                          <span className="rounded-full bg-white/70 px-2.5 py-1">
-                            📍 {p.location ? `${p.location} · ${p.mode}` : p.mode}
+                        <span className={`${s.face} ${PASTELS[i % PASTELS.length]} flex-col p-5`}>
+                          <span className={`${s.display} block text-xl leading-tight font-bold break-words`}>{p.title}</span>
+                          <span className="mt-1 block text-[15px] font-semibold">{p.company.companyName}</span>
+                          <span className="mt-3 flex flex-wrap gap-2 text-[13px] font-bold">
+                            {p.duration && (
+                              <span className="rounded-full border-2 border-(--hp-ink) bg-white px-2.5 py-0.5">⏱ {p.duration}</span>
+                            )}
+                            {p.stipendOrPrize && (
+                              <span className="rounded-full border-2 border-(--hp-ink) bg-white px-2.5 py-0.5">₹ {p.stipendOrPrize}</span>
+                            )}
+                            <span className="rounded-full border-2 border-(--hp-ink) bg-white px-2.5 py-0.5">
+                              📍 {p.location ? `${p.location} · ${p.mode}` : p.mode}
+                            </span>
                           </span>
-                        </div>
-                        <span className="block mt-3 text-sm font-bold">
-                          Apply by{" "}
-                          {p.applyDeadline.toLocaleDateString("en-IN", {
-                            day: "numeric",
-                            month: "short",
-                            year: "numeric",
-                            timeZone: "Asia/Kolkata",
-                          })}{" "}
-                          →
+                          <span className="mt-3 block text-sm font-extrabold">
+                            Apply by{" "}
+                            {p.applyDeadline.toLocaleDateString("en-IN", {
+                              day: "numeric",
+                              month: "short",
+                              year: "numeric",
+                              timeZone: "Asia/Kolkata",
+                            })}{" "}
+                            →
+                          </span>
                         </span>
                       </Link>
                     ))}
@@ -396,8 +408,8 @@ export default async function CoursePage({
             )}
           </div>
 
-          <div className="shrink-0 w-full sm:w-[300px]">
-            <AdSlot label="300 × 250 box space" className="max-w-full h-[250px]" />
+          <div className="w-full shrink-0 sm:w-[300px]">
+            <AdSlot label="300 × 250 box space" className="h-[250px] max-w-full" />
           </div>
         </div>
       </div>
