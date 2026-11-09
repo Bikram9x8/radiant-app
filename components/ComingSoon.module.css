@@ -1,0 +1,72 @@
+/* "Coming soon" animation: option 1 "Writing notes" (from the user's coming-soon-options design).
+   Copied exactly; class and keyframe names carry a "cs" prefix, and CSS modules make them unique
+   again at build time, so any number of copies can share a page. The SVG has no ids.
+   The @keyframes live at the top level; the animations themselves only run inside
+   (prefers-reduced-motion: no-preference), exactly as in the design. */
+
+.csW1,
+.csW2,
+.csW3 {
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+}
+
+/* The pencil moves in SVG units (78px = 78 units of the 220-wide viewBox), so it scales
+   with the drawing at any size */
+.csPencil {
+  transform-box: view-box;
+  transform-origin: 0 0;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .csW1 {
+    animation: cs-write1 4.8s linear infinite;
+  }
+  .csW2 {
+    animation: cs-write2 4.8s linear infinite;
+  }
+  .csW3 {
+    animation: cs-write3 4.8s linear infinite;
+  }
+  .csPencil {
+    animation: cs-pencil 4.8s linear infinite;
+  }
+}
+
+@keyframes cs-write1 {
+  0% { stroke-dashoffset: 100; }
+  22%, 88% { stroke-dashoffset: 0; }
+  100% { stroke-dashoffset: 0; opacity: 0; }
+}
+
+@keyframes cs-write2 {
+  0%, 26% { stroke-dashoffset: 100; }
+  48%, 88% { stroke-dashoffset: 0; }
+  100% { stroke-dashoffset: 0; opacity: 0; }
+}
+
+@keyframes cs-write3 {
+  0%, 52% { stroke-dashoffset: 100; }
+  72%, 88% { stroke-dashoffset: 0; }
+  100% { stroke-dashoffset: 0; opacity: 0; }
+}
+
+@keyframes cs-pencil {
+  0% { transform: translate(0, 0); }
+  22% { transform: translate(78px, 0); }
+  26% { transform: translate(0, 18px); }
+  48% { transform: translate(78px, 18px); }
+  52% { transform: translate(0, 36px); }
+  72% { transform: translate(54px, 36px); }
+  88% { transform: translate(54px, 36px); }
+  100% { transform: translate(0, 0); }
+}
+
+/* Reduced motion: still, with the lines already written */
+@media (prefers-reduced-motion: reduce) {
+  .csW1,
+  .csW2,
+  .csW3 {
+    stroke-dashoffset: 0;
+  }
+}

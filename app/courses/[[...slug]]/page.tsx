@@ -22,6 +22,7 @@ import { SubjectArt } from "@/components/Illustrations";
 import AdSlot from "@/components/home/AdSlot";
 import { fredoka, nunito } from "@/components/home/fonts";
 import s from "@/components/school/school.module.css";
+import ComingSoon from "@/components/ComingSoon";
 
 // Option B pastels (backgrounds only; text stays ink for contrast)
 const PASTELS = [
@@ -66,24 +67,6 @@ const CLASS_SECTIONS = [
   { slug: "previous-year-papers", label: "Previous Year Papers", text: "Past board papers to practise with.", type: "PREVIOUS_YEAR_PAPER", Icon: IconHistory },
   { slug: "revision-notes", label: "Revision Notes", text: "Quick notes for last-minute revision.", type: "REVISION_NOTES", Icon: IconBulb },
 ];
-
-function ComingSoon({ text }: { text: string }) {
-  return (
-    <div className="rounded-[28px] border-[3px] border-(--hp-ink) bg-white p-8 text-center sm:p-10">
-      <svg viewBox="0 0 120 100" className="float-gentle mx-auto w-32 h-auto" aria-hidden="true">
-        <circle cx="60" cy="52" r="40" fill="#EDE9FE" />
-        <rect x="34" y="34" width="52" height="40" rx="5" fill="#5B33D6" />
-        <rect x="39" y="39" width="42" height="30" rx="3" fill="#FFFFFF" />
-        <rect x="45" y="46" width="30" height="4" rx="2" fill="#CFCCE3" />
-        <rect x="45" y="55" width="22" height="4" rx="2" fill="#CFCCE3" />
-        <path d="M92 20l2.5 6 6 2.5-6 2.5-2.5 6-2.5-6-6-2.5 6-2.5z" fill="#F59E0B" />
-        <circle cx="26" cy="30" r="4" fill="#FBCFE8" />
-      </svg>
-      <h3 className={`${s.display} mt-4 text-2xl font-bold`}>Coming Soon</h3>
-      <p className="mx-auto mt-2 max-w-[42ch] text-base font-semibold text-(--hp-muted)">{text}</p>
-    </div>
-  );
-}
 
 export default async function CoursePage({
   params,
@@ -156,6 +139,14 @@ export default async function CoursePage({
   const basePath = "/courses/" + slug.join("/");
   const chaptersMode = children.length > 0 && children[0].kind === "CHAPTER";
   const title = current ? current.name : "All courses";
+  // Back link for "Coming soon": the breadcrumb's parent (the current page when a class card is open)
+  const parentLink = activeSection
+    ? { href: basePath, label: title }
+    : trail.length >= 2
+      ? { href: "/courses/" + slug.slice(0, -1).join("/"), label: trail[trail.length - 2].name }
+      : trail.length === 1
+        ? { href: "/courses", label: "Courses" }
+        : undefined;
 
   const contentTypes = isSchool
     ? SCHOOL_CHAPTER_TYPES
@@ -246,7 +237,7 @@ export default async function CoursePage({
                 {activeSection.slug === "subjects" ? (
                   children.length === 0 ? (
                     <div className="mt-5">
-                      <ComingSoon text="Subjects for this class are being added. Check back soon." />
+                      <ComingSoon back={parentLink} />
                     </div>
                   ) : (
                     <div className="mt-5 grid grid-cols-2 gap-4 sm:grid-cols-3 md:gap-5">
@@ -264,7 +255,7 @@ export default async function CoursePage({
                   )
                 ) : classPosts.length === 0 ? (
                   <div className="mt-5">
-                    <ComingSoon text={`${activeSection.label} for ${title} are being added. Check back soon.`} />
+                    <ComingSoon back={parentLink} />
                   </div>
                 ) : (
                   <div className={`${s.listCard} mt-5`}>
@@ -297,7 +288,9 @@ export default async function CoursePage({
                         )}
                       </div>
                       {posts.length === 0 ? (
-                        <p className="m-0 px-5 py-4 text-[15px] font-semibold text-(--hp-muted)">Coming soon</p>
+                        <p className="m-0 px-5 py-4">
+                          <ComingSoon size="inline" />
+                        </p>
                       ) : (
                         <div>
                           {posts.map((p) => (
@@ -358,7 +351,7 @@ export default async function CoursePage({
             {/* ---------- Internship subcategory: open internships ---------- */}
             {isInternshipPage &&
               (internships.length === 0 ? (
-                <ComingSoon text={`Internships in ${title} are being added. Check back soon.`} />
+                <ComingSoon back={parentLink} />
               ) : (
                 <div>
                   <p className="text-[15px] font-bold text-(--hp-muted)">
@@ -404,7 +397,7 @@ export default async function CoursePage({
 
             {/* ---------- Nothing here yet ---------- */}
             {!isChapter && !isClassPage && !isInternshipPage && children.length === 0 && (
-              <ComingSoon text="Content for this section is being added. Check back soon." />
+              <ComingSoon back={parentLink} />
             )}
           </div>
 
