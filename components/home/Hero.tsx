@@ -60,7 +60,7 @@ export default function Hero() {
         </div>
 
         <form
-          action="/opportunities"
+          action="/search"
           method="get"
           role="search"
           className={`${s.search} flex h-14 w-full max-w-[520px] items-center gap-2 rounded-full border-[3px] border-(--hp-ink) bg-white pr-1.5 pl-4`}

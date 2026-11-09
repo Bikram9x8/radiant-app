@@ -3,6 +3,8 @@ import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
 import { cleanDuration, getInternshipsCategoryId, isInternshipSubcategory } from "@/lib/internships";
+import { EXPLICIT_TEST_DIVISIONS, TEST_CLASSES, isTestDivision } from "@/lib/test-posts";
+import type { Division } from "@prisma/client";
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
@@ -11,28 +13,54 @@ export async function GET(req: Request) {
   const categoryId = searchParams.get("categoryId") || "";
   const division = searchParams.get("division") || "";
   const chapter = searchParams.get("chapter") || "";
+  // Tests page: ?tests=1 keeps only tests (see lib/test-posts.ts); ?classNo=9..12 filters by class
+  const testsOnly = searchParams.get("tests") === "1";
+  const classParam = searchParams.get("classNo") || "";
+  const classNo = TEST_CLASSES.includes(classParam) ? classParam : "";
+  // In tests mode only the test divisions filter; any other division is ignored (the page shows a note)
+  const divisionFilter = testsOnly ? (isTestDivision(division) ? division : "") : division;
+
+  const testsWhere = testsOnly
+    ? { OR: [{ type: "QUIZ" as const }, { division: { in: EXPLICIT_TEST_DIVISIONS as Division[] } }] }
+    : {};
+  // Category names look like "Class 12 - Physics"
+  const classWhere = classNo ? { category: { name: { startsWith: `Class ${classNo} -` } } } : {};
 
   const opportunities = await prisma.opportunity.findMany({
     where: {
       status: "APPROVED",
+      ...testsWhere,
+      ...classWhere,
       ...(search ? { title: { contains: search, mode: "insensitive" } } : {}),
       ...(type ? { type: type as any } : {}),
       ...(categoryId ? { categoryId } : {}),
-      ...(division ? { division: division as any } : {}),
+      ...(divisionFilter ? { division: divisionFilter as any } : {}),
       ...(chapter ? { chapter: parseInt(chapter, 10) } : {}),
     },
     include: {
       company: { select: { companyName: true } },
       category: { select: { name: true } },
     },
-    orderBy: { applyDeadline: "asc" },
+    // Tests: latest closing date first, so open tests come before ended ones
+    orderBy: { applyDeadline: testsOnly ? "desc" : "asc" },
   });
 
   const categories = await prisma.category.findMany({
     orderBy: { name: "asc" },
   });
 
-  return NextResponse.json({ opportunities, categories });
+  // Tests page: the subjects that actually have tests in the chosen class (for the Subject chips)
+  let subjects: { id: string; name: string }[] = [];
+  if (testsOnly && classNo) {
+    const rows = await prisma.opportunity.findMany({
+      where: { status: "APPROVED", ...testsWhere, ...classWhere },
+      distinct: ["categoryId"],
+      select: { category: { select: { id: true, name: true } } },
+    });
+    subjects = rows.map((r) => r.category).sort((a, b) => a.name.localeCompare(b.name));
+  }
+
+  return NextResponse.json({ opportunities, categories, subjects });
 }
 export async function POST(req: Request) {
   const session = await getServerSession(authOptions);

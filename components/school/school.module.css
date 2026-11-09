@@ -185,6 +185,16 @@
   background: #17122a;
 }
 
+/* ---------- Pill search box (Tests page, Search page): the whole pill shows focus ---------- */
+.search:focus-within {
+  outline: 3px solid var(--hp-purple);
+  outline-offset: 3px;
+}
+
+.search input:focus-visible {
+  outline: none;
+}
+
 /* ---------- Form fields on the reading page ---------- */
 .field {
   background: #ffffff;
