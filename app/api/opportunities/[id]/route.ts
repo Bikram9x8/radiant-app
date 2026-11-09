@@ -57,16 +57,52 @@ const session = await getServerSession(authOptions);
     }
   }
 
+  // Where this post sits in the course tree (read-only): used for the "Back to chapter" link
+  // and for which menu item the header highlights.
+  const place = await getCoursePlace(opportunity.courseNodeId);
+
   // Internships only: closed state and a back link to the subcategory page
   let applicationsClosed = false;
   let backLink: { href: string; label: string } | null = null;
   if (opportunity.type === "INTERNSHIP") {
     applicationsClosed = isDeadlinePassed(opportunity.applyDeadline);
     backLink = await getInternshipBackLink(opportunity.courseNodeId, new URL(req.url).searchParams.get("level"));
+  } else if (place?.isChapter) {
+    // Notes, solutions, tests, PYQs... posted to a chapter: back to that chapter page
+    backLink = { href: place.href, label: "chapter" };
   }
 
-  return NextResponse.json({ opportunity, alreadyApplied, codeUnlocked, isLocked, applicationsClosed, backLink });
+  // Header menu item for this post: School Education for school/competitive/vocational courses,
+  // Higher Education for higher-education (incl. internships), Tests for posts with no course.
+  const navSection = place ? (place.rootSlug === "higher-education" ? "/higher" : "/school") : "/opportunities";
+
+  return NextResponse.json({ opportunity, alreadyApplied, codeUnlocked, isLocked, applicationsClosed, backLink, navSection });
   }
+
+// Walks up from a course node to the root. Returns the node's /courses/... URL, whether it is a
+// chapter, and the root course slug. null if there is no node, the chain is broken, or any node
+// on the way is inactive (the /courses page would 404 for it).
+async function getCoursePlace(
+  courseNodeId: string | null
+): Promise<{ href: string; isChapter: boolean; rootSlug: string } | null> {
+  if (!courseNodeId) return null;
+  const slugs: string[] = [];
+  let isChapter = false;
+  let nextId: string | null = courseNodeId;
+  for (let depth = 0; nextId && depth < 10; depth++) {
+    const node: { slug: string; kind: string; isActive: boolean; parentId: string | null } | null =
+      await prisma.courseNode.findUnique({
+        where: { id: nextId },
+        select: { slug: true, kind: true, isActive: true, parentId: true },
+      });
+    if (!node || !node.isActive) return null;
+    if (depth === 0) isChapter = node.kind === "CHAPTER";
+    slugs.unshift(node.slug);
+    nextId = node.parentId;
+  }
+  if (nextId || slugs.length === 0) return null; // deeper than expected: don't guess a URL
+  return { href: "/courses/" + slugs.join("/"), isChapter, rootSlug: slugs[0] };
+}
 export async function PUT(req: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const session = await getServerSession(authOptions);

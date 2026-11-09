@@ -1,0 +1,211 @@
+/* School Education flow ("Option B · Light & playful"): /school, /courses/..., /opportunities/[id].
+   Same tokens as components/home/home.module.css and components/site-chrome.module.css.
+   Scoped under .page or local classes, so no other page changes.
+   Lists, cards and navigation use the playful sticker style; reading views (the notes/solutions
+   page) use a calmer frame: thinner lines, no sticker shadows, comfortable text size and line length.
+   Only transform and opacity animate. */
+
+.page {
+  --hp-cream: #fffaf2;
+  --hp-ink: #241a3d;
+  --hp-muted: #4a3f66;
+  --hp-purple: #6d28d9;
+  --hp-purple-deep: #4c1d95;
+  --hp-link: #5b21b6;
+  --hp-yellow: #ffd84d;
+  --hp-mint: #8ef0c0;
+  --hp-pink: #ffb3d6;
+  --hp-lavender: #c9b6ff;
+  --hp-coral: #ffb3a0;
+  --hp-sky: #a8dcff;
+  --hp-orange: #ff6b3d;
+  --hp-butter: #fff3c4;
+  --hp-mint-soft: #d8fbe9;
+  --hp-lavender-soft: #ede6ff;
+  --hp-line: #ebe4f5;
+  --hp-paper: #ece6db; /* calm backdrop behind PDF pages */
+
+  font-family: var(--font-nunito), system-ui, sans-serif;
+  background: var(--hp-cream);
+  color: var(--hp-ink);
+}
+
+/* globals.css fades colours/shadows on every link and button; here only transform/opacity move */
+.page :where(a, button, input, textarea) {
+  transition: none;
+}
+
+.page :focus-visible {
+  outline: 3px solid var(--hp-purple);
+  outline-offset: 3px;
+}
+
+.display {
+  font-family: var(--font-fredoka), var(--font-nunito), sans-serif;
+}
+
+/* ---------- Breadcrumb ---------- */
+.crumbs a {
+  color: var(--hp-muted);
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-underline-offset: 4px;
+}
+
+.crumbs a:hover {
+  color: var(--hp-purple-deep);
+  text-decoration-color: currentColor;
+}
+
+/* ---------- Sticker cards and buttons: the face presses into a fixed shadow ---------- */
+/* <a class="press"><span|div class="face">…</span></a>. Offsets/colour/radius via
+   [--sx:..] [--sy:..] [--shadow:..] [--radius:..]; defaults are var() fallbacks because this
+   file is unlayered and would otherwise beat Tailwind's layered utilities. */
+.press {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  border-radius: var(--radius, 24px);
+  text-decoration: none;
+  color: var(--hp-ink);
+}
+
+.press::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: var(--shadow, var(--hp-ink));
+  translate: var(--sx, 5px) var(--sy, 5px);
+}
+
+.face {
+  display: flex;
+  width: 100%;
+  border-radius: inherit;
+  border: 3px solid var(--hp-ink);
+  transition: translate 160ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+@media (hover: hover) {
+  .press:hover .face {
+    translate: calc(var(--sx, 5px) * 0.5) calc(var(--sy, 5px) * 0.5);
+  }
+}
+
+.press:active .face {
+  translate: var(--sx, 5px) var(--sy, 5px);
+}
+
+/* Flat pills: a small squash when pressed */
+.flat {
+  transition: scale 140ms ease-out;
+}
+
+.flat:active {
+  scale: 0.97;
+}
+
+/* ---------- White list card with rows (chapters, posts) ---------- */
+.listCard {
+  background: #ffffff;
+  border: 3px solid var(--hp-ink);
+  border-radius: 24px;
+  box-shadow: 5px 5px 0 var(--hp-ink);
+  overflow: hidden;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-height: 56px;
+  padding: 12px 20px;
+  color: var(--hp-ink);
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.row + .row,
+.rowItem + .rowItem {
+  border-top: 2px solid var(--hp-line);
+}
+
+.row:hover {
+  background: var(--hp-butter);
+}
+
+.rowArrow {
+  margin-left: auto;
+  flex-shrink: 0;
+  color: var(--hp-muted);
+  transition: translate 160ms ease-out;
+}
+
+@media (hover: hover) {
+  .row:hover .rowArrow {
+    translate: 3px 0;
+  }
+}
+
+/* ---------- Calm reading view (notes, solutions, tests) ---------- */
+.readCard {
+  background: #ffffff;
+  border: 2px solid var(--hp-line);
+  border-radius: 24px;
+}
+
+/* Long text: ~65 characters per line, 17px on phones, generous line height */
+.readingCopy {
+  font-size: 17px;
+  line-height: 1.7;
+  max-width: 65ch;
+  color: #2f2650;
+}
+
+.pdfFrame {
+  background: #ffffff;
+  border: 2px solid var(--hp-line);
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.pdfToolbar {
+  background: #ffffff;
+  border-bottom: 2px solid var(--hp-line);
+}
+
+/* Soft warm backdrop behind white PDF pages: less glare than the old near-black */
+.pdfStage {
+  background: var(--hp-paper);
+}
+
+.pdfStageDark {
+  background: #17122a;
+}
+
+/* ---------- Form fields on the reading page ---------- */
+.field {
+  background: #ffffff;
+  border: 2px solid var(--hp-ink);
+  color: var(--hp-ink);
+}
+
+.field::placeholder {
+  color: var(--hp-muted);
+}
+
+.field:focus-visible {
+  outline: 3px solid var(--hp-purple);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page *,
+  .page *::before,
+  .page *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}

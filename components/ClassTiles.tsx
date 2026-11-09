@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import s from "@/components/school/school.module.css";
 
 type Item = {
   id: string;
@@ -11,6 +12,8 @@ type Item = {
   color: string;
 };
 
+// Class tiles on /school. Sticker cards (press into their shadow); `color` is a background class.
+// Used inside the School page wrapper, which provides the colour tokens and fonts.
 export default function ClassTiles({ items, visible }: { items: Item[]; visible: number }) {
   const [expanded, setExpanded] = useState(false);
   const shown = expanded ? items : items.slice(0, visible);
@@ -18,16 +21,16 @@ export default function ClassTiles({ items, visible }: { items: Item[]; visible:
 
   return (
     <>
-      <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+      <div className="mt-5 grid grid-cols-2 gap-4 sm:grid-cols-3 md:gap-5 lg:grid-cols-6">
         {shown.map((item) => (
-          <Link
-            key={item.id}
-            href={item.href}
-            className={`block rounded-2xl p-5 transition-all hover:-translate-y-0.5 hover:shadow-md ${item.color}`}
-          >
-            <span className="block text-xs font-bold tracking-wider uppercase opacity-80">{item.label}</span>
-            <span className="block mt-1.5 text-xl font-extrabold text-[#14142b]">{item.name}</span>
-            <span className="block mt-3 text-sm font-bold">Open →</span>
+          <Link key={item.id} href={item.href} className={`${s.press} [--radius:22px]`}>
+            <span className={`${s.face} ${item.color} min-h-[132px] flex-col p-4 sm:p-5`}>
+              <span className="block text-[13px] font-extrabold opacity-80">{item.label}</span>
+              <span className={`${s.display} mt-1 block text-[22px] leading-tight font-bold break-words md:text-2xl`}>
+                {item.name}
+              </span>
+              <span className="mt-auto block pt-3 text-sm font-extrabold">Open →</span>
+            </span>
           </Link>
         ))}
       </div>
@@ -36,7 +39,8 @@ export default function ClassTiles({ items, visible }: { items: Item[]; visible:
         <button
           type="button"
           onClick={() => setExpanded(!expanded)}
-          className="mt-4 rounded-xl border border-zinc-300 bg-white px-5 py-2.5 text-sm font-bold text-[#14142b] hover:bg-zinc-50"
+          aria-expanded={expanded}
+          className={`${s.flat} mt-5 inline-flex min-h-12 items-center rounded-full border-[3px] border-(--hp-ink) bg-white px-6 text-[15px] font-extrabold text-(--hp-ink)`}
         >
           {expanded ? "Show fewer classes" : `Show all ${items.length} classes`}
         </button>
