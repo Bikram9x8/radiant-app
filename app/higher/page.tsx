@@ -2,18 +2,11 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import HigherTabs from "@/components/HigherTabs";
 import { HigherArt } from "@/components/Illustrations";
+import AdSlot from "@/components/home/AdSlot";
+import { fredoka, nunito } from "@/components/home/fonts";
+import s from "@/components/school/school.module.css";
+import ComingSoon from "@/components/ComingSoon";
 export const dynamic = "force-dynamic";
-
-function AdSlot({ label, className = "" }: { label: string; className?: string }) {
-  return (
-    <div
-      className={`mx-auto w-full border border-dashed border-zinc-300 rounded-2xl bg-zinc-50 flex flex-col items-center justify-center text-center ${className}`}
-    >
-      <span className="text-[11px] font-bold uppercase tracking-wider text-zinc-500">Advertisement</span>
-      <span className="text-sm text-zinc-500">{label}</span>
-    </div>
-  );
-}
 
 export default async function HigherPage() {
   const root = await prisma.courseNode.findFirst({
@@ -39,36 +32,42 @@ export default async function HigherPage() {
     : [];
 
   return (
-    <div className="flex-1 bg-white">
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 pt-4">
-        <AdSlot label="728 × 90 banner space" className="max-w-[728px] h-[90px]" />
+    <div className={`${fredoka.variable} ${nunito.variable} ${s.page} flex-1`}>
+      <div className="mx-auto max-w-[1200px] px-4 pt-4 sm:px-8">
+        <AdSlot label="728 × 90 banner space" className="h-[90px] max-w-[728px]" />
       </div>
 
-      <div className="fade-up max-w-5xl mx-auto px-4 sm:px-6 py-8">
-        <nav className="text-sm text-zinc-500 flex flex-wrap items-center gap-x-2">
-          <Link href="/" className="hover:underline">Home</Link>
-          <span>/</span>
-          <span className="text-zinc-900 font-semibold">Higher Education</span>
+      <div className="mx-auto max-w-[1200px] px-4 pt-6 pb-14 sm:px-8 md:pt-8">
+        <nav
+          aria-label="Breadcrumb"
+          className={`${s.crumbs} flex flex-wrap items-center gap-x-2 text-[15px] font-bold text-(--hp-muted)`}
+        >
+          <Link href="/" className="inline-flex min-h-11 items-center">Home</Link>
+          <span aria-hidden="true">/</span>
+          <span aria-current="page" className="text-(--hp-ink)">Higher Education</span>
         </nav>
 
-        <div className="mt-4 rounded-2xl pastel-mint p-6 sm:p-8 flex flex-wrap items-center gap-4">
-          <div className="flex-1 basis-[240px] min-w-0">
-            <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-[#14142b]">
+        {/* Hero card */}
+        <div className="mt-3 flex flex-wrap items-center gap-6 rounded-[28px] border-[3px] border-(--hp-ink) bg-(--hp-mint) p-6 shadow-[6px_6px_0_var(--hp-ink)] sm:p-8 md:rounded-[36px] md:p-10">
+          <div className="min-w-0 flex-1 basis-[260px]">
+            <h1 className={`${s.display} m-0 text-[38px] leading-[1.1] font-bold sm:text-[46px] md:text-[56px]`}>
               Higher Education
             </h1>
-            <p className="mt-2 text-zinc-700">
+            <p className="mt-3 max-w-[46ch] text-[17px] leading-[1.55] font-semibold md:text-lg">
               Choose where you are in your studies, then pick what you need.
             </p>
           </div>
-          <HigherArt className="w-44 sm:w-56 h-auto mx-auto" />
+          <HigherArt className="mx-auto h-auto w-40 sm:w-52" />
         </div>
 
         {!root && (
-          <p className="mt-6 text-sm text-zinc-500">Higher Education is being set up. Check back soon.</p>
+          <div className="mt-8">
+            <ComingSoon back={{ href: "/", label: "Home" }} />
+          </div>
         )}
 
         {root && (
-          <div className="mt-8">
+          <div className="mt-10">
             <HigherTabs rootSlug={root.slug} stages={stages} />
           </div>
         )}

@@ -5,6 +5,7 @@ import { SchoolArt } from "@/components/Illustrations";
 import AdSlot from "@/components/home/AdSlot";
 import { fredoka, nunito } from "@/components/home/fonts";
 import s from "@/components/school/school.module.css";
+import ComingSoon from "@/components/ComingSoon";
 export const dynamic = "force-dynamic";
 
 // How many classes are shown before the "Show all" button
@@ -69,7 +70,9 @@ export default async function SchoolPage() {
         </div>
 
         {boards.length === 0 && (
-          <p className="mt-8 text-base font-semibold text-(--hp-muted)">Courses are being set up. Check back soon.</p>
+          <div className="mt-8">
+            <ComingSoon back={{ href: "/", label: "Home" }} />
+          </div>
         )}
 
         {boards.map((board) => {

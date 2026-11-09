@@ -45,7 +45,7 @@ const quickLinks = [
   {
     href: "/opportunities",
     label: "Tests",
-    desc: "Test series, sample papers and DPPs",
+    desc: "Test series, chapter tests and DPPs",
     colour: "pastel-yellow",
     Art: TestArt,
   },
