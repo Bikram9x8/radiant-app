@@ -7,12 +7,16 @@ import { fredoka, nunito } from "@/components/home/fonts";
 import s from "@/components/school/school.module.css";
 import { DIVISION_LABELS } from "@/lib/test-posts";
 import type { Division } from "@prisma/client";
+import { SHOW_SCHOOL } from "@/lib/features";
+import { notSchoolWhere } from "@/lib/school-posts";
 
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Search · Radiant Educations",
-  description: "Search notes, NCERT solutions, sample papers and tests.",
+  description: SHOW_SCHOOL
+    ? "Search notes, NCERT solutions, sample papers and tests."
+    : "Search tests, exam prep and study material.",
 };
 
 // How many results are shown at most (62 approved posts today, so "View all" shows everything)
@@ -25,6 +29,8 @@ async function loadPosts(q: string, division: string) {
       status: "APPROVED",
       ...(q ? { title: { contains: q, mode: "insensitive" as const } } : {}),
       ...(division ? { division: division as Division } : {}),
+      // School posts are left out while School Education is switched off
+      ...(SHOW_SCHOOL ? {} : notSchoolWhere),
     },
     select: {
       id: true,
@@ -90,7 +96,9 @@ export default async function SearchPage({
             {heading}
           </h1>
           <p className="mt-2 max-w-[56ch] text-[17px] leading-[1.55] font-semibold">
-            Notes, NCERT solutions, sample papers and tests, all in one place.
+            {SHOW_SCHOOL
+              ? "Notes, NCERT solutions, sample papers and tests, all in one place."
+              : "Tests, exam prep and study material, all in one place."}
           </p>
           <form
             action="/search"
@@ -145,10 +153,13 @@ export default async function SearchPage({
             </p>
             <p className="mx-auto mt-2 max-w-[46ch] text-base font-semibold text-(--hp-muted)">
               Try a shorter word, or browse{" "}
-              <Link href="/school" className="font-extrabold text-(--hp-link) underline underline-offset-4">
-                School Education
-              </Link>{" "}
-              chapter by chapter.
+              <Link
+                href={SHOW_SCHOOL ? "/school" : "/higher"}
+                className="font-extrabold text-(--hp-link) underline underline-offset-4"
+              >
+                {SHOW_SCHOOL ? "School Education" : "Higher Education"}
+              </Link>
+              {SHOW_SCHOOL ? " chapter by chapter." : "."}
             </p>
           </div>
         ) : (

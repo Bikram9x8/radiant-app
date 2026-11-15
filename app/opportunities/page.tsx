@@ -7,7 +7,17 @@ import { Skeleton } from "@/components/Skeleton";
 import PostCard, { type PostCardData } from "@/components/tests/PostCard";
 import { fredoka, nunito } from "@/components/home/fonts";
 import s from "@/components/school/school.module.css";
-import { TEST_CLASSES, TEST_TYPE_FILTERS, isTestDivision, parseClassSubject } from "@/lib/test-posts";
+import { SCHOOL_TEST_DIVISION, TEST_CLASSES, TEST_TYPE_FILTERS, parseClassSubject } from "@/lib/test-posts";
+import { SHOW_SCHOOL } from "@/lib/features";
+
+// Type chips: board-level tests belong to School Education, so their chip is hidden while it's off
+// (an old ?division=BOARD_LEVEL_TEST link then gets the friendly note, like other non-test divisions)
+const VISIBLE_TYPE_FILTERS = SHOW_SCHOOL
+  ? TEST_TYPE_FILTERS
+  : TEST_TYPE_FILTERS.filter((f) => f.division !== SCHOOL_TEST_DIVISION);
+
+// Class chips: with School Education switched off the tests are entrance prep (Class 11 and 12 only)
+const VISIBLE_CLASSES = SHOW_SCHOOL ? TEST_CLASSES : TEST_CLASSES.filter((c) => c === "11" || c === "12");
 
 // Tests page: only tests (type QUIZ, or a chapter / board-level / DPP division; see lib/test-posts.ts).
 // All filtering happens on the server: GET /api/opportunities?tests=1&...
@@ -21,8 +31,9 @@ function TestsContent() {
   const searchParams = useSearchParams();
   const division = searchParams.get("division") || "";
   // Old links like ?division=NCERT_SOLUTION point at things that aren't tests any more
-  const nonTestDivision = division !== "" && !isTestDivision(division);
-  const activeDivision = isTestDivision(division) ? division : "";
+  const isVisibleTestDivision = VISIBLE_TYPE_FILTERS.some((f) => f.division === division);
+  const nonTestDivision = division !== "" && !isVisibleTestDivision;
+  const activeDivision = isVisibleTestDivision ? division : "";
 
   const [search, setSearch] = useState(searchParams.get("q") || "");
   const [query, setQuery] = useState(search); // search text actually sent (debounced)
@@ -82,7 +93,9 @@ function TestsContent() {
       <div className="mt-2 rounded-[28px] border-[3px] border-(--hp-ink) bg-(--hp-lavender) p-5 shadow-[6px_6px_0_var(--hp-ink)] sm:p-8 md:rounded-[36px]">
         <h1 className={`${s.display} m-0 text-[38px] leading-[1.1] font-bold sm:text-[46px] md:text-[54px]`}>Tests</h1>
         <p className="mt-2 max-w-[56ch] text-[17px] leading-[1.55] font-semibold">
-          Practise with test series, chapter tests, board-level tests and DPPs for your class.
+          {SHOW_SCHOOL
+            ? "Practise with test series, chapter tests, board-level tests and DPPs for your class."
+            : "Entrance exam prep for JEE and NEET: test series, chapter tests and DPPs."}
         </p>
         <form
           role="search"
@@ -113,11 +126,23 @@ function TestsContent() {
 
       {nonTestDivision && (
         <div role="note" className="mt-6 rounded-[20px] border-2 border-(--hp-ink) bg-(--hp-butter) p-4 text-[15px] font-semibold sm:p-5">
-          This page now shows tests only. Notes, NCERT solutions and sample papers are in{" "}
-          <Link href="/school" className="font-extrabold text-(--hp-link) underline underline-offset-4">
-            School Education
-          </Link>
-          , chapter by chapter. Here are all the tests:
+          {SHOW_SCHOOL ? (
+            <>
+              This page now shows tests only. Notes, NCERT solutions and sample papers are in{" "}
+              <Link href="/school" className="font-extrabold text-(--hp-link) underline underline-offset-4">
+                School Education
+              </Link>
+              , chapter by chapter. Here are all the tests:
+            </>
+          ) : (
+            <>
+              This page shows entrance exam tests only. For colleges, courses and scholarships, see{" "}
+              <Link href="/higher" className="font-extrabold text-(--hp-link) underline underline-offset-4">
+                Higher Education
+              </Link>
+              . Here are all the tests:
+            </>
+          )}
         </div>
       )}
 
@@ -128,7 +153,7 @@ function TestsContent() {
           <Link href="/opportunities" aria-current={!activeDivision ? "page" : undefined} className={`${chip} ${!activeDivision ? chipOn : chipOff}`}>
             All tests
           </Link>
-          {TEST_TYPE_FILTERS.map((f) => {
+          {VISIBLE_TYPE_FILTERS.map((f) => {
             const on = activeDivision === f.division;
             return (
               <Link
@@ -148,7 +173,7 @@ function TestsContent() {
           <button type="button" onClick={() => pickClass("")} aria-pressed={!classNo} className={`${chip} ${!classNo ? chipOn : chipOff}`}>
             All
           </button>
-          {TEST_CLASSES.map((c) => (
+          {VISIBLE_CLASSES.map((c) => (
             <button
               key={c}
               type="button"

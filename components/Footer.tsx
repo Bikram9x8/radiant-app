@@ -2,8 +2,9 @@ import Link from "next/link";
 import { fredoka, nunito } from "@/components/home/fonts";
 import s from "@/components/site-chrome.module.css";
 import RadiantLogo from "@/components/brand/RadiantLogo";
+import { SHOW_SCHOOL } from "@/lib/features";
 
-const SECTIONS = [
+const ALL_SECTIONS = [
   {
     title: "School Education",
     href: "/school",
@@ -50,6 +51,32 @@ const SECTIONS = [
   },
 ];
 
+// School Education switched off (lib/features.ts): no School or Vocational section, and
+// "Competitive" becomes "Exam prep" (NET, SSC and UPSC aren't entrance exams) with the tests link.
+const HIGHER_ONLY_SECTIONS = ALL_SECTIONS.filter(
+  (sec) => sec.title !== "School Education" && sec.title !== "Vocational",
+).map((sec) =>
+  sec.title === "Competitive"
+    ? {
+        title: "Exam prep",
+        links: [
+          { label: "JEE", href: "/courses/competitive/jee" },
+          { label: "NEET", href: "/courses/competitive/neet" },
+          { label: "Practice tests", href: "/opportunities" },
+          { label: "NET", href: "/courses/competitive/net" },
+          { label: "SSC", href: "/courses/competitive/ssc" },
+          { label: "UPSC", href: "/courses/competitive/upsc" },
+        ],
+      }
+    : sec,
+);
+
+const SECTIONS = SHOW_SCHOOL ? ALL_SECTIONS : HIGHER_ONLY_SECTIONS;
+
+const BLURB = SHOW_SCHOOL
+  ? "Notes, solutions, tests and guidance for school and higher education, organised class by class and chapter by chapter."
+  : "Colleges, courses, exam prep, scholarships and internships for students after Class 12.";
+
 export default function Footer() {
   return (
     <footer className={`${fredoka.variable} ${nunito.variable} ${s.chrome} ${s.footer} mt-auto`}>
@@ -59,10 +86,7 @@ export default function Footer() {
           <Link href="/" className="inline-flex rounded-xl">
             <RadiantLogo compact className="h-20 md:h-24" />
           </Link>
-          <p className="mt-4 text-[15px] leading-relaxed font-semibold text-(--hp-muted)">
-            Notes, solutions, tests and guidance for school and higher education, organised class by class
-            and chapter by chapter.
-          </p>
+          <p className="mt-4 text-[15px] leading-relaxed font-semibold text-(--hp-muted)">{BLURB}</p>
         </div>
 
         {/* Links */}

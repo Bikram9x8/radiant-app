@@ -19,6 +19,9 @@ export const TEST_TYPE_FILTERS: { division: string; label: string }[] = [
 
 export const TEST_CLASSES = ["9", "10", "11", "12"];
 
+// Board-level tests belong to School Education: hidden while SHOW_SCHOOL is off (lib/school-posts.ts)
+export const SCHOOL_TEST_DIVISION = "BOARD_LEVEL_TEST";
+
 // Every division (matches enum Division in prisma/schema.prisma) with a readable name.
 // Used by /search?division=... (anything not in this list is ignored).
 export const DIVISION_LABELS: Record<string, string> = {
@@ -39,6 +42,26 @@ export function isTestPost(p: { type?: string | null; division?: string | null }
 
 export function isTestDivision(division: string) {
   return TEST_TYPE_FILTERS.some((f) => f.division === division);
+}
+
+// Entrance-exam label for a test's subject, used while School Education is switched off
+// (the Class 11-12 tests are shown as entrance exam prep; nothing is moved in the database):
+// Physics / Chemistry -> "JEE / NEET prep", Mathematics -> "JEE prep", Biology -> "NEET prep",
+// anything else -> "Entrance exam prep".
+export function entranceLabel(subject?: string | null) {
+  const s = (subject ?? "").toLowerCase();
+  if (s.includes("physics") || s.includes("chemistry")) return "JEE / NEET prep";
+  if (s.startsWith("math")) return "JEE prep";
+  if (s.includes("biology")) return "NEET prep";
+  return "Entrance exam prep";
+}
+
+// "JEE / NEET prep · Physics Class 11" from a category like "Class 11 - Physics"
+export function entranceMeta(categoryName?: string | null) {
+  const { classNo, subject } = parseClassSubject(categoryName);
+  const label = entranceLabel(subject);
+  if (!subject) return categoryName ? `${label} · ${categoryName}` : label;
+  return `${label} · ${subject}${classNo ? ` Class ${classNo}` : ""}`;
 }
 
 // Category names look like "Class 12 - Physics"

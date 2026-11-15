@@ -1,8 +1,9 @@
 import Link from "next/link";
 import s from "./home.module.css";
 import Reveal from "./Reveal";
+import { SHOW_SCHOOL } from "@/lib/features";
 
-const PATHS = [
+const ALL_PATHS = [
   {
     href: "/school",
     title: "School Education",
@@ -20,6 +21,15 @@ const PATHS = [
     tilt: "[--tilt:1.2deg]",
   },
 ];
+
+// School Education switched off (lib/features.ts): the School card becomes Entrance exam prep
+const PATHS = SHOW_SCHOOL
+  ? ALL_PATHS
+  : ALL_PATHS.map((p) =>
+      p.href === "/school"
+        ? { ...p, href: "/opportunities", title: "Entrance exam prep", sub: "JEE · NEET · Class 11–12 tests", cta: "Start practising →" }
+        : p,
+    );
 
 export default function PathCards() {
   return (

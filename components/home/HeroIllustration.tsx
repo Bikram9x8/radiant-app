@@ -1,4 +1,5 @@
 import s from "./home.module.css";
+import { SHOW_SCHOOL } from "@/lib/features";
 
 // Decorative only: an example chapter card, not the visitor's data.
 // Hidden from screen readers; the base tilt of each shape lives in `transform`,
@@ -38,9 +39,11 @@ export default function HeroIllustration() {
           className={`${s.floatCard} flex flex-col gap-3 rounded-[28px] border-[3px] border-(--hp-ink) bg-white p-5 shadow-[6px_6px_0_var(--hp-ink)] lg:gap-3.5 lg:rounded-[32px] lg:p-6 lg:shadow-[8px_8px_0_var(--hp-ink)]`}
         >
           <span className="self-start rounded-full bg-(--hp-yellow) px-2.5 py-[5px] text-xs font-extrabold lg:px-3 lg:py-1.5 lg:text-[13px]">
-            Class 10 · Maths
+            {SHOW_SCHOOL ? "Class 10 · Maths" : "JEE / NEET prep · Physics"}
           </span>
-          <span className={`${s.display} text-[22px] font-bold lg:text-[26px]`}>Ch 1 · Real Numbers</span>
+          <span className={`${s.display} text-[22px] font-bold lg:text-[26px]`}>
+            {SHOW_SCHOOL ? "Ch 1 · Real Numbers" : "Ch 2 · Electrostatics"}
+          </span>
           <div className="flex flex-col gap-2.5 text-[15px] font-bold lg:text-base">
             <div className="flex items-center justify-between rounded-[14px] bg-(--hp-butter) px-3 py-[11px] lg:rounded-2xl lg:px-3.5 lg:py-3">
               <span>Notes</span>

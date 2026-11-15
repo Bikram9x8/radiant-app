@@ -11,15 +11,18 @@ import { fredoka, nunito } from "@/components/home/fonts";
 import s from "@/components/site-chrome.module.css";
 import RadiantLogo from "@/components/brand/RadiantLogo";
 import { useNavSection } from "@/components/nav-section";
+import { SHOW_SCHOOL } from "@/lib/features";
 
 // Fonts + colour tokens for the header and the drawer (the drawer renders outside <header>)
 const chrome = `${fredoka.variable} ${nunito.variable} ${s.chrome}`;
 
-const LINKS = [
+const ALL_LINKS = [
   { href: "/school", label: "School Education" },
   { href: "/higher", label: "Higher Education" },
   { href: "/opportunities", label: "Tests" },
 ];
+// School Education is hidden while the SHOW_SCHOOL switch is off (lib/features.ts)
+const LINKS = SHOW_SCHOOL ? ALL_LINKS : ALL_LINKS.filter((l) => l.href !== "/school");
 
 export default function Navbar() {
   const { data: session, status } = useSession();
@@ -98,10 +101,12 @@ export default function Navbar() {
     // A single post: the page reports its section (School / Higher / Tests) once loaded
     if (pathname.startsWith("/opportunities/")) return navSection === href;
     // Course pages: higher-education belongs to Higher Education; every other course
-    // (CBSE, ICSE, competitive, vocational: the ones listed on /school) to School Education
+    // (CBSE, ICSE, competitive, vocational: the ones listed on /school) to School Education.
+    // With School switched off, the remaining (competitive = exam prep) pages belong to Tests.
     if (pathname.startsWith("/courses/")) {
       if (href === "/higher") return under("/courses/higher-education");
-      if (href === "/school") return !under("/courses/higher-education");
+      if (href === "/school") return SHOW_SCHOOL && !under("/courses/higher-education");
+      if (href === "/opportunities") return !SHOW_SCHOOL && !under("/courses/higher-education");
       return false;
     }
     return under(href);
