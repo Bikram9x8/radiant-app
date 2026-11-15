@@ -7,8 +7,14 @@ import { Skeleton } from "@/components/Skeleton";
 import PostCard, { type PostCardData } from "@/components/tests/PostCard";
 import { fredoka, nunito } from "@/components/home/fonts";
 import s from "@/components/school/school.module.css";
-import { TEST_CLASSES, TEST_TYPE_FILTERS, isTestDivision, parseClassSubject } from "@/lib/test-posts";
+import { SCHOOL_TEST_DIVISION, TEST_CLASSES, TEST_TYPE_FILTERS, parseClassSubject } from "@/lib/test-posts";
 import { SHOW_SCHOOL } from "@/lib/features";
+
+// Type chips: board-level tests belong to School Education, so their chip is hidden while it's off
+// (an old ?division=BOARD_LEVEL_TEST link then gets the friendly note, like other non-test divisions)
+const VISIBLE_TYPE_FILTERS = SHOW_SCHOOL
+  ? TEST_TYPE_FILTERS
+  : TEST_TYPE_FILTERS.filter((f) => f.division !== SCHOOL_TEST_DIVISION);
 
 // Class chips: with School Education switched off the tests are entrance prep (Class 11 and 12 only)
 const VISIBLE_CLASSES = SHOW_SCHOOL ? TEST_CLASSES : TEST_CLASSES.filter((c) => c === "11" || c === "12");
@@ -25,8 +31,9 @@ function TestsContent() {
   const searchParams = useSearchParams();
   const division = searchParams.get("division") || "";
   // Old links like ?division=NCERT_SOLUTION point at things that aren't tests any more
-  const nonTestDivision = division !== "" && !isTestDivision(division);
-  const activeDivision = isTestDivision(division) ? division : "";
+  const isVisibleTestDivision = VISIBLE_TYPE_FILTERS.some((f) => f.division === division);
+  const nonTestDivision = division !== "" && !isVisibleTestDivision;
+  const activeDivision = isVisibleTestDivision ? division : "";
 
   const [search, setSearch] = useState(searchParams.get("q") || "");
   const [query, setQuery] = useState(search); // search text actually sent (debounced)
@@ -146,7 +153,7 @@ function TestsContent() {
           <Link href="/opportunities" aria-current={!activeDivision ? "page" : undefined} className={`${chip} ${!activeDivision ? chipOn : chipOff}`}>
             All tests
           </Link>
-          {TEST_TYPE_FILTERS.map((f) => {
+          {VISIBLE_TYPE_FILTERS.map((f) => {
             const on = activeDivision === f.division;
             return (
               <Link

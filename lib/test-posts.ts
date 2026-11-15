@@ -19,6 +19,9 @@ export const TEST_TYPE_FILTERS: { division: string; label: string }[] = [
 
 export const TEST_CLASSES = ["9", "10", "11", "12"];
 
+// Board-level tests belong to School Education: hidden while SHOW_SCHOOL is off (lib/school-posts.ts)
+export const SCHOOL_TEST_DIVISION = "BOARD_LEVEL_TEST";
+
 // Every division (matches enum Division in prisma/schema.prisma) with a readable name.
 // Used by /search?division=... (anything not in this list is ignored).
 export const DIVISION_LABELS: Record<string, string> = {

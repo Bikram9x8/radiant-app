@@ -2,22 +2,25 @@
 // Server-only (uses Prisma). The same rule exists twice: isSchoolPost() for one post,
 // schoolPostWhere / notSchoolWhere for database lists. Keep them in step.
 //
-// A post is School when ALL of these hold:
-//   - it is not a test (tests stay visible as entrance exam prep; rule in lib/test-posts.ts)
-//   - it is not an internship
-//   - it is not linked to the Higher Education course tree
-// and ANY of these holds:
-//   - it is linked to the CBSE, ICSE or Vocational course tree
-//   - its division is NCERT_SOLUTION or CBSE_SAMPLE_PAPERS
-//   - its type is SOLUTION, or its contentType is SOLUTION or NOTES
-//   - its category is a school class ("Class N - Subject")
+// A post is School when it is not an internship, not linked to the Higher Education course
+// tree, and EITHER
+//   - it is a board-level test (division BOARD_LEVEL_TEST: board exams are School), OR
+//   - it is not a test (other tests stay visible as entrance exam prep; rule in lib/test-posts.ts)
+//     and ANY of these holds:
+//       - it is linked to the CBSE, ICSE or Vocational course tree
+//       - its division is NCERT_SOLUTION or CBSE_SAMPLE_PAPERS
+//       - its type is SOLUTION, or its contentType is SOLUTION or NOTES
+//       - its category is a school class ("Class N - Subject")
 import type { Division, Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
-import { EXPLICIT_TEST_DIVISIONS, isTestPost } from "@/lib/test-posts";
+import { EXPLICIT_TEST_DIVISIONS, SCHOOL_TEST_DIVISION, isTestPost } from "@/lib/test-posts";
 
 export const SCHOOL_ROOT_SLUGS = ["cbse", "icse", "vocational"];
 export const HIGHER_ROOT_SLUG = "higher-education";
 export const SCHOOL_DIVISIONS = ["NCERT_SOLUTION", "CBSE_SAMPLE_PAPERS"];
+// Tests in BOARD_LEVEL_TEST are School too (board exams), unlike other tests.
+// Defined in lib/test-posts.ts so client components can use it as well.
+export { SCHOOL_TEST_DIVISION };
 const SCHOOL_CONTENT_TYPES = ["SOLUTION", "NOTES"];
 const CLASS_CATEGORY_PREFIX = "Class ";
 
@@ -31,9 +34,10 @@ type PostFields = {
 };
 
 export function isSchoolPost(p: PostFields, rootSlug: string | null) {
-  if (isTestPost(p)) return false;
   if (p.type === "INTERNSHIP") return false;
   if (rootSlug === HIGHER_ROOT_SLUG) return false;
+  if (p.division === SCHOOL_TEST_DIVISION) return true;
+  if (isTestPost(p)) return false;
   return (
     (rootSlug !== null && SCHOOL_ROOT_SLUGS.includes(rootSlug)) ||
     SCHOOL_DIVISIONS.includes(p.division ?? "") ||
@@ -78,17 +82,28 @@ const testWhere: Prisma.OpportunityWhereInput = {
 
 export const schoolPostWhere: Prisma.OpportunityWhereInput = {
   AND: [
-    { NOT: testWhere },
     { NOT: { type: "INTERNSHIP" } },
     // Not under Higher Education (posts without a course node pass this check)
     { OR: [{ courseNodeId: null }, { NOT: { courseNode: underRoots([HIGHER_ROOT_SLUG]) } }] },
     {
       OR: [
-        { courseNode: underRoots(SCHOOL_ROOT_SLUGS) },
-        { division: { in: SCHOOL_DIVISIONS as Division[] } },
-        { type: "SOLUTION" },
-        { contentType: { in: SCHOOL_CONTENT_TYPES } },
-        { category: { name: { startsWith: CLASS_CATEGORY_PREFIX } } },
+        // Board-level tests are School
+        { division: SCHOOL_TEST_DIVISION as Division },
+        // Other tests are not; non-tests are School when any marker matches
+        {
+          AND: [
+            { NOT: testWhere },
+            {
+              OR: [
+                { courseNode: underRoots(SCHOOL_ROOT_SLUGS) },
+                { division: { in: SCHOOL_DIVISIONS as Division[] } },
+                { type: "SOLUTION" },
+                { contentType: { in: SCHOOL_CONTENT_TYPES } },
+                { category: { name: { startsWith: CLASS_CATEGORY_PREFIX } } },
+              ],
+            },
+          ],
+        },
       ],
     },
   ],

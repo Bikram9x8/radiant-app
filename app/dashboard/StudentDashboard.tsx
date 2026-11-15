@@ -83,12 +83,13 @@ const ALL_LINK_GROUPS = [
 ];
 
 // School Education switched off (lib/features.ts): no School card, and no links to School material
-// (NCERT solutions, CBSE sample papers, study packages). Empty groups are dropped.
+// (NCERT solutions, CBSE sample papers, study packages, board-level tests). Empty groups are dropped.
 const SCHOOL_LINK_HREFS = [
   "/school",
   "/search?division=NCERT_SOLUTION",
   "/search?division=CBSE_SAMPLE_PAPERS",
   "/search?division=STUDY_PACKAGE",
+  "/opportunities?division=BOARD_LEVEL_TEST",
 ];
 const quickLinks = SHOW_SCHOOL ? ALL_QUICK_LINKS : ALL_QUICK_LINKS.filter((l) => !SCHOOL_LINK_HREFS.includes(l.href));
 const linkGroups = SHOW_SCHOOL

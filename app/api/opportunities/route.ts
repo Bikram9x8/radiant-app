@@ -5,6 +5,8 @@ import { authOptions } from "@/lib/auth";
 import { cleanDuration, getInternshipsCategoryId, isInternshipSubcategory } from "@/lib/internships";
 import { EXPLICIT_TEST_DIVISIONS, TEST_CLASSES, isTestDivision } from "@/lib/test-posts";
 import type { Division } from "@prisma/client";
+import { SHOW_SCHOOL } from "@/lib/features";
+import { SCHOOL_TEST_DIVISION, notSchoolWhere } from "@/lib/school-posts";
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
@@ -17,8 +19,12 @@ export async function GET(req: Request) {
   const testsOnly = searchParams.get("tests") === "1";
   const classParam = searchParams.get("classNo") || "";
   const classNo = TEST_CLASSES.includes(classParam) ? classParam : "";
-  // In tests mode only the test divisions filter; any other division is ignored (the page shows a note)
-  const divisionFilter = testsOnly ? (isTestDivision(division) ? division : "") : division;
+  // In tests mode only the test divisions filter; any other division is ignored (the page shows a note).
+  // With School Education switched off, board-level tests are School, so that division is ignored too.
+  const isVisibleTestDivision = isTestDivision(division) && (SHOW_SCHOOL || division !== SCHOOL_TEST_DIVISION);
+  const divisionFilter = testsOnly ? (isVisibleTestDivision ? division : "") : division;
+  // School Education switched off: School posts (incl. board-level tests) are left out
+  const schoolWhere = SHOW_SCHOOL ? {} : notSchoolWhere;
 
   const testsWhere = testsOnly
     ? { OR: [{ type: "QUIZ" as const }, { division: { in: EXPLICIT_TEST_DIVISIONS as Division[] } }] }
@@ -31,6 +37,7 @@ export async function GET(req: Request) {
       status: "APPROVED",
       ...testsWhere,
       ...classWhere,
+      ...schoolWhere,
       ...(search ? { title: { contains: search, mode: "insensitive" } } : {}),
       ...(type ? { type: type as any } : {}),
       ...(categoryId ? { categoryId } : {}),
@@ -53,7 +60,7 @@ export async function GET(req: Request) {
   let subjects: { id: string; name: string }[] = [];
   if (testsOnly && classNo) {
     const rows = await prisma.opportunity.findMany({
-      where: { status: "APPROVED", ...testsWhere, ...classWhere },
+      where: { status: "APPROVED", ...testsWhere, ...classWhere, ...schoolWhere },
       distinct: ["categoryId"],
       select: { category: { select: { id: true, name: true } } },
     });
