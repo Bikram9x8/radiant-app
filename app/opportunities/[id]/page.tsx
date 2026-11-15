@@ -27,6 +27,8 @@ import { Skeleton } from "@/components/Skeleton";
 import { useToast } from "@/components/Toast";
 import ViewTracker from "@/components/ViewTracker";
 import { setNavSection } from "@/components/nav-section";
+import { SHOW_SCHOOL } from "@/lib/features";
+import { entranceMeta, isTestPost } from "@/lib/test-posts";
 
 // Reading material rather than a test: "What's inside", and no "Available until" date
 const READING_TYPES = ["NOTES", "SOLUTION"];
@@ -219,7 +221,10 @@ export default function OpportunityDetailPage() {
                   {opportunity.title}
                 </h1>
                 <p className="mt-1.5 text-[15px] font-semibold text-(--hp-muted)">
-                  {opportunity.company?.companyName} • {opportunity.category?.name}
+                  {opportunity.company?.companyName} •{" "}
+                  {!SHOW_SCHOOL && isTestPost(opportunity)
+                    ? entranceMeta(opportunity.category?.name)
+                    : opportunity.category?.name}
                 </p>
               </div>
             </div>

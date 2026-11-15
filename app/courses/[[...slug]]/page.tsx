@@ -23,6 +23,7 @@ import AdSlot from "@/components/home/AdSlot";
 import { fredoka, nunito } from "@/components/home/fonts";
 import s from "@/components/school/school.module.css";
 import ComingSoon from "@/components/ComingSoon";
+import { SHOW_SCHOOL } from "@/lib/features";
 
 // Option B pastels (backgrounds only; text stays ink for contrast)
 const PASTELS = [
@@ -145,7 +146,9 @@ export default async function CoursePage({
     : trail.length >= 2
       ? { href: "/courses/" + slug.slice(0, -1).join("/"), label: trail[trail.length - 2].name }
       : trail.length === 1
-        ? { href: "/courses", label: "Courses" }
+        ? SHOW_SCHOOL
+          ? { href: "/courses", label: "Courses" }
+          : { href: "/higher", label: "Higher Education" } // /courses redirects while School is off
         : undefined;
 
   const contentTypes = isSchool
@@ -171,8 +174,13 @@ export default async function CoursePage({
           className={`${s.crumbs} flex flex-wrap items-center gap-x-2 text-[15px] font-bold text-(--hp-muted)`}
         >
           <Link href="/" className="inline-flex min-h-11 items-center">Home</Link>
-          <span aria-hidden="true">/</span>
-          <Link href="/courses" className="inline-flex min-h-11 items-center">Courses</Link>
+          {/* "Courses" (/courses) only while School Education is on; otherwise it just redirects */}
+          {SHOW_SCHOOL && (
+            <>
+              <span aria-hidden="true">/</span>
+              <Link href="/courses" className="inline-flex min-h-11 items-center">Courses</Link>
+            </>
+          )}
           {trail.map((n, i) => (
             <span key={n.id} className="flex items-center gap-2">
               <span aria-hidden="true">/</span>

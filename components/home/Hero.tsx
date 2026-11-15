@@ -2,6 +2,7 @@ import Link from "next/link";
 import { IconSearch } from "@tabler/icons-react";
 import s from "./home.module.css";
 import HeroIllustration from "./HeroIllustration";
+import { SHOW_SCHOOL } from "@/lib/features";
 
 // CSS custom properties need a cast to pass through React's style prop.
 const vars = (v: Record<string, string>) => v as React.CSSProperties;
@@ -35,8 +36,9 @@ export default function Hero() {
         </h1>
 
         <p className="m-0 max-w-[500px] text-[17px] leading-[1.55] text-(--hp-muted) lg:text-xl">
-          Friendly notes, NCERT solutions and MCQ tests for every chapter, plus internships when you&apos;re
-          ready for the next step.
+          {SHOW_SCHOOL
+            ? "Friendly notes, NCERT solutions and MCQ tests for every chapter, plus internships when you're ready for the next step."
+            : "Colleges, entrance exam prep, scholarships and internships after Class 12."}
         </p>
 
         <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
@@ -52,10 +54,10 @@ export default function Hero() {
             </span>
           </Link>
           <Link
-            href="/school"
+            href={SHOW_SCHOOL ? "/school" : "/higher"}
             className={`${s.flat} flex h-[54px] items-center justify-center rounded-full border-[3px] border-(--hp-ink) bg-white px-[26px] text-[17px] font-extrabold text-(--hp-ink) no-underline lg:h-[58px] lg:text-lg`}
           >
-            Browse classes
+            {SHOW_SCHOOL ? "Browse classes" : "Explore Higher Education"}
           </Link>
         </div>
 

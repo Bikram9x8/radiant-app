@@ -10,6 +10,8 @@ import {
   isInternshipSubcategory,
 } from "@/lib/internships";
 import { isTestPost } from "@/lib/test-posts";
+import { SHOW_SCHOOL } from "@/lib/features";
+import { getCourseRootSlug, isSchoolPost } from "@/lib/school-posts";
 
 export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -22,6 +24,12 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
   });
 
   if (!opportunity || opportunity.status !== "APPROVED") {
+    return NextResponse.json({ error: "Opportunity not found" }, { status: 404 });
+  }
+
+  // School Education switched off (lib/features.ts): School posts are not served
+  // (their pages redirect to /higher in app/opportunities/[id]/layout.tsx)
+  if (!SHOW_SCHOOL && isSchoolPost(opportunity, await getCourseRootSlug(opportunity.courseNodeId))) {
     return NextResponse.json({ error: "Opportunity not found" }, { status: 404 });
   }
 
@@ -81,7 +89,14 @@ const session = await getServerSession(authOptions);
 
   // Header menu item for this post: School Education for school/competitive/vocational courses,
   // Higher Education for higher-education (incl. internships), Tests for posts with no course.
-  const navSection = place ? (place.rootSlug === "higher-education" ? "/higher" : "/school") : "/opportunities";
+  // With School switched off, the non-higher courses (competitive = exam prep) belong to Tests.
+  const navSection = place
+    ? place.rootSlug === "higher-education"
+      ? "/higher"
+      : SHOW_SCHOOL
+        ? "/school"
+        : "/opportunities"
+    : "/opportunities";
 
   return NextResponse.json({ opportunity, alreadyApplied, codeUnlocked, isLocked, applicationsClosed, backLink, navSection });
   }

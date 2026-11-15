@@ -2,6 +2,7 @@ import Link from "next/link";
 import s from "./home.module.css";
 import Reveal from "./Reveal";
 import ScoreRing from "./ScoreRing";
+import { SHOW_SCHOOL } from "@/lib/features";
 
 export default function ScoreCard() {
   return (
@@ -17,7 +18,7 @@ export default function ScoreCard() {
             another look. In English, <span lang="hi">हिंदी</span> and <span lang="pa">ਪੰਜਾਬੀ</span>.
           </p>
           <Link
-            href="/school"
+            href={SHOW_SCHOOL ? "/school" : "/opportunities"}
             className={`${s.press} [--sx:0px] [--sy:5px] md:self-start`}
           >
             <span
