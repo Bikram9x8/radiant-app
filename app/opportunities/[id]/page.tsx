@@ -202,7 +202,9 @@ export default function OpportunityDetailPage() {
             <div className="flex min-w-0 items-start gap-3">
               {(() => {
                 const meta = DIVISION_ICONS[opportunity.division] ?? DIVISION_ICONS.TEST_SERIES;
-                const label = getShortLabel(opportunity.category?.name);
+                // Small badge on the icon ("12" for "Class 12 - Physics"): hidden for tests while
+                // School is switched off, so no class number is shown
+                const label = !SHOW_SCHOOL && isTestPost(opportunity) ? "" : getShortLabel(opportunity.category?.name);
                 return (
                   <div
                     className={`relative shrink-0 w-12 h-12 rounded-2xl border-2 border-(--hp-ink) ${meta.bg} flex items-center justify-center`}

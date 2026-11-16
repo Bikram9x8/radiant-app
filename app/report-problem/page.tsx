@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { SHOW_SCHOOL } from "@/lib/features";
 
 const CATEGORIES = [
   { value: "WRONG_CONTENT", label: "Wrong or missing content (answer, question, chapter)" },
@@ -82,7 +83,11 @@ export default function ReportProblemPage() {
               rows={6}
               value={message}
               onChange={(e) => setMessage(e.target.value)}
-              placeholder="For example: Class 10 Maths, Chapter 4, Exercise 4.2 question 3 has the wrong answer."
+              placeholder={
+                SHOW_SCHOOL
+                  ? "For example: Class 10 Maths, Chapter 4, Exercise 4.2 question 3 has the wrong answer."
+                  : "For example: JEE prep Physics test, question 3 has the wrong answer."
+              }
               className="w-full rounded-xl border border-zinc-300 bg-white px-4 py-3 text-[#14142b] outline-none focus:border-[#5b33d6]"
             />
           </div>

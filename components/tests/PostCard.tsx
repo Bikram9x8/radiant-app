@@ -57,7 +57,7 @@ export default function PostCard({ post, now }: { post: PostCardData; now: numbe
   const kind = kindOf(post);
   const isTest = isTestPost(post);
   const { classNo, subject } = parseClassSubject(post.category?.name);
-  // School Education switched off: tests read as entrance prep ("JEE / NEET prep · Physics Class 11")
+  // School Education switched off: tests read as entrance prep ("JEE / NEET prep · Physics"), no class
   const meta =
     !SHOW_SCHOOL && isTest
       ? [entranceMeta(post.category?.name), post.chapter ? `Chapter ${post.chapter}` : null].filter(Boolean)

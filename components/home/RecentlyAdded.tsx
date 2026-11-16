@@ -2,12 +2,23 @@ import Link from "next/link";
 import s from "./home.module.css";
 import Reveal from "./Reveal";
 import AdSlot from "./AdSlot";
+import { SHOW_SCHOOL } from "@/lib/features";
+import { entranceMeta, isTestPost } from "@/lib/test-posts";
 
 export type RecentItem = {
   id: string;
   title: string;
+  type: string;
+  division?: string | null;
   category: { name: string } | null;
 };
+
+// Line under the title: with School switched off, tests read as entrance prep without a class
+// ("JEE / NEET prep · Physics"); otherwise the category name as before.
+function subLine(o: RecentItem) {
+  if (!SHOW_SCHOOL && isTestPost(o)) return entranceMeta(o.category?.name);
+  return o.category?.name ?? "";
+}
 
 export default function RecentlyAdded({ items }: { items: RecentItem[] }) {
   return (
@@ -37,8 +48,8 @@ export default function RecentlyAdded({ items }: { items: RecentItem[] }) {
                     className="flex min-h-11 flex-col justify-center px-5 py-4 text-(--hp-ink) no-underline hover:bg-(--hp-butter)"
                   >
                     <span className="text-[17px] font-extrabold">{o.title}</span>
-                    {o.category?.name && (
-                      <span className="mt-0.5 text-sm font-semibold text-(--hp-muted)">{o.category.name}</span>
+                    {subLine(o) && (
+                      <span className="mt-0.5 text-sm font-semibold text-(--hp-muted)">{subLine(o)}</span>
                     )}
                   </Link>
                 </li>

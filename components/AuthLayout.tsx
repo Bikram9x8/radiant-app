@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { IconCheck } from "@tabler/icons-react";
 import AuthLink from "@/components/auth/AuthLink";
+import { SHOW_SCHOOL } from "@/lib/features";
 
 // Shared look for the login and signup pages: pastel illustration panel on
 // the left (a short banner on phones) and a white form card on the right.
@@ -13,7 +14,8 @@ export const authPanels = {
     background: "#ede9fe",
     heading: "Learn, practise and find internships — all in one place.",
     benefits: [
-      "Free Class 12 and entrance exam practice tests",
+      // No "Class 12" while School Education is switched off (lib/features.ts)
+      SHOW_SCHOOL ? "Free Class 12 and entrance exam practice tests" : "Free entrance exam practice tests",
       "Internships from verified companies",
       "Track your progress and applications",
     ],

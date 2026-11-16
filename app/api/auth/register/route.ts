@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
 import { sendEmail } from "@/lib/email";
+import { SHOW_SCHOOL } from "@/lib/features";
 
 export async function POST(req: Request) {
   try {
@@ -39,7 +40,7 @@ export async function POST(req: Request) {
         html: `
           <p>Hi${fullName ? " " + fullName : ""},</p>
           <p>Welcome to <strong>Radiant Educations</strong>! Your account has been created successfully.</p>
-          <p>You now have free access to Class 12 and entrance exam practice tests, study material, and career tools.</p>
+          <p>You now have free access to ${SHOW_SCHOOL ? "Class 12 and entrance exam practice tests" : "entrance exam practice tests"}, study material, and career tools.</p>
           <p><a href="https://app.radianteducareer.com/login">Log in and get started →</a></p>
         `,
       });

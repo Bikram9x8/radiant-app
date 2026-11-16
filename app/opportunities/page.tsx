@@ -16,8 +16,12 @@ const VISIBLE_TYPE_FILTERS = SHOW_SCHOOL
   ? TEST_TYPE_FILTERS
   : TEST_TYPE_FILTERS.filter((f) => f.division !== SCHOOL_TEST_DIVISION);
 
-// Class chips: with School Education switched off the tests are entrance prep (Class 11 and 12 only)
-const VISIBLE_CLASSES = SHOW_SCHOOL ? TEST_CLASSES : TEST_CLASSES.filter((c) => c === "11" || c === "12");
+// Class chips (and the per-class Subject chips that follow a class) only while School Education is on.
+// With it off, students never see "Class 11/12": a Subject row (Physics, Mathematics...) is shown
+// straight away instead, across classes. Old ?class= links simply show every test (the page doesn't
+// read that parameter).
+const SHOW_CLASS_FILTER = SHOW_SCHOOL;
+const VISIBLE_CLASSES = TEST_CLASSES;
 
 // Tests page: only tests (type QUIZ, or a chapter / board-level / DPP division; see lib/test-posts.ts).
 // All filtering happens on the server: GET /api/opportunities?tests=1&...
@@ -38,9 +42,11 @@ function TestsContent() {
   const [search, setSearch] = useState(searchParams.get("q") || "");
   const [query, setQuery] = useState(search); // search text actually sent (debounced)
   const [classNo, setClassNo] = useState("");
-  const [categoryId, setCategoryId] = useState(""); // subject
+  const [categoryId, setCategoryId] = useState(""); // subject within a class (School on)
+  const [subjectName, setSubjectName] = useState(""); // subject across classes (School off)
   const [tests, setTests] = useState<PostCardData[]>([]);
   const [subjects, setSubjects] = useState<{ id: string; name: string }[]>([]);
+  const [subjectNames, setSubjectNames] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [now, setNow] = useState(0); // time of the last load, for "Open till" / "Ended"
 
@@ -59,19 +65,27 @@ function TestsContent() {
       if (activeDivision) params.set("division", activeDivision);
       if (classNo) params.set("classNo", classNo);
       if (categoryId) params.set("categoryId", categoryId);
+      if (subjectName) params.set("subject", subjectName);
       const res = await fetch(`/api/opportunities?${params.toString()}`);
       const data = await res.json();
       if (cancelled) return;
+      const names: string[] = data.subjectNames || [];
+      // The chosen subject has no tests under the new Type filter: go back to all subjects
+      if (subjectName && !names.includes(subjectName)) {
+        setSubjectName("");
+        return;
+      }
       setNow(Date.now());
       setTests(data.opportunities || []);
       setSubjects(data.subjects || []);
+      setSubjectNames(names);
       setLoading(false);
     }
     load();
     return () => {
       cancelled = true;
     };
-  }, [query, activeDivision, classNo, categoryId]);
+  }, [query, activeDivision, classNo, categoryId, subjectName]);
 
   function pickClass(c: string) {
     setClassNo(c);
@@ -168,26 +182,54 @@ function TestsContent() {
           })}
         </div>
 
-        <div className="flex flex-wrap items-center gap-2">
-          <p className={rowLabel}>Class</p>
-          <button type="button" onClick={() => pickClass("")} aria-pressed={!classNo} className={`${chip} ${!classNo ? chipOn : chipOff}`}>
-            All
-          </button>
-          {VISIBLE_CLASSES.map((c) => (
+        {/* School switched off: Subject chips straight away, across classes (no class is shown) */}
+        {!SHOW_CLASS_FILTER && subjectNames.length > 0 && (
+          <div className="flex flex-wrap items-center gap-2">
+            <p className={rowLabel}>Subject</p>
             <button
-              key={c}
               type="button"
-              onClick={() => pickClass(c)}
-              aria-pressed={classNo === c}
-              aria-label={`Class ${c}`}
-              className={`${chip} min-w-11 justify-center ${classNo === c ? chipOn : chipOff}`}
+              onClick={() => setSubjectName("")}
+              aria-pressed={!subjectName}
+              className={`${chip} ${!subjectName ? chipOn : chipOff}`}
             >
-              {c}
+              All
             </button>
-          ))}
-        </div>
+            {subjectNames.map((name) => (
+              <button
+                key={name}
+                type="button"
+                onClick={() => setSubjectName(name)}
+                aria-pressed={subjectName === name}
+                className={`${chip} ${subjectName === name ? chipOn : chipOff}`}
+              >
+                {name}
+              </button>
+            ))}
+          </div>
+        )}
 
-        {classNo && subjects.length > 0 && (
+        {SHOW_CLASS_FILTER && (
+          <div className="flex flex-wrap items-center gap-2">
+            <p className={rowLabel}>Class</p>
+            <button type="button" onClick={() => pickClass("")} aria-pressed={!classNo} className={`${chip} ${!classNo ? chipOn : chipOff}`}>
+              All
+            </button>
+            {VISIBLE_CLASSES.map((c) => (
+              <button
+                key={c}
+                type="button"
+                onClick={() => pickClass(c)}
+                aria-pressed={classNo === c}
+                aria-label={`Class ${c}`}
+                className={`${chip} min-w-11 justify-center ${classNo === c ? chipOn : chipOff}`}
+              >
+                {c}
+              </button>
+            ))}
+          </div>
+        )}
+
+        {SHOW_CLASS_FILTER && classNo && subjects.length > 0 && (
           <div className="flex flex-wrap items-center gap-2">
             <p className={rowLabel}>Subject</p>
             <button

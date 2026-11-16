@@ -27,7 +27,7 @@ const PATHS = SHOW_SCHOOL
   ? ALL_PATHS
   : ALL_PATHS.map((p) =>
       p.href === "/school"
-        ? { ...p, href: "/opportunities", title: "Entrance exam prep", sub: "JEE · NEET · Class 11–12 tests", cta: "Start practising →" }
+        ? { ...p, href: "/opportunities", title: "Entrance exam prep", sub: "JEE · NEET · Practice tests", cta: "Start practising →" }
         : p,
     );
 
