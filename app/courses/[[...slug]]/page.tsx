@@ -19,7 +19,7 @@ import {
 } from "@/lib/internships";
 import ViewTracker from "@/components/ViewTracker";
 import { SubjectArt } from "@/components/Illustrations";
-import AdSlot from "@/components/home/AdSlot";
+import AdSlot from "@/components/AdSlot";
 import s from "@/components/school/school.module.css";
 import ComingSoon from "@/components/ComingSoon";
 import { SHOW_SCHOOL } from "@/lib/features";

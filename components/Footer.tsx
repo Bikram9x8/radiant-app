@@ -60,7 +60,7 @@ const SECTIONS: Section[] = [
 
 const BLURB = SHOW_SCHOOL
   ? "Notes, solutions, tests and guidance for school and higher education, organised class by class and chapter by chapter."
-  : "Colleges, courses, entrance exams, scholarships and internships for students across India.";
+  : "Entrance exam prep, scholarships and internships for students after Class 12. Colleges and courses coming soon.";
 
 export default function Footer() {
   return (

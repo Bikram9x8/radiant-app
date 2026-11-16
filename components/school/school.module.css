@@ -1,5 +1,5 @@
 /* School Education flow ("Option B · Light & playful"): /school, /courses/..., /opportunities/[id].
-   Same tokens as components/home/home.module.css and components/site-chrome.module.css.
+   Same tokens as components/landing/landing.module.css and components/site-chrome.module.css.
    Scoped under .page or local classes, so no other page changes.
    Lists, cards and navigation use the playful sticker style; reading views (the notes/solutions
    page) use a calmer frame: thinner lines, no sticker shadows, comfortable text size and line length.

@@ -1,0 +1,1262 @@
+/* New homepage (Phase 2 Part C), from radiant-design/home-teal-coral.html.
+   Colours come from globals.css; fonts from app/layout.tsx (Figtree, Big Shoulders, Instrument Serif).
+   Everything is scoped under .landing or a local class. Layout lives here (not in Tailwind classes),
+   because this file is unlayered and its display rules would beat Tailwind's utilities anyway.
+   Part C is the still version: one-time animations (rise, draw, stamp, reveal) and the decorative
+   loops come in Part D. Only the ticker moves (with a pause button), and only without reduced motion. */
+
+.landing {
+  --disp: var(--font-big-shoulders), var(--font-figtree), sans-serif;
+  --ser: var(--font-instrument-serif), Georgia, serif;
+  --btn-line: #d3dce6;
+  --soft-shadow: 0 1px 2px rgb(15 46 51 / 0.04), 0 18px 40px -28px rgb(15 46 51 / 0.35);
+
+  font-family: var(--font-figtree), system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.6;
+  background: var(--paper);
+  color: var(--ink);
+  overflow-x: clip;
+}
+
+.landing :where(a, button, select, input):focus-visible {
+  outline: 3px solid var(--teal);
+  outline-offset: 3px;
+}
+
+.wrap {
+  max-width: 1240px;
+  margin-inline: auto;
+  padding-inline: max(5vw, 16px);
+}
+
+.section {
+  margin-top: 80px;
+}
+
+/* ---------- Type ---------- */
+.h2 {
+  margin: 0;
+  font-family: var(--disp);
+  font-weight: 800;
+  font-size: clamp(40px, 5vw, 64px);
+  line-height: 0.95;
+  letter-spacing: 0.005em;
+  text-transform: uppercase;
+  text-wrap: balance;
+}
+
+.h3 {
+  margin: 0;
+  font-size: 19px;
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+/* Italic serif accent words ("college.", "Class 12") */
+.ser {
+  position: relative;
+  display: inline-block;
+  font-family: var(--ser);
+  font-style: italic;
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--teal);
+}
+
+.serCoral {
+  color: var(--coral-text);
+}
+
+.lead {
+  margin: 10px 0 0;
+  max-width: 58ch;
+  color: var(--muted);
+  font-size: 18px;
+}
+
+.sample {
+  margin: 12px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.headRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px 14px;
+}
+
+/* Small pill tags: "Coming soon", "Sample" */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 3px 10px;
+  font-family: var(--font-figtree), sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  line-height: 1.4;
+  text-transform: none;
+  white-space: nowrap;
+}
+
+.soon {
+  background: var(--tint-peach);
+  color: var(--coral-text);
+}
+
+.sampleTag {
+  background: #f1f5f9;
+  color: #2b3a4d;
+}
+
+/* ---------- Buttons ---------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 48px;
+  padding: 0 22px;
+  border-radius: 12px;
+  border: 1.5px solid transparent;
+  font-family: var(--font-figtree), sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background-color 150ms ease,
+    border-color 150ms ease,
+    translate 150ms ease;
+}
+
+@media (hover: hover) {
+  .btn:hover {
+    translate: 0 -2px;
+  }
+}
+
+.btn:active {
+  translate: 0 0;
+}
+
+.pri {
+  background: var(--teal);
+  color: #ffffff;
+  box-shadow: 0 8px 20px -10px rgb(15 118 110 / 0.6);
+}
+
+.pri:hover {
+  background: var(--teal-dark);
+}
+
+.dark {
+  background: var(--ink);
+  color: #ffffff;
+}
+
+.dark:hover {
+  background: var(--ink-2);
+}
+
+.out {
+  background: #ffffff;
+  color: var(--ink);
+  border-color: var(--btn-line);
+}
+
+.out:hover {
+  border-color: var(--ink);
+}
+
+/* White card with a 1px line and a soft shadow */
+.sticker {
+  background: #ffffff;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  box-shadow: var(--soft-shadow);
+}
+
+/* ================= Hero ================= */
+.hero {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+  gap: clamp(24px, 4vw, 64px);
+  align-items: center;
+  padding-block: 56px 64px;
+}
+
+/* Soft colour glows behind the hero (still; Part D may drift them) */
+.blob {
+  position: absolute;
+  z-index: -1;
+  border-radius: 50%;
+  filter: blur(60px);
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+.blobA {
+  width: min(420px, 80vw);
+  height: 420px;
+  right: 0;
+  top: 20px;
+  background: var(--tint-teal-strong);
+}
+
+.blobB {
+  width: min(320px, 60vw);
+  height: 320px;
+  right: 30%;
+  top: 260px;
+  background: var(--tint-peach-strong);
+}
+
+.h1 {
+  margin: 0;
+  font-family: var(--disp);
+  font-weight: 800;
+  /* Sized so each phrase ("Find your college.") fits on one line in the hero column, as the
+     design's three-line break intends. Phones: about 10vw, so even 320px keeps three lines */
+  font-size: clamp(34px, max(5.6vw, min(10.2vw, 40px)), 84px);
+  line-height: 0.95;
+  letter-spacing: 0.005em;
+  text-transform: uppercase;
+}
+
+.line {
+  display: block;
+}
+
+.h1 .ser {
+  font-size: 1.02em;
+}
+
+/* Hand-drawn underline under each accent word (drawn in full here; Part D animates the stroke) */
+.ul {
+  position: absolute;
+  left: 0;
+  bottom: -0.06em;
+  width: 100%;
+  height: 0.22em;
+  overflow: visible;
+}
+
+.ul path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 4;
+  stroke-linecap: round;
+  opacity: 0.45;
+}
+
+.cta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 28px;
+}
+
+.stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  margin: 26px 0 0;
+  padding: 0;
+  list-style: none;
+  color: var(--muted);
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.stats li {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.stats li::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--coral);
+}
+
+/* Slim site search under the buttons */
+.search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 520px;
+  height: 52px;
+  margin-top: 22px;
+  padding: 0 5px 0 14px;
+  background: #ffffff;
+  border: 1.5px solid var(--btn-line);
+  border-radius: 12px;
+}
+
+.search:focus-within {
+  border-color: var(--ink);
+  outline: 3px solid var(--teal);
+  outline-offset: 2px;
+}
+
+.search input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  font: 500 16px var(--font-figtree), sans-serif;
+}
+
+.search input::placeholder {
+  color: var(--muted);
+}
+
+.search input:focus-visible {
+  outline: none;
+}
+
+.search button {
+  height: 40px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: 9px;
+  background: var(--ink);
+  color: #ffffff;
+  font: 700 15px var(--font-figtree), sans-serif;
+  cursor: pointer;
+}
+
+.search button:hover {
+  background: var(--ink-2);
+}
+
+/* ================= Admission Pass (college finder) ================= */
+.passWrap {
+  position: relative;
+}
+
+.plane {
+  position: absolute;
+  z-index: 2;
+  right: -18px;
+  top: -40px;
+  width: 96px;
+  height: 64px;
+  overflow: visible;
+  pointer-events: none;
+}
+
+/* Ticket: two round notches cut into the sides at the perforation (--notch is set by the component) */
+.pass {
+  position: relative;
+  border-radius: 16px;
+  background: #ffffff;
+  border: 1px solid var(--line);
+  box-shadow: var(--soft-shadow);
+  -webkit-mask:
+    radial-gradient(circle 14px at 0 var(--notch, 270px), #0000 98%, #000) left / 51% 100% no-repeat,
+    radial-gradient(circle 14px at 100% var(--notch, 270px), #0000 98%, #000) right / 51% 100% no-repeat;
+  mask:
+    radial-gradient(circle 14px at 0 var(--notch, 270px), #0000 98%, #000) left / 51% 100% no-repeat,
+    radial-gradient(circle 14px at 100% var(--notch, 270px), #0000 98%, #000) right / 51% 100% no-repeat;
+}
+
+.passTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 22px;
+  border-radius: 16px 16px 0 0;
+  background: var(--ink);
+  color: #ffffff;
+  font-family: var(--disp);
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+
+.passTop .sampleMark {
+  color: var(--tint-peach-strong);
+}
+
+.passBody {
+  padding: 18px 22px 20px;
+}
+
+.passTitle {
+  margin: 0 0 10px;
+  font-family: var(--disp);
+  font-size: 30px;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+}
+
+/* Round "ADMIT" stamp */
+.stamp {
+  position: absolute;
+  z-index: 2;
+  right: 22px;
+  top: 60px;
+  display: grid;
+  place-items: center;
+  width: 70px;
+  height: 70px;
+  border: 3px solid var(--coral);
+  border-radius: 50%;
+  background: rgb(255 255 255 / 0.6);
+  color: var(--coral-text);
+  font: 800 13px/1 var(--disp);
+  letter-spacing: 0.08em;
+  text-align: center;
+  rotate: -14deg;
+  pointer-events: none;
+}
+
+.stamp::before {
+  content: "";
+  position: absolute;
+  inset: 5px;
+  border: 1.5px dashed var(--coral);
+  border-radius: 50%;
+}
+
+.stamp small {
+  display: block;
+  margin-top: 3px;
+  font: 700 8px var(--font-figtree), sans-serif;
+  letter-spacing: 0.06em;
+}
+
+.fields {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.field label {
+  display: block;
+  margin: 0 0 5px 2px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.field select {
+  width: 100%;
+  min-height: 46px;
+  padding: 0 34px 0 12px;
+  border: 1.5px solid #d9e1ea;
+  border-radius: 12px;
+  background: #ffffff
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%230f2e33' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")
+    no-repeat right 12px center;
+  color: var(--ink);
+  font: 600 16px var(--font-figtree), sans-serif;
+  appearance: none;
+  cursor: pointer;
+}
+
+.field select:hover {
+  border-color: var(--ink);
+}
+
+.findBtn {
+  width: 100%;
+  margin-top: 12px;
+}
+
+/* Dashed tear line across the ticket, where the notches are */
+.perf {
+  margin: 18px -22px 0;
+  border-top: 2px dashed #d5dde6;
+}
+
+.results {
+  margin: 6px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.result {
+  display: grid;
+  grid-template-columns: 46px minmax(0, 1fr) auto;
+  gap: 14px;
+  align-items: center;
+  padding: 12px 2px;
+}
+
+.result + .result {
+  border-top: 1px solid #eef2f6;
+}
+
+.ini {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  border-radius: 12px;
+  color: var(--teal-dark);
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.result b {
+  display: block;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.result small {
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.fee {
+  font-size: 15px;
+  font-weight: 800;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.fee em {
+  display: block;
+  color: var(--coral-text);
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 700;
+}
+
+.passFoot {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.passFoot .sample {
+  margin: 0;
+}
+
+.barcode {
+  position: relative;
+  flex-shrink: 0;
+  overflow: hidden;
+  padding: 4px 0;
+}
+
+.barcode svg {
+  display: block;
+  width: 140px;
+  height: 34px;
+}
+
+/* ================= Campus scene + ticker ================= */
+.sceneWrap {
+  background: linear-gradient(var(--paper), var(--tint-peach));
+  border-bottom: 1px solid var(--line);
+}
+
+.scene {
+  display: block;
+  width: 100%;
+  height: clamp(200px, 24vw, 320px);
+  margin-top: 8px;
+}
+
+.ticker {
+  position: relative;
+  overflow: hidden;
+  white-space: nowrap;
+  background: var(--ink);
+  color: #ffffff;
+  border-block: 1px solid var(--ink-2);
+}
+
+.track {
+  display: inline-flex;
+  gap: 34px;
+  padding: 16px 0;
+  font: 800 26px/1.2 var(--disp);
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.track i {
+  color: #fb923c;
+  font-style: normal;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .track {
+    animation: tick 38s linear infinite;
+  }
+
+  /* Also stops while the pointer or keyboard focus is on it */
+  .ticker:hover .track,
+  .ticker:focus-within .track,
+  .paused .track {
+    animation-play-state: paused;
+  }
+}
+
+@keyframes tick {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.pauseBtn {
+  position: absolute;
+  z-index: 1;
+  right: max(5vw, 16px);
+  top: 50%;
+  translate: 0 -50%;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 40px;
+  padding: 0 14px;
+  border: 1px solid rgb(255 255 255 / 0.35);
+  border-radius: 999px;
+  background: var(--ink);
+  color: #ffffff;
+  font: 700 14px var(--font-figtree), sans-serif;
+  cursor: pointer;
+  box-shadow: -24px 0 24px 8px var(--ink);
+}
+
+.pauseBtn:hover {
+  border-color: #ffffff;
+}
+
+/* Pressed (paused): filled, so the state is visible as well as announced */
+.pauseBtn[aria-pressed="true"] {
+  background: #ffffff;
+  color: var(--ink);
+  border-color: #ffffff;
+}
+
+.ticker .pauseBtn:focus-visible {
+  outline-color: #fdba74;
+}
+
+/* Reduced motion: the words don't move, so no button */
+@media (prefers-reduced-motion: reduce) {
+  .pauseBtn {
+    display: none;
+  }
+}
+
+/* ================= Ad slots ================= */
+.adRow {
+  margin-top: 40px;
+}
+
+/* ================= Journey cards ================= */
+.paths {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+  margin-top: 28px;
+}
+
+.path {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 22px;
+  color: var(--ink);
+  text-decoration: none;
+  transition:
+    translate 200ms ease,
+    box-shadow 200ms ease;
+}
+
+a.path:hover {
+  translate: 0 -6px;
+  box-shadow: 0 26px 50px -26px rgb(15 46 51 / 0.45);
+}
+
+.path p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.go {
+  margin-top: auto;
+  color: var(--teal);
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.ico {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  transition: rotate 300ms ease, scale 300ms ease;
+}
+
+a.path:hover .ico {
+  rotate: -10deg;
+  scale: 1.12;
+}
+
+/* ================= Course chips ================= */
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 22px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 18px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: #ffffff;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+/* ================= College cards (sample) ================= */
+.cgrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+  margin-top: 24px;
+}
+
+.college {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.collegeTop {
+  position: relative;
+  height: 150px;
+  overflow: hidden;
+}
+
+.collegeTop svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.collegeIni {
+  position: absolute;
+  z-index: 1;
+  left: 18px;
+  bottom: 10px;
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  background: #ffffff;
+  color: var(--teal-dark);
+  font-size: 17px;
+  font-weight: 800;
+  box-shadow: 0 6px 16px -8px rgb(15 46 51 / 0.4);
+}
+
+.collegeTop .tag {
+  position: absolute;
+  z-index: 1;
+  right: 12px;
+  top: 12px;
+}
+
+.collegeBody {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 8px;
+  padding: 18px;
+}
+
+.meta {
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tags li {
+  padding: 4px 10px;
+  border-radius: 8px;
+  background: #f1f5f9;
+  color: #2b3a4d;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.facts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin: 4px 0 0;
+}
+
+/* Label first in the markup (dt, dd), value on top visually, as in the design */
+.facts div {
+  display: flex;
+  flex-direction: column-reverse;
+  justify-content: flex-end;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: #f6f8fb;
+}
+
+.facts dt {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.facts dd {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 800;
+}
+
+/* ================= Entrance exams band ================= */
+.band {
+  position: relative;
+  overflow: hidden;
+  margin-top: 80px;
+  background: var(--ink);
+  color: #ffffff;
+}
+
+/* Dotted texture */
+.band::before {
+  content: "";
+  position: absolute;
+  inset: -40px;
+  background-image: radial-gradient(rgb(251 146 60 / 0.18) 1.5px, transparent 1.5px);
+  background-size: 26px 26px;
+}
+
+.bandInner {
+  position: relative;
+  padding-block: 60px;
+}
+
+.band .ser {
+  color: var(--tint-peach-strong);
+}
+
+.band .lead {
+  color: var(--tint-teal);
+}
+
+.exams {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 26px;
+}
+
+.exam {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 20px;
+  border: 1px solid rgb(255 255 255 / 0.2);
+  border-radius: 14px;
+  background: rgb(255 255 255 / 0.08);
+  color: #ffffff;
+  text-decoration: none;
+  transition:
+    translate 250ms ease,
+    border-color 250ms ease,
+    background-color 250ms ease;
+}
+
+/* Not built yet: no hover lift, a little dimmer */
+.examSoon {
+  background: rgb(255 255 255 / 0.04);
+  border-style: dashed;
+}
+
+a.exam:hover {
+  translate: 0 -6px;
+  border-color: #fb923c;
+  background: rgb(251 146 60 / 0.1);
+}
+
+.exam .h3 {
+  font-family: var(--disp);
+  font-size: 34px;
+  line-height: 1;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+}
+
+.exam p {
+  margin: 0;
+  color: var(--tint-teal);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.examSubjects {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 6px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.examSubjects li {
+  padding: 3px 9px;
+  border-radius: 8px;
+  background: rgb(255 255 255 / 0.14);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.examGo {
+  margin-top: 8px;
+  color: var(--tint-peach-strong);
+  font-weight: 700;
+}
+
+/* ================= Recently added ================= */
+.recentGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 300px;
+  gap: 32px;
+  align-items: start;
+}
+
+.recentHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px 16px;
+}
+
+.viewAll {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--teal-dark);
+  font-size: 15px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.viewAll:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.recentList {
+  margin: 20px 0 0;
+  padding: 0;
+  list-style: none;
+  overflow: hidden;
+}
+
+.recentList li + li {
+  border-top: 1px solid var(--line);
+}
+
+.recentRow {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-height: 64px;
+  padding: 12px 20px;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.recentRow:hover {
+  background: #f6f8fb;
+}
+
+.recentRow b {
+  display: block;
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.recentRow small {
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.arrow {
+  margin-left: auto;
+  flex-shrink: 0;
+  color: var(--muted);
+  transition: translate 160ms ease;
+}
+
+.recentRow:hover .arrow {
+  translate: 3px 0;
+}
+
+/* ================= Career test ================= */
+.career {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+  gap: 32px;
+  align-items: center;
+  margin-top: 80px;
+  padding: 32px;
+  background: linear-gradient(135deg, #f3fbf8, var(--tint-teal));
+}
+
+.career .h2 {
+  font-size: clamp(38px, 4.6vw, 58px);
+}
+
+.careerSoon {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-top: 20px;
+  color: var(--muted);
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.types {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.types li {
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: #ffffff;
+  font-family: var(--disp);
+  font-size: 24px;
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: 0.02em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.types small {
+  display: block;
+  margin-top: 2px;
+  color: var(--muted);
+  font-family: var(--font-figtree), sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+/* ================= Guides ================= */
+.guides {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+  margin-top: 24px;
+}
+
+.guide {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.thumb {
+  display: block;
+  width: 100%;
+  height: 130px;
+}
+
+.guideBody {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px 20px 20px;
+}
+
+.kind {
+  align-self: flex-start;
+  padding: 4px 10px;
+  border-radius: 8px;
+  color: #2b3a4d;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.guideBody p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 15px;
+}
+
+.guideBody .tag {
+  align-self: flex-start;
+  margin-top: auto;
+}
+
+/* ================= Join banner ================= */
+.join {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px 24px;
+  margin-block: 80px;
+  padding: 36px;
+  background: linear-gradient(135deg, var(--tint-peach), #fff);
+}
+
+.join .h2 {
+  max-width: 18ch;
+  font-size: clamp(34px, 4vw, 52px);
+}
+
+/* ================= Responsive (the design's breakpoints) ================= */
+@media (max-width: 1000px) {
+  .exams {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 860px) {
+  .hero,
+  .career,
+  .recentGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .paths,
+  .cgrid,
+  .guides {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 600px) {
+  .section,
+  .band,
+  .career {
+    margin-top: 56px;
+  }
+
+  .join {
+    margin-block: 56px;
+    padding: 28px 22px;
+  }
+
+  .hero {
+    padding-block: 36px 44px;
+  }
+
+  .fields,
+  .paths,
+  .cgrid,
+  .guides,
+  .exams {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .types {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .career {
+    padding: 24px 20px;
+  }
+
+  .plane {
+    right: -4px;
+    top: -46px;
+    width: 76px;
+  }
+
+  /* Phones: plain rounded ticket (no notches), smaller header */
+  .pass {
+    -webkit-mask: none;
+    mask: none;
+  }
+
+  .passTop {
+    font-size: 15px;
+  }
+
+  .stamp {
+    top: 52px;
+    right: 14px;
+  }
+
+  .ticker .track {
+    font-size: 22px;
+  }
+
+  .pauseBtn {
+    min-height: 36px;
+    padding: 0 12px;
+    font-size: 13px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .landing *,
+  .landing *::before,
+  .landing *::after {
+    transition: none !important;
+  }
+}

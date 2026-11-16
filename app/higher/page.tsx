@@ -2,7 +2,7 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import HigherTabs from "@/components/HigherTabs";
 import { HigherArt } from "@/components/Illustrations";
-import AdSlot from "@/components/home/AdSlot";
+import AdSlot from "@/components/AdSlot";
 import s from "@/components/school/school.module.css";
 import ComingSoon from "@/components/ComingSoon";
 export const dynamic = "force-dynamic";
