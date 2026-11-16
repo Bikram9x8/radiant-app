@@ -1,447 +1,260 @@
 "use client";
-import { useEffect, useState, useMemo, Suspense } from "react";import { useSearchParams } from "next/navigation";
+import { useEffect, useState, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { IconFileText, IconTool, IconTargetArrow, IconPackage, IconClipboardList, IconSchool, IconBook, IconBook2, IconLock, IconCertificate } from "@tabler/icons-react";
-import FadeIn from "@/components/FadeIn";
+import { IconSearch } from "@tabler/icons-react";
 import { Skeleton } from "@/components/Skeleton";
-import { getShortLabel } from "@/lib/categoryLabel";
+import PostCard, { type PostCardData } from "@/components/tests/PostCard";
+import { fredoka, nunito } from "@/components/home/fonts";
+import s from "@/components/school/school.module.css";
+import { SCHOOL_TEST_DIVISION, TEST_CLASSES, TEST_TYPE_FILTERS, parseClassSubject } from "@/lib/test-posts";
+import { SHOW_SCHOOL } from "@/lib/features";
 
-const DIVISION_ICONS: Record<string, { Icon: any; gradient: string; glow: string }> = {
-  NCERT_SOLUTION: { Icon: IconBook2, gradient: "from-indigo-400 to-purple-400", glow: "shadow-[0_0_12px_rgba(129,140,248,0.5)]" },
-  CBSE_SAMPLE_PAPERS: { Icon: IconCertificate, gradient: "from-orange-400 to-red-400", glow: "shadow-[0_0_12px_rgba(251,146,60,0.5)]" },
-  TEST_SERIES: { Icon: IconFileText, gradient: "from-emerald-400 to-cyan-400", glow: "shadow-[0_0_12px_rgba(52,211,153,0.5)]" },
-  SKILL_BUILDING: { Icon: IconTool, gradient: "from-pink-400 to-purple-400", glow: "shadow-[0_0_12px_rgba(244,114,182,0.5)]" },
-  CAREER_COUNSELING: { Icon: IconTargetArrow, gradient: "from-cyan-400 to-blue-400", glow: "shadow-[0_0_12px_rgba(34,211,238,0.5)]" },
-  STUDY_PACKAGE: { Icon: IconPackage, gradient: "from-lime-400 to-emerald-400", glow: "shadow-[0_0_12px_rgba(163,230,53,0.5)]" },
-  DPP: { Icon: IconClipboardList, gradient: "from-amber-400 to-pink-400", glow: "shadow-[0_0_12px_rgba(251,191,36,0.5)]" },
-  BOARD_LEVEL_TEST: { Icon: IconSchool, gradient: "from-emerald-400 to-purple-400", glow: "shadow-[0_0_12px_rgba(52,211,153,0.5)]" },
-  CHAPTER_WISE_TEST: { Icon: IconBook, gradient: "from-purple-400 to-pink-400", glow: "shadow-[0_0_12px_rgba(192,132,252,0.5)]" },
-};
+// Type chips: board-level tests belong to School Education, so their chip is hidden while it's off
+// (an old ?division=BOARD_LEVEL_TEST link then gets the friendly note, like other non-test divisions)
+const VISIBLE_TYPE_FILTERS = SHOW_SCHOOL
+  ? TEST_TYPE_FILTERS
+  : TEST_TYPE_FILTERS.filter((f) => f.division !== SCHOOL_TEST_DIVISION);
 
-const TYPES = ["JOB", "INTERNSHIP", "COMPETITION", "QUIZ", "SOLUTION", "HACKATHON", "EVENT"];
+// Class chips: with School Education switched off the tests are entrance prep (Class 11 and 12 only)
+const VISIBLE_CLASSES = SHOW_SCHOOL ? TEST_CLASSES : TEST_CLASSES.filter((c) => c === "11" || c === "12");
 
-const TYPE_LABELS: Record<string, string> = {
-  QUIZ: "Quiz / Test",
-  SOLUTION: "Solution",
-  INTERNSHIP: "Internship",
-  JOB: "Job",
-  COMPETITION: "Competition",
-  HACKATHON: "Hackathon",
-  EVENT: "Event",
-};
+// Tests page: only tests (type QUIZ, or a chapter / board-level / DPP division; see lib/test-posts.ts).
+// All filtering happens on the server: GET /api/opportunities?tests=1&...
 
-function OpportunitiesContent() {
+const chip = `${s.flat} inline-flex min-h-11 items-center rounded-full px-4 text-sm font-extrabold no-underline`;
+const chipOn = "border-[3px] border-(--hp-ink) bg-(--hp-ink) text-white";
+const chipOff = "border-2 border-(--hp-ink) bg-white text-(--hp-ink) hover:bg-(--hp-butter)";
+const rowLabel = "m-0 mr-1 text-sm font-extrabold text-(--hp-muted)";
+
+function TestsContent() {
   const searchParams = useSearchParams();
   const division = searchParams.get("division") || "";
+  // Old links like ?division=NCERT_SOLUTION point at things that aren't tests any more
+  const isVisibleTestDivision = VISIBLE_TYPE_FILTERS.some((f) => f.division === division);
+  const nonTestDivision = division !== "" && !isVisibleTestDivision;
+  const activeDivision = isVisibleTestDivision ? division : "";
 
-  const [opportunities, setOpportunities] = useState<any[]>([]);
-  const [categories, setCategories] = useState<any[]>([]);
+  const [search, setSearch] = useState(searchParams.get("q") || "");
+  const [query, setQuery] = useState(search); // search text actually sent (debounced)
+  const [classNo, setClassNo] = useState("");
+  const [categoryId, setCategoryId] = useState(""); // subject
+  const [tests, setTests] = useState<PostCardData[]>([]);
+  const [subjects, setSubjects] = useState<{ id: string; name: string }[]>([]);
   const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState("");
-  const [type, setType] = useState("");
-  const [categoryId, setCategoryId] = useState("");
-  const [selectedClass, setSelectedClass] = useState("");
-  const [selectedChapter, setSelectedChapter] = useState("");
+  const [now, setNow] = useState(0); // time of the last load, for "Open till" / "Ended"
 
-  const { classGroups, otherCategories } = useMemo(() => {
-    const groups: Record<string, { id: string; name: string; subject: string }[]> = {};
-    const others: any[] = [];
-    categories.forEach((c) => {
-      const m = c.name.match(/^Class\s*(\d{1,2})\s*-\s*(.+)$/i);
-      if (m) {
-        const label = `Class ${m[1]}`;
-        const subject = m[2].trim();
-        if (!groups[label]) groups[label] = [];
-        groups[label].push({ id: c.id, name: c.name, subject });
-      } else {
-        others.push(c);
-      }
-    });
-    return { classGroups: groups, otherCategories: others };
-  }, [categories]);
-
-  const classList = Object.keys(classGroups).sort(
-    (a, b) => parseInt(a.replace("Class ", "")) - parseInt(b.replace("Class ", ""))
-  );
-  
-  const chapterList = useMemo(() => {
-    const set = new Set<number>();
-    opportunities.forEach((op) => {
-      if (op.chapter) set.add(op.chapter);
-    });
-    return Array.from(set).sort((a, b) => a - b);
-  }, [opportunities]);
-
-  const displayedOpportunities = selectedChapter
-    ? opportunities.filter((op) => op.chapter === parseInt(selectedChapter, 10))
-    : opportunities;
-
-  const selectedSubjectName = classGroups[selectedClass]?.find((c) => c.id === categoryId)?.subject || "";
-
-  function resetToAllClasses() {
-    setSelectedClass("");
-    setCategoryId("");
-    setSelectedChapter("");
-  }
-
-  function selectClass(label: string) {
-    setSelectedClass(label);
-    setCategoryId("");
-    setSelectedChapter("");
-  }
-
-  function selectSubject(id: string) {
-    setCategoryId(id);
-    setSelectedChapter("");
-  }
+  // Wait until typing pauses before searching
+  useEffect(() => {
+    const t = setTimeout(() => setQuery(search.trim()), 300);
+    return () => clearTimeout(t);
+  }, [search]);
 
   useEffect(() => {
-    resetToAllClasses();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [division]);
-
-  useEffect(() => {
+    let cancelled = false;
     async function load() {
       setLoading(true);
-      const params = new URLSearchParams();
-      if (search) params.set("search", search);
-      if (type) params.set("type", type);
+      const params = new URLSearchParams({ tests: "1" });
+      if (query) params.set("search", query);
+      if (activeDivision) params.set("division", activeDivision);
+      if (classNo) params.set("classNo", classNo);
       if (categoryId) params.set("categoryId", categoryId);
-      if (division) params.set("division", division);
-
       const res = await fetch(`/api/opportunities?${params.toString()}`);
       const data = await res.json();
-      setOpportunities(data.opportunities || []);
-      setCategories(data.categories || []);
+      if (cancelled) return;
+      setNow(Date.now());
+      setTests(data.opportunities || []);
+      setSubjects(data.subjects || []);
       setLoading(false);
     }
     load();
-  }, [search, type, categoryId, division]);
+    return () => {
+      cancelled = true;
+    };
+  }, [query, activeDivision, classNo, categoryId]);
+
+  function pickClass(c: string) {
+    setClassNo(c);
+    setCategoryId("");
+  }
 
   return (
-    <div className="max-w-4xl mx-auto mt-12 px-6 mb-12">
-      <p className="text-sm text-zinc-500 dark:text-zinc-400 mb-3">
-        <Link href="/" className="hover:text-purple-600 dark:hover:text-purple-400 hover:underline">Home</Link>
-        {division && (
-          <>
-            {" / "}
-            <span className="text-zinc-700 dark:text-zinc-300">
-              {division === "NCERT_SOLUTION"
-                ? "NCERT Solutions"
-                : division === "CBSE_SAMPLE_PAPERS"
-                ? "CBSE Sample Papers"
-                : division === "DPP"
-                ? "Daily Practice Problems"
-                : division === "BOARD_LEVEL_TEST"
-                ? "Board Level Tests"
-                : division === "CHAPTER_WISE_TEST"
-                ? "Chapter Wise Tests"
-                : division === "STUDY_PACKAGE"
-                ? "Study Packages"
-                : division === "SKILL_BUILDING"
-                ? "Skill Building"
-                : division === "CAREER_COUNSELING"
-                ? "Career Counseling"
-                : division.replace(/_/g, " ")}
-            </span>
-          </>
-        )}
-        {!division && (
-          <>
-            {" / "}
-            <span className="text-zinc-700 dark:text-zinc-300">Opportunities</span>
-          </>
-        )}
-      </p>
-      <h1 className="text-4xl font-bold tracking-tight mb-8 text-zinc-900 dark:text-white">
-        {division === "NCERT_SOLUTION"
-          ? "NCERT Solutions"
-          : division === "CBSE_SAMPLE_PAPERS"
-          ? "CBSE Sample Papers"
-          : division === "DPP"
-          ? "Daily Practice Problems"
-          : division === "BOARD_LEVEL_TEST"
-          ? "Board Level Tests"
-          : division === "CHAPTER_WISE_TEST"
-          ? "Chapter Wise Tests"
-          : division === "STUDY_PACKAGE"
-          ? "Study Packages"
-          : division === "SKILL_BUILDING"
-          ? "Skill Building"
-          : division === "CAREER_COUNSELING"
-          ? "Career Counseling"
-          : division
-          ? division.replace(/_/g, " ")
-          : "Opportunities"}
-      </h1>
+    <div className="mx-auto w-full max-w-[1100px] px-4 pt-6 pb-14 sm:px-8 md:pt-8">
+      <nav
+        aria-label="Breadcrumb"
+        className={`${s.crumbs} flex flex-wrap items-center gap-x-2 text-[15px] font-bold text-(--hp-muted)`}
+      >
+        <Link href="/" className="inline-flex min-h-11 items-center">Home</Link>
+        <span aria-hidden="true">/</span>
+        <span aria-current="page" className="text-(--hp-ink)">Tests</span>
+      </nav>
 
-      <p className="text-[11px] font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400 mb-1.5">
-        1. Division
-      </p>
-      <div className="flex flex-wrap gap-2 mb-6">
-        {Object.entries(DIVISION_ICONS).map(([key, meta]) => {
-          const isActive = division === key || (!division && key === "TEST_SERIES");
-          const href = key === "TEST_SERIES" ? "/opportunities" : `/opportunities?division=${key}`;
-          return (
-            <Link
-              key={key}
-              href={href}
-              className={`flex items-center gap-1.5 text-xs font-semibold px-3 py-2 rounded-full transition-colors ${
-                isActive
-                  ? "bg-gradient-to-br " + meta.gradient + " text-white " + meta.glow
-                  : "glass text-zinc-700 dark:text-zinc-300"
-              }`}
-            >
-              <meta.Icon size={14} stroke={2.5} />
-              {key.replace(/_/g, " ")}
-            </Link>
-          );
-        })}
+      {/* Header card with the search box */}
+      <div className="mt-2 rounded-[28px] border-[3px] border-(--hp-ink) bg-(--hp-lavender) p-5 shadow-[6px_6px_0_var(--hp-ink)] sm:p-8 md:rounded-[36px]">
+        <h1 className={`${s.display} m-0 text-[38px] leading-[1.1] font-bold sm:text-[46px] md:text-[54px]`}>Tests</h1>
+        <p className="mt-2 max-w-[56ch] text-[17px] leading-[1.55] font-semibold">
+          {SHOW_SCHOOL
+            ? "Practise with test series, chapter tests, board-level tests and DPPs for your class."
+            : "Entrance exam prep for JEE and NEET: test series, chapter tests and DPPs."}
+        </p>
+        <form
+          role="search"
+          onSubmit={(e) => {
+            e.preventDefault();
+            setQuery(search.trim());
+          }}
+          className={`${s.search} mt-5 flex h-14 w-full max-w-[640px] items-center gap-2 rounded-full border-[3px] border-(--hp-ink) bg-white pr-1.5 pl-4 sm:h-16`}
+        >
+          <label htmlFor="tests-search" className="sr-only">Search tests</label>
+          <IconSearch aria-hidden="true" size={22} className="shrink-0 text-(--hp-muted)" />
+          <input
+            id="tests-search"
+            type="search"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search tests, e.g. Integrals"
+            className="min-w-0 flex-1 bg-transparent py-2 text-[17px] font-semibold text-(--hp-ink) outline-none placeholder:text-(--hp-muted)"
+          />
+          <button
+            type="submit"
+            className={`${s.flat} h-11 shrink-0 rounded-full bg-(--hp-ink) px-5 font-extrabold text-white sm:h-12`}
+          >
+            Search
+          </button>
+        </form>
       </div>
 
-      {classList.length > 0 && (
-        <>
-          <div className="flex items-center gap-2 mb-1.5">
-            <p className="text-[11px] font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
-              2. Class
-            </p>
-            {(selectedClass || categoryId || selectedChapter) && (
-              <button
-                onClick={resetToAllClasses}
-                className="text-[11px] font-semibold text-purple-600 dark:text-purple-400 hover:underline"
-              >
-                Reset
-              </button>
-            )}
-          </div>
-
-          {(selectedClass || categoryId || selectedChapter) && (
-            <div className="flex items-center flex-wrap gap-1.5 text-xs text-zinc-600 dark:text-zinc-400 mb-3">
-              <button
-                onClick={resetToAllClasses}
-                className="hover:text-purple-600 dark:hover:text-purple-400 hover:underline font-medium"
-              >
-                All classes
-              </button>
-              {selectedClass && (
-                <>
-                  <span>›</span>
-                  <button
-                    onClick={() => selectClass(selectedClass)}
-                    className={`hover:text-purple-600 dark:hover:text-purple-400 hover:underline font-medium ${
-                      !categoryId ? "text-purple-600 dark:text-purple-400" : ""
-                    }`}
-                  >
-                    {selectedClass}
-                  </button>
-                </>
-              )}
-              {selectedSubjectName && (
-                <>
-                  <span>›</span>
-                  <button
-                    onClick={() => setSelectedChapter("")}
-                    className={`hover:text-purple-600 dark:hover:text-purple-400 hover:underline font-medium ${
-                      !selectedChapter ? "text-purple-600 dark:text-purple-400" : ""
-                    }`}
-                  >
-                    {selectedSubjectName}
-                  </button>
-                </>
-              )}
-              {selectedChapter && (
-                <>
-                  <span>›</span>
-                  <span className="text-purple-600 dark:text-purple-400 font-medium">Chapter {selectedChapter}</span>
-                </>
-              )}
-            </div>
+      {nonTestDivision && (
+        <div role="note" className="mt-6 rounded-[20px] border-2 border-(--hp-ink) bg-(--hp-butter) p-4 text-[15px] font-semibold sm:p-5">
+          {SHOW_SCHOOL ? (
+            <>
+              This page now shows tests only. Notes, NCERT solutions and sample papers are in{" "}
+              <Link href="/school" className="font-extrabold text-(--hp-link) underline underline-offset-4">
+                School Education
+              </Link>
+              , chapter by chapter. Here are all the tests:
+            </>
+          ) : (
+            <>
+              This page shows entrance exam tests only. For colleges, courses and scholarships, see{" "}
+              <Link href="/higher" className="font-extrabold text-(--hp-link) underline underline-offset-4">
+                Higher Education
+              </Link>
+              . Here are all the tests:
+            </>
           )}
-
-          <div className="flex flex-wrap gap-2 mb-6">
-            <button
-              onClick={resetToAllClasses}
-              className={`text-xs font-semibold px-3 py-1.5 rounded-full transition-colors ${
-                !selectedClass ? "btn-neon" : "glass text-zinc-700 dark:text-zinc-300"
-              }`}
-            >
-              All classes
-            </button>
-            {classList.map((label) => (
-              <button
-                key={label}
-                onClick={() => selectClass(label)}
-                className={`text-xs font-semibold px-3 py-1.5 rounded-full transition-colors ${
-                  selectedClass === label ? "btn-neon" : "glass text-zinc-700 dark:text-zinc-300"
-                }`}
-              >
-                {label}
-              </button>
-            ))}
-          </div>
-        </>
-      )}
-
-      {selectedClass && classGroups[selectedClass] && (
-        <>
-          <p className="text-[11px] font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400 mb-1.5">
-            3. Subject
-          </p>
-          <div className="flex flex-wrap gap-2 mb-6">
-            {classGroups[selectedClass].map((c) => (
-              <button
-                key={c.id}
-                onClick={() => selectSubject(c.id)}
-                className={`text-xs font-medium px-3 py-1.5 rounded-full transition-colors ${
-                  categoryId === c.id
-                    ? "bg-purple-600 text-white"
-                    : "glass text-zinc-600 dark:text-zinc-400"
-                }`}
-              >
-                {c.subject}
-              </button>
-            ))}
-          </div>
-        </>
-      )}
-
-      {categoryId && chapterList.length > 0 && (
-        <>
-          <p className="text-[11px] font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400 mb-1.5">
-            4. Chapter
-          </p>
-          <div className="flex flex-wrap gap-2 mb-6">
-            <button
-              onClick={() => setSelectedChapter("")}
-              className={`text-xs font-medium px-3 py-1.5 rounded-full transition-colors ${
-                !selectedChapter ? "bg-purple-600 text-white" : "glass text-zinc-600 dark:text-zinc-400"
-              }`}
-            >
-              All chapters
-            </button>
-            {chapterList.map((ch) => (
-              <button
-                key={ch}
-                onClick={() => setSelectedChapter(String(ch))}
-                className={`text-xs font-medium px-3 py-1.5 rounded-full transition-colors ${
-                  selectedChapter === String(ch) ? "bg-purple-600 text-white" : "glass text-zinc-600 dark:text-zinc-400"
-                }`}
-              >
-                Chapter {ch}
-              </button>
-            ))}
-          </div>
-        </>
-      )}
-
-      <div className="glass rounded-3xl p-5 flex flex-col sm:flex-row flex-wrap gap-3 mb-10">
-        <input
-          type="text"
-          placeholder="Search by title..."
-          className="bg-white/70 dark:bg-zinc-900/70 rounded-2xl px-4 py-2.5 flex-1 min-w-0 outline-none text-zinc-900 dark:text-white placeholder:text-zinc-500"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
-        <select
-          className="bg-white/70 dark:bg-zinc-900/70 rounded-2xl px-4 py-2.5 outline-none text-zinc-900 dark:text-white min-w-0 max-w-full sm:max-w-[160px]"
-          value={type}
-          onChange={(e) => setType(e.target.value)}
-        >
-          <option value="">All types</option>
-          {TYPES.map((t) => (
-            <option key={t} value={t}>{TYPE_LABELS[t] || t}</option>
-          ))}
-        </select>
-        <select
-          className="bg-white/70 dark:bg-zinc-900/70 rounded-2xl px-4 py-2.5 outline-none text-zinc-900 dark:text-white min-w-0 max-w-full sm:max-w-[180px]"
-          value={categoryId}
-          onChange={(e) => setCategoryId(e.target.value)}
-        >
-          <option value="">All categories</option>
-          {categories.map((c) => (
-            <option key={c.id} value={c.id}>{c.name}</option>
-          ))}
-        </select>
-      </div>
-
-      {loading && (
-        <div className="flex flex-col gap-8">
-          {[1, 2, 3].map((i) => (
-            <div key={i} className="glass rounded-3xl p-6 flex items-start gap-3">
-              <Skeleton className="w-11 h-11 shrink-0" />
-              <div className="flex-1 flex flex-col gap-2">
-                <Skeleton className="h-5 w-2/3" />
-                <Skeleton className="h-3 w-1/3" />
-                <Skeleton className="h-3 w-1/4 mt-2" />
-              </div>
-            </div>
-          ))}
         </div>
       )}
 
-      {!loading && opportunities.length === 0 && (
-        <p className="text-zinc-600 dark:text-zinc-400">No opportunities found yet. Check back soon!</p>
-      )}
-
-      <div className="flex flex-col gap-8">
-        {displayedOpportunities.map((op, i) => {
-          const divisionStyle = DIVISION_ICONS[op.division] || DIVISION_ICONS.TEST_SERIES;
-          const DivIcon = divisionStyle.Icon;
-          return (
-            <FadeIn key={op.id} delay={i * 60}>
-              <Link href={`/opportunities/${op.id}`} className="glass glass-card rounded-3xl p-6 block">
-                <div className="flex justify-between items-start gap-3">
-                  <div className="flex items-start gap-3">
-                    <div className={`relative w-11 h-11 shrink-0 rounded-xl bg-gradient-to-br ${divisionStyle.gradient} ${divisionStyle.glow} flex items-center justify-center`}>
-                      <DivIcon size={20} color="white" stroke={2} />
-                      {getShortLabel(op.category?.name) && (
-                        <span className="absolute -bottom-1 -right-1 text-[9px] font-bold bg-white dark:bg-zinc-900 text-zinc-900 dark:text-white rounded-full px-1 min-w-[16px] text-center border border-zinc-200 dark:border-zinc-700 leading-[14px]">
-                          {getShortLabel(op.category?.name)}
-                        </span>
-                      )}
-                    </div>
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <h2 className="font-semibold text-lg text-zinc-900 dark:text-white">{op.title}</h2>
-                        {op.requiresCode && (
-                          <span className="flex items-center gap-1 text-[10px] font-semibold bg-zinc-200/70 dark:bg-zinc-700/50 text-zinc-700 dark:text-zinc-300 rounded-full px-2 py-0.5">
-                            <IconLock size={10} stroke={2.5} />
-                            Code required
-                          </span>
-                        )}
-                      </div>
-                                            <p className="text-sm text-zinc-600 dark:text-zinc-400">
-                        {op.company?.companyName} â€¢ {op.category?.name}
-                        {op.chapter ? ` â€¢ Chapter ${op.chapter}` : ""}
-                      </p>
-                    </div>
-                  </div>
-                  <span
-                    className={`text-xs font-medium rounded-full px-3 py-1 shrink-0 ${
-                      op.type === "SOLUTION"
-                        ? "bg-indigo-100/70 dark:bg-indigo-900/40 text-indigo-800 dark:text-indigo-300"
-                        : "bg-purple-100/70 dark:bg-purple-900/40 text-purple-800 dark:text-purple-300"
-                    }`}
-                  >
-                    {TYPE_LABELS[op.type] || op.type}
-                  </span>
-                </div>
-                <p className="text-sm text-zinc-600 dark:text-zinc-400 mt-2">
-                  Apply by {new Date(op.applyDeadline).toLocaleDateString()}
-                </p>
+      {/* Filters */}
+      <div className="mt-7 flex flex-col gap-3">
+        <div className="flex flex-wrap items-center gap-2">
+          <p className={rowLabel}>Type</p>
+          <Link href="/opportunities" aria-current={!activeDivision ? "page" : undefined} className={`${chip} ${!activeDivision ? chipOn : chipOff}`}>
+            All tests
+          </Link>
+          {VISIBLE_TYPE_FILTERS.map((f) => {
+            const on = activeDivision === f.division;
+            return (
+              <Link
+                key={f.division}
+                href={`/opportunities?division=${f.division}`}
+                aria-current={on ? "page" : undefined}
+                className={`${chip} ${on ? chipOn : chipOff}`}
+              >
+                {f.label}
               </Link>
-            </FadeIn>
-          );
-        })}
+            );
+          })}
+        </div>
+
+        <div className="flex flex-wrap items-center gap-2">
+          <p className={rowLabel}>Class</p>
+          <button type="button" onClick={() => pickClass("")} aria-pressed={!classNo} className={`${chip} ${!classNo ? chipOn : chipOff}`}>
+            All
+          </button>
+          {VISIBLE_CLASSES.map((c) => (
+            <button
+              key={c}
+              type="button"
+              onClick={() => pickClass(c)}
+              aria-pressed={classNo === c}
+              aria-label={`Class ${c}`}
+              className={`${chip} min-w-11 justify-center ${classNo === c ? chipOn : chipOff}`}
+            >
+              {c}
+            </button>
+          ))}
+        </div>
+
+        {classNo && subjects.length > 0 && (
+          <div className="flex flex-wrap items-center gap-2">
+            <p className={rowLabel}>Subject</p>
+            <button
+              type="button"
+              onClick={() => setCategoryId("")}
+              aria-pressed={!categoryId}
+              className={`${chip} ${!categoryId ? chipOn : chipOff}`}
+            >
+              All
+            </button>
+            {subjects.map((sub) => (
+              <button
+                key={sub.id}
+                type="button"
+                onClick={() => setCategoryId(sub.id)}
+                aria-pressed={categoryId === sub.id}
+                className={`${chip} ${categoryId === sub.id ? chipOn : chipOff}`}
+              >
+                {parseClassSubject(sub.name).subject ?? sub.name}
+              </button>
+            ))}
+          </div>
+        )}
       </div>
+
+      {/* Count + results */}
+      <p aria-live="polite" className="mt-7 mb-4 text-[15px] font-extrabold text-(--hp-muted)">
+        {loading && tests.length === 0 ? "Loading tests…" : `${tests.length} test${tests.length === 1 ? "" : "s"}`}
+      </p>
+
+      {loading && tests.length === 0 ? (
+        <div className="grid gap-5 sm:grid-cols-2">
+          {[1, 2, 3, 4].map((i) => (
+            <div key={i} className="rounded-[22px] border-[3px] border-(--hp-ink)/20 bg-white p-5">
+              <Skeleton className="h-4 w-24" />
+              <Skeleton className="mt-4 h-6 w-3/4" />
+              <Skeleton className="mt-3 h-4 w-1/2" />
+              <Skeleton className="mt-6 h-4 w-16" />
+            </div>
+          ))}
+        </div>
+      ) : tests.length === 0 ? (
+        <div className="rounded-[24px] border-[3px] border-(--hp-ink) bg-white p-8 text-center">
+          <p className={`${s.display} m-0 text-2xl font-bold`}>No tests found</p>
+          <p className="mx-auto mt-2 max-w-[44ch] text-base font-semibold text-(--hp-muted)">
+            Try another class or test type, or clear the search.
+          </p>
+        </div>
+      ) : (
+        <div className={`grid gap-5 sm:grid-cols-2 ${loading ? "opacity-60" : ""}`} aria-busy={loading}>
+          {tests.map((t) => (
+            <PostCard key={t.id} post={t} now={now} />
+          ))}
+        </div>
+      )}
     </div>
   );
 }
 
-export default function OpportunitiesPage() {
+export default function TestsPage() {
   return (
-    <Suspense fallback={<div className="flex flex-1 items-center justify-center py-20 text-zinc-600 dark:text-zinc-400">Loading...</div>}>
-      <OpportunitiesContent />
-    </Suspense>
+    <div className={`${fredoka.variable} ${nunito.variable} ${s.page} flex-1`}>
+      <Suspense
+        fallback={<div className="flex flex-1 items-center justify-center py-20 font-bold text-(--hp-muted)">Loading...</div>}
+      >
+        <TestsContent />
+      </Suspense>
+    </div>
   );
 }

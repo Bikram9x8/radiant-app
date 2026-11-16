@@ -12,6 +12,7 @@ import {
 } from "@tabler/icons-react";
 import { StudyArt } from "@/components/AuthLayout";
 import { HigherArt, SchoolArt, TestArt } from "@/components/Illustrations";
+import { SHOW_SCHOOL } from "@/lib/features";
 
 type RecentApplication = {
   id: string;
@@ -27,7 +28,7 @@ type RecentApplication = {
 const focusRing =
   "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#6d28d9]";
 
-const quickLinks = [
+const ALL_QUICK_LINKS = [
   {
     href: "/school",
     label: "School Education",
@@ -45,19 +46,19 @@ const quickLinks = [
   {
     href: "/opportunities",
     label: "Tests",
-    desc: "Test series, sample papers and DPPs",
+    desc: "Test series, chapter tests and DPPs",
     colour: "pastel-yellow",
     Art: TestArt,
   },
 ];
 
-const linkGroups = [
+const ALL_LINK_GROUPS = [
   {
     label: "Tests",
     colour: "pastel-yellow",
     links: [
       { href: "/opportunities", label: "Test Series", Icon: IconFileText },
-      { href: "/opportunities?division=CBSE_SAMPLE_PAPERS", label: "CBSE Sample Papers", Icon: IconCertificate },
+      { href: "/search?division=CBSE_SAMPLE_PAPERS", label: "CBSE Sample Papers", Icon: IconCertificate },
       { href: "/opportunities?division=DPP", label: "DPP", Icon: IconClipboardList },
       { href: "/opportunities?division=BOARD_LEVEL_TEST", label: "Board Level Test", Icon: IconSchool },
       { href: "/opportunities?division=CHAPTER_WISE_TEST", label: "Chapter Wise Test", Icon: IconBook },
@@ -67,19 +68,35 @@ const linkGroups = [
     label: "Study material",
     colour: "pastel-purple",
     links: [
-      { href: "/opportunities?division=NCERT_SOLUTION", label: "NCERT Solution", Icon: IconBook2 },
-      { href: "/opportunities?division=STUDY_PACKAGE", label: "Study Package", Icon: IconPackage },
+      { href: "/search?division=NCERT_SOLUTION", label: "NCERT Solution", Icon: IconBook2 },
+      { href: "/search?division=STUDY_PACKAGE", label: "Study Package", Icon: IconPackage },
     ],
   },
   {
     label: "Career",
     colour: "pastel-pink",
     links: [
-      { href: "/opportunities?division=SKILL_BUILDING", label: "Skill Building", Icon: IconTool },
-      { href: "/opportunities?division=CAREER_COUNSELING", label: "Career Counseling", Icon: IconTargetArrow },
+      { href: "/search?division=SKILL_BUILDING", label: "Skill Building", Icon: IconTool },
+      { href: "/search?division=CAREER_COUNSELING", label: "Career Counseling", Icon: IconTargetArrow },
     ],
   },
 ];
+
+// School Education switched off (lib/features.ts): no School card, and no links to School material
+// (NCERT solutions, CBSE sample papers, study packages, board-level tests). Empty groups are dropped.
+const SCHOOL_LINK_HREFS = [
+  "/school",
+  "/search?division=NCERT_SOLUTION",
+  "/search?division=CBSE_SAMPLE_PAPERS",
+  "/search?division=STUDY_PACKAGE",
+  "/opportunities?division=BOARD_LEVEL_TEST",
+];
+const quickLinks = SHOW_SCHOOL ? ALL_QUICK_LINKS : ALL_QUICK_LINKS.filter((l) => !SCHOOL_LINK_HREFS.includes(l.href));
+const linkGroups = SHOW_SCHOOL
+  ? ALL_LINK_GROUPS
+  : ALL_LINK_GROUPS.map((g) => ({ ...g, links: g.links.filter((l) => !SCHOOL_LINK_HREFS.includes(l.href)) })).filter(
+      (g) => g.links.length > 0,
+    );
 
 // The steps an application moves through, in order
 const TRACK = [
@@ -151,7 +168,7 @@ export default function StudentDashboard({
         <h2 id="quick-links" className="sr-only">
           Quick links
         </h2>
-        <div className="grid gap-4 md:grid-cols-3 sm:gap-6">
+        <div className={`grid gap-4 sm:gap-6 ${quickLinks.length === 3 ? "md:grid-cols-3" : "md:grid-cols-2"}`}>
           {quickLinks.map(({ href, label, desc, colour, Art }) => (
             <Link
               key={href}

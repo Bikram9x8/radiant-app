@@ -5,8 +5,15 @@ import { createPortal } from "react-dom";
 import { Document, Page, pdfjs } from "react-pdf";
 import "react-pdf/dist/Page/AnnotationLayer.css";
 import "react-pdf/dist/Page/TextLayer.css";
+import { fredoka, nunito } from "@/components/home/fonts";
+import s from "@/components/school/school.module.css";
 
 pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
+
+// Fullscreen is portaled to <body>, outside the page wrapper, so the viewer carries its own
+// colour tokens + fonts (s.page); its frame/stage classes come later in the CSS and win.
+const tokens = `${fredoka.variable} ${nunito.variable} ${s.page}`;
+const pill = `${s.flat} inline-flex min-h-11 items-center justify-center rounded-full px-4 text-sm font-extrabold`;
 
 // One page slot. The page is only drawn when it is near the screen.
 function PageSlot({
@@ -42,7 +49,7 @@ function PageSlot({
         elRef.current = el;
         register(el);
       }}
-      className="mb-3 bg-white"
+      className="mb-3 bg-white shadow-[0_1px_4px_rgba(36,26,61,0.18)]"
       style={{ width, minHeight: height }}
     >
       {near && <Page pageNumber={pageNumber} width={width} />}
@@ -124,28 +131,26 @@ function ViewerBody({
 
   return (
     <div
-      className={
-        isFullscreen
-          ? "fixed inset-0 z-50 bg-black flex flex-col"
-          : "glass rounded-2xl flex flex-col"
-      }
+      className={`${tokens} flex flex-col ${
+        isFullscreen ? `${s.pdfStageDark} fixed inset-0 z-50` : s.pdfFrame
+      }`}
       style={{ height: isFullscreen ? "100vh" : "85vh" }}
     >
       <div
         className={`shrink-0 flex items-center justify-between gap-2 flex-wrap px-3 py-2 ${
-          isFullscreen ? "bg-black" : "bg-white/90 dark:bg-zinc-900/90 rounded-t-2xl border-b border-white/10"
+          isFullscreen ? "text-white" : `${s.pdfToolbar} text-(--hp-ink)`
         }`}
       >
         <button
           onClick={() => setIsFullscreen(!isFullscreen)}
-          className="text-sm px-3 py-1.5 rounded-lg bg-purple-600 text-white font-semibold"
+          className={`${pill} bg-(--hp-purple) text-white`}
         >
           {isFullscreen ? "Exit Fullscreen" : "Fullscreen"}
         </button>
 
         {numPages > 0 && (
-          <div className="flex items-center gap-2 text-sm text-zinc-900 dark:text-white">
-            <span className="flex items-center gap-1">
+          <div className="flex items-center gap-2 text-[15px] font-bold">
+            <span className="flex items-center gap-1.5">
               Page{" "}
               <input
                 type="text"
@@ -168,14 +173,14 @@ function ViewerBody({
                   setDraft(String(pageNumber));
                 }}
                 aria-label="Go to page number"
-                className="w-14 text-center rounded bg-zinc-700 text-white px-1 py-0.5"
+                className="h-11 w-14 rounded-full border-2 border-(--hp-ink) bg-white px-1 text-center font-extrabold text-(--hp-ink)"
               />{" "}
               of {numPages}
             </span>
             <button
               onMouseDown={(e) => e.preventDefault()}
               onClick={goToDraft}
-              className="px-2.5 py-1 rounded bg-purple-600 text-white font-semibold"
+              className={`${pill} ${isFullscreen ? "bg-white text-(--hp-ink)" : "bg-(--hp-ink) text-white"}`}
             >
               Go
             </button>
@@ -184,7 +189,9 @@ function ViewerBody({
       </div>
 
       <div
-        className="relative flex-1 min-h-0 overflow-auto flex justify-center bg-zinc-900 rounded-b-2xl pt-2"
+        className={`relative flex-1 min-h-0 overflow-auto flex justify-center pt-3 ${
+          isFullscreen ? s.pdfStageDark : s.pdfStage
+        }`}
         onScroll={handleScroll}
         ref={(el) => {
           scrollRef.current = el;
@@ -200,9 +207,11 @@ function ViewerBody({
             onDocumentLoadSuccess(pdf);
             setReady(true);
           }}
-          loading={<p className="text-white p-4">Loading PDF...</p>}
+          loading={
+            <p className={`p-4 font-bold ${isFullscreen ? "text-white" : "text-(--hp-muted)"}`}>Loading PDF...</p>
+          }
           error={
-            <p className="text-red-400 p-4">
+            <p className={`p-4 font-bold ${isFullscreen ? "text-red-300" : "text-red-700"}`}>
               Failed to load PDF. Please try again.
             </p>
           }

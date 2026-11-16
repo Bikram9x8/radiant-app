@@ -1,0 +1,140 @@
+/* Shared header (Navbar, ProfileMenu, mobile drawer) and Footer, "Option B · Light & playful".
+   Matches components/home/home.module.css. Every rule is scoped under .chrome or a local class,
+   so page content is unaffected. Only transform and opacity animate. */
+
+.chrome {
+  --hp-cream: #fffaf2;
+  --hp-ink: #241a3d;
+  --hp-muted: #4a3f66;
+  --hp-purple: #6d28d9;
+  --hp-purple-deep: #4c1d95;
+  --hp-link: #5b21b6;
+  --hp-yellow: #ffd84d;
+  --hp-lavender: #c9b6ff;
+  --hp-butter: #fff3c4;
+  --hp-lavender-soft: #ede6ff;
+  --hp-line: #ebe4f5;
+
+  font-family: var(--font-nunito), system-ui, sans-serif;
+  color: var(--hp-ink);
+}
+
+/* globals.css fades colours/shadows on every link and button; keep this area to transform/opacity */
+.chrome :where(a, button) {
+  transition: none;
+}
+
+.chrome :focus-visible {
+  outline: 3px solid var(--hp-purple);
+  outline-offset: 3px;
+}
+
+.display {
+  font-family: var(--font-fredoka), var(--font-nunito), sans-serif;
+}
+
+/* ---------- Header bar ---------- */
+.header {
+  background: var(--hp-cream);
+  border-bottom: 3px solid var(--hp-ink);
+}
+
+/* Nav pills (desktop and drawer). The 3px border is always there (transparent)
+   so the active outline doesn't shift the layout. */
+.navLink {
+  display: flex;
+  align-items: center;
+  border: 3px solid transparent;
+  border-radius: 999px;
+  color: var(--hp-ink);
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.navLink:hover {
+  background: var(--hp-lavender-soft);
+}
+
+.navLink[aria-current="page"] {
+  background: var(--hp-yellow);
+  border-color: var(--hp-ink);
+}
+
+/* Small squash when pressed */
+.flat {
+  transition: scale 140ms ease-out;
+}
+
+.flat:active {
+  scale: 0.96;
+}
+
+/* ---------- Profile dropdown and drawer rows ---------- */
+.menuPanel {
+  background: #ffffff;
+  border: 3px solid var(--hp-ink);
+  border-radius: 20px;
+  box-shadow: 6px 6px 0 var(--hp-ink);
+}
+
+.menuItem {
+  color: var(--hp-ink);
+}
+
+.menuItem:hover {
+  background: var(--hp-butter);
+}
+
+/* Menu items move focus with arrow keys; the row itself shows focus clearly */
+.menuItem:focus-visible {
+  outline: none;
+  background: var(--hp-lavender-soft);
+  color: var(--hp-purple-deep);
+  box-shadow: inset 0 0 0 2px var(--hp-purple);
+}
+
+.menuItem[aria-current="page"] {
+  color: var(--hp-purple);
+}
+
+/* ---------- Mobile drawer ---------- */
+.drawer {
+  background: var(--hp-cream);
+  border-left: 3px solid var(--hp-ink);
+}
+
+.overlay {
+  background: rgb(36 26 61 / 0.45);
+}
+
+/* ---------- Footer ---------- */
+.footer {
+  background: var(--hp-cream);
+  border-top: 3px solid var(--hp-ink);
+}
+
+.footerTitle {
+  color: var(--hp-ink);
+  text-decoration: none;
+}
+
+.footerLink {
+  color: var(--hp-muted);
+  text-decoration: none;
+}
+
+.footerTitle:hover,
+.footerLink:hover {
+  color: var(--hp-purple-deep);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chrome *,
+  .chrome *::before,
+  .chrome *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
