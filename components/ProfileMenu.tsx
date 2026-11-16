@@ -44,7 +44,7 @@ function Avatar({ email }: { email: string }) {
   return (
     <span
       aria-hidden="true"
-      className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-[3px] border-(--hp-ink) bg-(--hp-purple) text-xs font-extrabold text-white"
+      className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-(--teal) text-xs font-extrabold text-white"
     >
       {initialsOf(email)}
     </span>
@@ -158,7 +158,7 @@ export default function ProfileMenu({ email, role }: ProfileMenuProps) {
     }
   }
 
-  const itemClass = `${s.menuItem} flex min-h-[44px] w-full items-center gap-3 rounded-xl px-3 text-left text-[15px] font-bold`;
+  const itemClass = `${s.menuItem} flex min-h-[44px] w-full items-center gap-3 rounded-[10px] px-3 text-left text-[15px] font-semibold`;
 
   return (
     <div ref={rootRef} className="relative">
@@ -171,9 +171,7 @@ export default function ProfileMenu({ email, role }: ProfileMenuProps) {
         aria-controls={open ? menuId : undefined}
         onClick={() => (open ? setOpen(false) : openMenu("first"))}
         onKeyDown={onButtonKeyDown}
-        className={`flex h-11 w-11 items-center justify-center rounded-full hover:bg-(--hp-lavender-soft) ${
-          open ? "bg-(--hp-lavender-soft)" : ""
-        }`}
+        className={`${s.avatarBtn} flex h-11 w-11 items-center justify-center`}
       >
         <Avatar email={email} />
       </button>
@@ -186,12 +184,12 @@ export default function ProfileMenu({ email, role }: ProfileMenuProps) {
             animate={{ opacity: 1, y: 0 }}
             exit={reduceMotion ? { opacity: 0 } : { opacity: 0, y: -6 }}
             transition={{ duration: 0.15, ease: "easeOut" }}
-            className={`${s.menuPanel} absolute right-0 top-[calc(100%+10px)] w-64 p-2`}
+            className={`${s.menuPanel} absolute right-0 top-[calc(100%+12px)] w-64 p-2`}
           >
-            <p className="truncate px-3 py-2 text-sm font-semibold text-(--hp-muted)" title={email}>
+            <p className="truncate px-3 py-2 text-sm font-semibold text-(--muted)" title={email}>
               {email}
             </p>
-            <div className="my-1 border-t-2 border-(--hp-line)" />
+            <div className={`${s.divider} my-1 border-t`} />
 
             <div
               ref={menuRef}
@@ -218,7 +216,7 @@ export default function ProfileMenu({ email, role }: ProfileMenuProps) {
                 );
               })}
 
-              <div role="separator" className="my-1 border-t-2 border-(--hp-line)" />
+              <div role="separator" className={`${s.divider} my-1 border-t`} />
 
               <button
                 type="button"
@@ -275,7 +273,7 @@ export function ProfileDisclosure({
     return () => document.removeEventListener("click", onClick);
   }, [open, onOpenChange]);
 
-  const rowClass = `${s.menuItem} flex min-h-[48px] w-full items-center gap-3 rounded-2xl px-3 text-left text-base font-bold`;
+  const rowClass = `${s.menuItem} flex min-h-[48px] w-full items-center gap-3 rounded-xl px-3 text-left text-base font-semibold`;
 
   return (
     <div ref={rootRef}>
@@ -286,15 +284,15 @@ export function ProfileDisclosure({
         aria-controls={listId}
         aria-label={`Profile menu for ${email}`}
         onClick={() => onOpenChange(!open)}
-        className="flex min-h-[56px] w-full items-center gap-3 rounded-2xl border-[3px] border-(--hp-ink) bg-white px-2 text-left"
+        className={`${s.profileRow} flex min-h-[56px] w-full items-center gap-3 px-2 text-left`}
       >
         <Avatar email={email} />
-        <span className="min-w-0 flex-1 truncate text-[15px] font-bold text-(--hp-ink)">{email}</span>
+        <span className="min-w-0 flex-1 truncate text-[15px] font-bold text-(--ink)">{email}</span>
         <IconChevronDown
           size={20}
           stroke={2.4}
           aria-hidden="true"
-          className={`shrink-0 text-(--hp-ink) motion-safe:transition-transform ${open ? "rotate-180" : ""}`}
+          className={`shrink-0 text-(--ink) motion-safe:transition-transform ${open ? "rotate-180" : ""}`}
         />
       </button>
 

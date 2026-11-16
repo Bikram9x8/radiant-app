@@ -1,136 +1,295 @@
-/* Shared header (Navbar, ProfileMenu, mobile drawer) and Footer, "Option B · Light & playful".
-   Matches components/home/home.module.css. Every rule is scoped under .chrome or a local class,
-   so page content is unaffected. Only transform and opacity animate. */
+/* Shared header (Navbar, ProfileMenu, mobile drawer) and Footer, Phase 2 "Teal + Coral".
+   Calm style from radiant-design/home-teal-coral.html: 1px lines, soft shadows, 10-12px radii,
+   Big Shoulders headings. Colours come from globals.css. Every rule is scoped under .chrome or a
+   local class, so page content is unaffected. Only transform and opacity animate. */
 
 .chrome {
-  --hp-cream: var(--paper);
+  /* Old Option B names, still used by a few utility classes in these components */
   --hp-ink: var(--ink);
   --hp-muted: var(--muted);
-  --hp-purple: var(--teal);
-  --hp-purple-deep: var(--teal-dark);
-  --hp-link: var(--teal-dark);
-  --hp-yellow: var(--tint-peach-strong);
-  --hp-lavender: var(--tint-teal);
-  --hp-butter: var(--tint-peach);
-  --hp-lavender-soft: var(--tint-aqua);
   --hp-line: var(--line);
+  --btn-line: #d3dce6; /* outline buttons and the menu button */
+  --nav-text: #2b3a4d;
+  --nav-hover: #eef3f8;
 
   font-family: var(--font-figtree), system-ui, sans-serif;
-  color: var(--hp-ink);
+  color: var(--ink);
 }
 
-/* globals.css fades colours/shadows on every link and button; keep this area to transform/opacity */
+/* globals.css fades colours/shadows on every link and button; here only background/border fade */
 .chrome :where(a, button) {
-  transition: none;
+  transition:
+    background-color 150ms ease,
+    border-color 150ms ease,
+    scale 140ms ease-out;
 }
 
 .chrome :focus-visible {
-  outline: 3px solid var(--hp-purple);
+  outline: 3px solid var(--teal);
   outline-offset: 3px;
 }
 
 .display {
   font-family: var(--font-big-shoulders), var(--font-figtree), sans-serif;
   text-transform: uppercase;
-  letter-spacing: 0.01em;
+  letter-spacing: 0.04em;
   font-weight: 800;
+}
+
+/* Page gutter of the design: 5vw, at least 16px; content up to 1240px */
+.wrap {
+  max-width: 1240px;
+  margin-inline: auto;
+  padding-inline: max(5vw, 16px);
 }
 
 /* ---------- Header bar ---------- */
 .header {
-  background: var(--hp-cream);
-  border-bottom: 3px solid var(--hp-ink);
+  background: rgb(252 250 246 / 0.92);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--line);
 }
 
-/* Nav pills (desktop and drawer). The 3px border is always there (transparent)
-   so the active outline doesn't shift the layout. */
+.bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  height: 76px;
+}
+
+@media (max-width: 600px) {
+  .bar {
+    height: 66px;
+  }
+}
+
+/* Nav links (desktop and drawer) */
 .navLink {
   display: flex;
   align-items: center;
-  border: 3px solid transparent;
-  border-radius: 999px;
-  color: var(--hp-ink);
-  font-weight: 800;
+  border-radius: 10px;
+  color: var(--nav-text);
+  font-weight: 700;
   text-decoration: none;
+  white-space: nowrap;
 }
 
 .navLink:hover {
-  background: var(--hp-lavender-soft);
+  background: var(--nav-hover);
 }
 
 .navLink[aria-current="page"] {
-  background: var(--hp-yellow);
-  border-color: var(--hp-ink);
+  background: var(--tint-teal);
+  color: var(--teal-dark);
 }
 
-/* Small squash when pressed */
-.flat {
-  transition: scale 140ms ease-out;
+/* Buttons: outline (Log in) and dark (Sign up free) */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border-radius: 12px;
+  border: 1.5px solid transparent;
+  font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
 }
 
-.flat:active {
+.btn:active {
+  scale: 0.97;
+}
+
+.btnOut {
+  background: #ffffff;
+  color: var(--ink);
+  border-color: var(--btn-line);
+}
+
+.btnOut:hover {
+  border-color: var(--ink);
+}
+
+.btnDark {
+  background: var(--ink);
+  color: #ffffff;
+}
+
+.btnDark:hover {
+  background: var(--ink-2);
+}
+
+/* Square menu / close button */
+.iconBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  border-radius: 12px;
+  border: 1.5px solid var(--btn-line);
+  background: #ffffff;
+  color: var(--ink);
+}
+
+.iconBtn:hover {
+  border-color: var(--ink);
+}
+
+.iconBtn:active {
   scale: 0.96;
+}
+
+/* Show/hide by width lives here, not in Tailwind classes: this file is unlayered, so its
+   display rules (.btn, .iconBtn) would beat Tailwind's "hidden" utilities. */
+@media (min-width: 1001px) {
+  .menuBtn {
+    display: none;
+  }
+}
+
+@media (max-width: 1180px) {
+  .loginBtn {
+    display: none;
+  }
 }
 
 /* ---------- Profile dropdown and drawer rows ---------- */
 .menuPanel {
   background: #ffffff;
-  border: 3px solid var(--hp-ink);
-  border-radius: 20px;
-  box-shadow: 6px 6px 0 var(--hp-ink);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  box-shadow:
+    0 1px 2px rgb(15 46 51 / 0.05),
+    0 18px 40px -20px rgb(15 46 51 / 0.35);
 }
 
 .menuItem {
-  color: var(--hp-ink);
+  color: var(--ink);
 }
 
 .menuItem:hover {
-  background: var(--hp-butter);
+  background: var(--nav-hover);
 }
 
 /* Menu items move focus with arrow keys; the row itself shows focus clearly */
 .menuItem:focus-visible {
   outline: none;
-  background: var(--hp-lavender-soft);
-  color: var(--hp-purple-deep);
-  box-shadow: inset 0 0 0 2px var(--hp-purple);
+  background: var(--tint-teal);
+  color: var(--teal-dark);
+  box-shadow: inset 0 0 0 2px var(--teal);
 }
 
 .menuItem[aria-current="page"] {
-  color: var(--hp-purple);
+  color: var(--teal-dark);
+  background: var(--tint-teal);
+}
+
+.avatarBtn {
+  border-radius: 999px;
+}
+
+.avatarBtn:hover,
+.avatarBtn[aria-expanded="true"] {
+  background: var(--tint-teal);
+}
+
+.profileRow {
+  background: #ffffff;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+}
+
+.profileRow:hover {
+  border-color: var(--btn-line);
 }
 
 /* ---------- Mobile drawer ---------- */
 .drawer {
-  background: var(--hp-cream);
-  border-left: 3px solid var(--hp-ink);
+  background: var(--paper);
+  border-left: 1px solid var(--line);
+  box-shadow: -24px 0 48px -24px rgb(15 46 51 / 0.35);
 }
 
 .overlay {
-  background: rgb(36 26 61 / 0.45);
+  background: rgb(15 46 51 / 0.45);
+}
+
+.divider {
+  border-color: var(--line);
 }
 
 /* ---------- Footer ---------- */
 .footer {
-  background: var(--hp-cream);
-  border-top: 3px solid var(--hp-ink);
+  background: #ffffff;
+  border-top: 1px solid var(--line);
 }
 
-.footerTitle {
-  color: var(--hp-ink);
+/* Brand column + link columns: 1 column on small phones, 2 up to 860px, then all in a row */
+.footGrid {
+  display: grid;
+  gap: 32px 24px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.footGrid > :first-child {
+  grid-column: 1 / -1;
+}
+
+@media (min-width: 861px) {
+  .footGrid {
+    grid-template-columns: 1.4fr repeat(var(--cols, 4), minmax(0, 1fr));
+  }
+
+  .footGrid > :first-child {
+    grid-column: auto;
+  }
+}
+
+.footTitle {
+  margin: 0 0 6px;
+  font-size: 20px;
+  line-height: 1.2;
+  color: var(--ink);
+}
+
+.footLink {
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  color: var(--muted);
+  font-weight: 500;
+  font-size: 15px;
   text-decoration: none;
 }
 
-.footerLink {
-  color: var(--hp-muted);
-  text-decoration: none;
-}
-
-.footerTitle:hover,
-.footerLink:hover {
-  color: var(--hp-purple-deep);
+.footLink:hover {
+  color: var(--teal-dark);
   text-decoration: underline;
   text-underline-offset: 4px;
+}
+
+.soon {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 36px;
+  color: var(--muted);
+  font-weight: 500;
+  font-size: 15px;
+}
+
+.soonTag {
+  border-radius: 999px;
+  background: var(--tint-peach);
+  color: var(--coral-text);
+  padding: 2px 8px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
 }
 
 @media (prefers-reduced-motion: reduce) {

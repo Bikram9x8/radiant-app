@@ -3,26 +3,34 @@ import s from "@/components/site-chrome.module.css";
 import RadiantLogo from "@/components/brand/RadiantLogo";
 import { SHOW_SCHOOL } from "@/lib/features";
 
-const ALL_SECTIONS = [
+type FooterLink = { label: string; href?: string }; // no href = not built yet ("Coming soon")
+type Section = { title: string; links: FooterLink[] };
+
+const HE = "/courses/higher-education/after-12th";
+
+// Shown only while School Education is switched on (lib/features.ts)
+const SCHOOL_SECTION: Section = {
+  title: "School",
+  links: [
+    { label: "School Education", href: "/school" },
+    { label: "CBSE, Class 9 to 12", href: "/courses/cbse" },
+    { label: "ICSE, Class 9 to 10", href: "/courses/icse" },
+    { label: "Skill Building", href: "/courses/vocational/skill-building" },
+  ],
+};
+
+const SECTIONS: Section[] = [
+  ...(SHOW_SCHOOL ? [SCHOOL_SECTION] : []),
   {
-    title: "School Education",
-    href: "/school",
+    title: "Explore",
     links: [
-      { label: "CBSE, Class 9 to 12", href: "/courses/cbse" },
-      { label: "ICSE, Class 9 to 10", href: "/courses/icse" },
+      { label: "Colleges", href: "/higher" },
+      { label: "Courses", href: "/higher" },
+      { label: "Entrance exams", href: "/opportunities" },
     ],
   },
   {
-    title: "Higher Education",
-    href: "/higher",
-    links: [
-      { label: "After 12th", href: "/courses/higher-education/after-12th" },
-      { label: "After Graduation", href: "/courses/higher-education/after-graduation" },
-      { label: "After Post Graduation", href: "/courses/higher-education/after-post-graduation" },
-    ],
-  },
-  {
-    title: "Competitive",
+    title: "Exam prep",
     links: [
       { label: "JEE", href: "/courses/competitive/jee" },
       { label: "NEET", href: "/courses/competitive/neet" },
@@ -32,15 +40,15 @@ const ALL_SECTIONS = [
     ],
   },
   {
-    title: "Vocational",
+    title: "Opportunities",
     links: [
-      { label: "Skill Building", href: "/courses/vocational/skill-building" },
-      { label: "Geeta", href: "/courses/vocational/geeta" },
-      { label: "Mahabharat", href: "/courses/vocational/mahabharat" },
+      { label: "Scholarships", href: `${HE}/scholarships` },
+      { label: "Internships", href: `${HE}/internships` },
+      { label: "Jobs & careers", href: `${HE}/jobs-careers` },
     ],
   },
   {
-    title: "Company",
+    title: "Radiant",
     links: [
       { label: "Contact", href: "/contact" },
       { label: "Report a problem", href: "/report-problem" },
@@ -50,75 +58,46 @@ const ALL_SECTIONS = [
   },
 ];
 
-// School Education switched off (lib/features.ts): no School or Vocational section, and
-// "Competitive" becomes "Exam prep" (NET, SSC and UPSC aren't entrance exams) with the tests link.
-const HIGHER_ONLY_SECTIONS = ALL_SECTIONS.filter(
-  (sec) => sec.title !== "School Education" && sec.title !== "Vocational",
-).map((sec) =>
-  sec.title === "Competitive"
-    ? {
-        title: "Exam prep",
-        links: [
-          { label: "JEE", href: "/courses/competitive/jee" },
-          { label: "NEET", href: "/courses/competitive/neet" },
-          { label: "Practice tests", href: "/opportunities" },
-          { label: "NET", href: "/courses/competitive/net" },
-          { label: "SSC", href: "/courses/competitive/ssc" },
-          { label: "UPSC", href: "/courses/competitive/upsc" },
-        ],
-      }
-    : sec,
-);
-
-const SECTIONS = SHOW_SCHOOL ? ALL_SECTIONS : HIGHER_ONLY_SECTIONS;
-
 const BLURB = SHOW_SCHOOL
   ? "Notes, solutions, tests and guidance for school and higher education, organised class by class and chapter by chapter."
-  : "Colleges, courses, exam prep, scholarships and internships for students after Class 12.";
+  : "Colleges, courses, entrance exams, scholarships and internships for students across India.";
 
 export default function Footer() {
   return (
     <footer className={`${s.chrome} ${s.footer} mt-auto`}>
-      <div className="mx-auto max-w-[1200px] px-4 pt-10 pb-8 sm:px-8 md:pt-14">
-        {/* Brand */}
-        <div className="max-w-md">
-          <Link href="/" className="inline-flex rounded-xl">
-            <RadiantLogo className="h-12 md:h-14" />
-          </Link>
-          <p className="mt-4 text-[15px] leading-relaxed font-semibold text-(--hp-muted)">{BLURB}</p>
-        </div>
+      <div className={`${s.wrap} pt-11 pb-8`}>
+        <div className={s.footGrid} style={{ "--cols": SECTIONS.length } as React.CSSProperties}>
+          {/* Brand */}
+          <div>
+            <Link href="/" aria-label="Radiant Educations home" className="inline-flex rounded-lg">
+              <RadiantLogo className="h-8" />
+            </Link>
+            <p className="mt-3 max-w-[34ch] text-[15px] leading-relaxed text-(--muted)">{BLURB}</p>
+          </div>
 
-        {/* Links */}
-        <nav aria-label="Footer" className="mt-8 grid grid-cols-2 gap-x-6 gap-y-8 md:grid-cols-3 lg:grid-cols-5">
           {SECTIONS.map((section) => (
             <div key={section.title}>
-              {section.href ? (
-                <Link
-                  href={section.href}
-                  className={`${s.display} ${s.footerTitle} inline-flex min-h-11 items-center text-lg font-bold`}
-                >
-                  {section.title}
-                </Link>
-              ) : (
-                <p className={`${s.display} m-0 flex min-h-11 items-center text-lg font-bold`}>{section.title}</p>
-              )}
+              <h2 className={`${s.display} ${s.footTitle}`}>{section.title}</h2>
               <ul className="m-0 list-none p-0">
                 {section.links.map((l) => (
                   <li key={l.label}>
-                    <Link
-                      href={l.href}
-                      className={`${s.footerLink} inline-flex min-h-11 items-center text-[15px] font-bold`}
-                    >
-                      {l.label}
-                    </Link>
+                    {l.href ? (
+                      <Link href={l.href} className={s.footLink}>
+                        {l.label}
+                      </Link>
+                    ) : (
+                      <span className={s.soon}>
+                        {l.label} <span className={s.soonTag}>Coming soon</span>
+                      </span>
+                    )}
                   </li>
                 ))}
               </ul>
             </div>
           ))}
-        </nav>
+        </div>
 
-        <p className="mt-8 border-t-2 border-(--hp-line) pt-5 text-sm font-semibold text-(--hp-muted)">
+        <p className={`${s.divider} mt-10 border-t pt-5 text-sm text-(--muted)`}>
           © {new Date().getFullYear()} Radiant Educations
         </p>
       </div>
