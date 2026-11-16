@@ -4,8 +4,11 @@ import { useRouter } from "next/navigation";
 import { PasswordField, SignupSwitch, authButton, authInput, authLabel, authLink } from "@/components/AuthLayout";
 import AuthLink from "@/components/auth/AuthLink";
 import { useToast } from "@/components/Toast";
+import { safeReturnTo, withReturnTo } from "@/lib/return-to";
 
-export default function StudentSignupForm() {
+// returnTo is passed on to login, so the user ends up back on the page that asked (MCQ test results)
+export default function StudentSignupForm({ returnTo: rawReturnTo = null }: { returnTo?: string | null }) {
+  const returnTo = safeReturnTo(rawReturnTo);
   const router = useRouter();
   const { showToast } = useToast();
   const [form, setForm] = useState({ fullName: "", email: "", password: "" });
@@ -25,7 +28,7 @@ export default function StudentSignupForm() {
     setLoading(false);
     if (res.ok) {
       showToast("Account created — please log in!");
-      router.push("/login");
+      router.push(withReturnTo("/login", returnTo));
     } else {
       const data = await res.json();
       setError(data.error || "Something went wrong");
@@ -84,7 +87,7 @@ export default function StudentSignupForm() {
       </form>
       <p className="mt-6 text-center text-sm text-[#52516b]">
         Already have an account?{" "}
-        <AuthLink href="/login" className={authLink}>
+        <AuthLink href={withReturnTo("/login", returnTo)} className={authLink}>
           Log in
         </AuthLink>
       </p>

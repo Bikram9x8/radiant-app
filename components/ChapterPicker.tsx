@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 type Node = {
   id: string;
   name: string;
+  slug: string;
   kind: string;
   chapterNo: number | null;
   contentTypes: string[];
@@ -34,17 +35,24 @@ export default function ChapterPicker({
   onChange,
   inputClass,
   labelClass,
+  rootSlugs,
 }: {
   // Called with the chosen chapter id (or null) and the content types of the course
   onChange: (courseNodeId: string | null, contentTypes: string[]) => void;
   inputClass: string;
   labelClass: string;
+  // Only offer these courses at the top level (e.g. MCQ tests: cbse, icse, competitive)
+  rootSlugs?: string[];
 }) {
   const [steps, setSteps] = useState<Step[]>([]);
+  const rootKey = rootSlugs?.join(",") ?? "";
 
   useEffect(() => {
-    loadChildren(null).then((opts) => setSteps([{ options: opts, selectedId: "" }]));
-  }, []);
+    const allowed = rootKey ? rootKey.split(",") : null;
+    loadChildren(null).then((opts) =>
+      setSteps([{ options: allowed ? opts.filter((o) => allowed.includes(o.slug)) : opts, selectedId: "" }])
+    );
+  }, [rootKey]);
 
   async function choose(index: number, id: string) {
     const kept = steps

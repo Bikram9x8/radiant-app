@@ -28,6 +28,8 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-inter);
   --font-mono: var(--font-geist-mono);
+  /* MCQ question text: Inter for Latin, Noto for Hindi and Punjabi (class: font-question) */
+  --font-question: var(--font-inter), var(--font-devanagari), var(--font-gurmukhi), system-ui, sans-serif;
 }
 
 body {

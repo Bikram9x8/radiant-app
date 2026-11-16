@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { IconClipboardCheck, IconBuildingSkyscraper, IconCategory, IconUsers, IconKey, IconLockSquareRounded, IconChartBar, IconHistory, IconListDetails, IconCircleCheck, IconClockHour4, IconX, IconUsersGroup, IconStar } from "@tabler/icons-react";
+import { IconChecklist, IconClipboardCheck, IconBuildingSkyscraper, IconCategory, IconUsers, IconKey, IconLockSquareRounded, IconChartBar, IconHistory, IconListDetails, IconCircleCheck, IconClockHour4, IconX, IconUsersGroup, IconStar } from "@tabler/icons-react";
 import { getServerSession } from "next-auth/next";
 import { redirect } from "next/navigation";
 import { authOptions } from "@/lib/auth";
@@ -233,6 +233,7 @@ if (user.role === "STUDENT") {
     const adminLinks = [
       { href: "/admin/opportunities", label: "Opportunity Approvals", desc: "Review pending tests", Icon: IconClipboardCheck, gradient: "from-emerald-400 to-cyan-400", glow: "shadow-[0_0_16px_rgba(52,211,153,0.5)]" },
       { href: "/admin/companies", label: "Company Approvals", desc: "Review new company signups", Icon: IconBuildingSkyscraper, gradient: "from-cyan-400 to-blue-400", glow: "shadow-[0_0_16px_rgba(34,211,238,0.5)]" },
+      { href: "/admin/mcq", label: "MCQ Tests", desc: "Build chapter tests and manage the question bank", Icon: IconChecklist, gradient: "from-indigo-400 to-purple-400", glow: "shadow-[0_0_16px_rgba(129,140,248,0.5)]" },
       { href: "/admin/categories", label: "Categories", desc: "Manage subjects and exams", Icon: IconCategory, gradient: "from-purple-400 to-pink-400", glow: "shadow-[0_0_16px_rgba(192,132,252,0.5)]" },
       { href: "/admin/users", label: "Users", desc: "View and manage accounts", Icon: IconUsers, gradient: "from-pink-400 to-purple-400", glow: "shadow-[0_0_16px_rgba(244,114,182,0.5)]" },
       { href: "/admin/access-codes", label: "Access Codes", desc: "Generate and manage test access codes", Icon: IconKey, gradient: "from-amber-400 to-pink-400", glow: "shadow-[0_0_16px_rgba(251,191,36,0.5)]" },
