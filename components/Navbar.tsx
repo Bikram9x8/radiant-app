@@ -7,14 +7,13 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { IconX } from "@tabler/icons-react";
 import ProfileMenu, { ProfileDisclosure } from "@/components/ProfileMenu";
-import { fredoka, nunito } from "@/components/home/fonts";
 import s from "@/components/site-chrome.module.css";
 import RadiantLogo from "@/components/brand/RadiantLogo";
 import { useNavSection } from "@/components/nav-section";
 import { SHOW_SCHOOL } from "@/lib/features";
 
 // Fonts + colour tokens for the header and the drawer (the drawer renders outside <header>)
-const chrome = `${fredoka.variable} ${nunito.variable} ${s.chrome}`;
+const chrome = `${s.chrome}`;
 
 const ALL_LINKS = [
   { href: "/school", label: "School Education" },
@@ -123,15 +122,14 @@ export default function Navbar() {
       >
         {/* Desktop layout from lg (1024px): logo + 3 nav pills + 2 buttons need ~930px */}
         <div className="mx-auto flex h-[68px] max-w-[1200px] items-center justify-between gap-3 px-4 sm:px-8 lg:h-20 lg:gap-6">
-          {/* Compact logo. Phones/tablets: no EDUCATIONS, sized by width so it shrinks to fit at 320px
-              (max 160px wide = 44px tall). Desktop: with EDUCATIONS, 60px tall in the 80px bar.
-              The plane flies once on page load; still when reduced motion is on. */}
+          {/* Design logo (mark + RADIANT + EDUCATIONS). Phones/tablets: sized by width so it shrinks
+              to fit at 320px (max 150px wide = 35px tall). Desktop: 44px tall in the 80px bar. */}
           <Link href={homeHref} className="flex min-w-0 flex-1 items-center rounded-xl lg:flex-none">
             <span className="flex w-full min-w-0 lg:hidden">
-              <RadiantLogo compact edu={false} animated once className="w-full max-w-[160px]" />
+              <RadiantLogo className="w-full max-w-[150px]" />
             </span>
             <span className="hidden lg:flex">
-              <RadiantLogo compact animated once className="h-[60px]" />
+              <RadiantLogo className="h-11" />
             </span>
           </Link>
 

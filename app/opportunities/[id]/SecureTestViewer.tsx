@@ -1,11 +1,10 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
-import { fredoka, nunito } from "@/components/home/fonts";
 import s from "@/components/school/school.module.css";
 
 // Fullscreen covers the page, so the viewer carries its own tokens + fonts (s.page)
-const tokens = `${fredoka.variable} ${nunito.variable} ${s.page}`;
+const tokens = `${s.page}`;
 
 export default function SecureTestViewer({
   opportunityId,

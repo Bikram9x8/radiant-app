@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { fredoka, nunito } from "@/components/home/fonts";
 import s from "@/components/site-chrome.module.css";
 import RadiantLogo from "@/components/brand/RadiantLogo";
 import { SHOW_SCHOOL } from "@/lib/features";
@@ -79,12 +78,12 @@ const BLURB = SHOW_SCHOOL
 
 export default function Footer() {
   return (
-    <footer className={`${fredoka.variable} ${nunito.variable} ${s.chrome} ${s.footer} mt-auto`}>
+    <footer className={`${s.chrome} ${s.footer} mt-auto`}>
       <div className="mx-auto max-w-[1200px] px-4 pt-10 pb-8 sm:px-8 md:pt-14">
         {/* Brand */}
         <div className="max-w-md">
           <Link href="/" className="inline-flex rounded-xl">
-            <RadiantLogo compact className="h-20 md:h-24" />
+            <RadiantLogo className="h-12 md:h-14" />
           </Link>
           <p className="mt-4 text-[15px] leading-relaxed font-semibold text-(--hp-muted)">{BLURB}</p>
         </div>

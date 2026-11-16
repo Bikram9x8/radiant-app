@@ -20,7 +20,6 @@ import {
 import ViewTracker from "@/components/ViewTracker";
 import { SubjectArt } from "@/components/Illustrations";
 import AdSlot from "@/components/home/AdSlot";
-import { fredoka, nunito } from "@/components/home/fonts";
 import s from "@/components/school/school.module.css";
 import ComingSoon from "@/components/ComingSoon";
 import { SHOW_SCHOOL } from "@/lib/features";
@@ -160,7 +159,7 @@ export default async function CoursePage({
   const labelFor = (t: string) => (isSchool && SCHOOL_LABELS[t]) || CONTENT_LABELS[t] || t;
 
   return (
-    <div className={`${fredoka.variable} ${nunito.variable} ${s.page} flex-1`}>
+    <div className={`${s.page} flex-1`}>
       {current && <ViewTracker courseNodeId={current.id} />}
 
       <div className="mx-auto max-w-[1200px] px-4 pt-4 sm:px-8">

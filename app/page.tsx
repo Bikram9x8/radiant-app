@@ -2,7 +2,6 @@ import { getServerSession } from "next-auth/next";
 import { redirect } from "next/navigation";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { fredoka, nunito } from "@/components/home/fonts";
 import s from "@/components/home/home.module.css";
 import Hero from "@/components/home/Hero";
 import PathCards from "@/components/home/PathCards";
@@ -30,7 +29,7 @@ export default async function Home() {
   });
 
   return (
-    <div className={`${fredoka.variable} ${nunito.variable} ${s.home} flex-1`}>
+    <div className={`${s.home} flex-1`}>
       <Hero />
 
       {/* Ad slot 1 (moved below the hero so the headline comes first) */}

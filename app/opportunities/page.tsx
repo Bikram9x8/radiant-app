@@ -5,7 +5,6 @@ import Link from "next/link";
 import { IconSearch } from "@tabler/icons-react";
 import { Skeleton } from "@/components/Skeleton";
 import PostCard, { type PostCardData } from "@/components/tests/PostCard";
-import { fredoka, nunito } from "@/components/home/fonts";
 import s from "@/components/school/school.module.css";
 import { SCHOOL_TEST_DIVISION, TEST_CLASSES, TEST_TYPE_FILTERS, parseClassSubject } from "@/lib/test-posts";
 import { SHOW_SCHOOL } from "@/lib/features";
@@ -291,7 +290,7 @@ function TestsContent() {
 
 export default function TestsPage() {
   return (
-    <div className={`${fredoka.variable} ${nunito.variable} ${s.page} flex-1`}>
+    <div className={`${s.page} flex-1`}>
       <Suspense
         fallback={<div className="flex flex-1 items-center justify-center py-20 font-bold text-(--hp-muted)">Loading...</div>}
       >

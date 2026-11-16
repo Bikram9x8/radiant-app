@@ -3,19 +3,19 @@
    so page content is unaffected. Only transform and opacity animate. */
 
 .chrome {
-  --hp-cream: #fffaf2;
-  --hp-ink: #241a3d;
-  --hp-muted: #4a3f66;
-  --hp-purple: #6d28d9;
-  --hp-purple-deep: #4c1d95;
-  --hp-link: #5b21b6;
-  --hp-yellow: #ffd84d;
-  --hp-lavender: #c9b6ff;
-  --hp-butter: #fff3c4;
-  --hp-lavender-soft: #ede6ff;
-  --hp-line: #ebe4f5;
+  --hp-cream: var(--paper);
+  --hp-ink: var(--ink);
+  --hp-muted: var(--muted);
+  --hp-purple: var(--teal);
+  --hp-purple-deep: var(--teal-dark);
+  --hp-link: var(--teal-dark);
+  --hp-yellow: var(--tint-peach-strong);
+  --hp-lavender: var(--tint-teal);
+  --hp-butter: var(--tint-peach);
+  --hp-lavender-soft: var(--tint-aqua);
+  --hp-line: var(--line);
 
-  font-family: var(--font-nunito), system-ui, sans-serif;
+  font-family: var(--font-figtree), system-ui, sans-serif;
   color: var(--hp-ink);
 }
 
@@ -30,7 +30,10 @@
 }
 
 .display {
-  font-family: var(--font-fredoka), var(--font-nunito), sans-serif;
+  font-family: var(--font-big-shoulders), var(--font-figtree), sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
+  font-weight: 800;
 }
 
 /* ---------- Header bar ---------- */

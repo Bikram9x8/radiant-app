@@ -5,14 +5,13 @@ import { createPortal } from "react-dom";
 import { Document, Page, pdfjs } from "react-pdf";
 import "react-pdf/dist/Page/AnnotationLayer.css";
 import "react-pdf/dist/Page/TextLayer.css";
-import { fredoka, nunito } from "@/components/home/fonts";
 import s from "@/components/school/school.module.css";
 
 pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
 
 // Fullscreen is portaled to <body>, outside the page wrapper, so the viewer carries its own
 // colour tokens + fonts (s.page); its frame/stage classes come later in the CSS and win.
-const tokens = `${fredoka.variable} ${nunito.variable} ${s.page}`;
+const tokens = `${s.page}`;
 const pill = `${s.flat} inline-flex min-h-11 items-center justify-center rounded-full px-4 text-sm font-extrabold`;
 
 // One page slot. The page is only drawn when it is near the screen.

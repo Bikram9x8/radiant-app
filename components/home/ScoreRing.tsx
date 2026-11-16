@@ -35,7 +35,7 @@ export default function ScoreRing({ className = "" }: { className?: string }) {
         fontSize="44"
         fontWeight="700"
         fill="var(--hp-ink)"
-        style={{ fontFamily: "var(--font-fredoka), sans-serif" }}
+        style={{ fontFamily: "var(--font-big-shoulders), var(--font-figtree), sans-serif", fontWeight: 800 }}
       >
         82%
       </text>

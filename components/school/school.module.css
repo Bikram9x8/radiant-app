@@ -6,26 +6,26 @@
    Only transform and opacity animate. */
 
 .page {
-  --hp-cream: #fffaf2;
-  --hp-ink: #241a3d;
-  --hp-muted: #4a3f66;
-  --hp-purple: #6d28d9;
-  --hp-purple-deep: #4c1d95;
-  --hp-link: #5b21b6;
-  --hp-yellow: #ffd84d;
-  --hp-mint: #8ef0c0;
-  --hp-pink: #ffb3d6;
-  --hp-lavender: #c9b6ff;
-  --hp-coral: #ffb3a0;
-  --hp-sky: #a8dcff;
-  --hp-orange: #ff6b3d;
-  --hp-butter: #fff3c4;
-  --hp-mint-soft: #d8fbe9;
-  --hp-lavender-soft: #ede6ff;
-  --hp-line: #ebe4f5;
+  --hp-cream: var(--paper);
+  --hp-ink: var(--ink);
+  --hp-muted: var(--muted);
+  --hp-purple: var(--teal);
+  --hp-purple-deep: var(--teal-dark);
+  --hp-link: var(--teal-dark);
+  --hp-yellow: var(--tint-peach-strong);
+  --hp-mint: var(--tint-teal-strong);
+  --hp-pink: var(--tint-sand);
+  --hp-lavender: var(--tint-teal);
+  --hp-coral: var(--tint-coral);
+  --hp-sky: var(--tint-mint);
+  --hp-orange: var(--coral);
+  --hp-butter: var(--tint-peach);
+  --hp-mint-soft: var(--tint-mint);
+  --hp-lavender-soft: var(--tint-aqua);
+  --hp-line: var(--line);
   --hp-paper: #ece6db; /* calm backdrop behind PDF pages */
 
-  font-family: var(--font-nunito), system-ui, sans-serif;
+  font-family: var(--font-figtree), system-ui, sans-serif;
   background: var(--hp-cream);
   color: var(--hp-ink);
 }
@@ -41,7 +41,10 @@
 }
 
 .display {
-  font-family: var(--font-fredoka), var(--font-nunito), sans-serif;
+  font-family: var(--font-big-shoulders), var(--font-figtree), sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
+  font-weight: 800;
 }
 
 /* ---------- Breadcrumb ---------- */
@@ -161,7 +164,7 @@
   font-size: 17px;
   line-height: 1.7;
   max-width: 65ch;
-  color: #2f2650;
+  color: var(--ink-2);
 }
 
 .pdfFrame {
@@ -182,7 +185,7 @@
 }
 
 .pdfStageDark {
-  background: #17122a;
+  background: #0b2226;
 }
 
 /* ---------- Pill search box (Tests page, Search page): the whole pill shows focus ---------- */

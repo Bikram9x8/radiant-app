@@ -3,7 +3,6 @@ import Link from "next/link";
 import { IconSearch } from "@tabler/icons-react";
 import { prisma } from "@/lib/prisma";
 import PostCard from "@/components/tests/PostCard";
-import { fredoka, nunito } from "@/components/home/fonts";
 import s from "@/components/school/school.module.css";
 import { DIVISION_LABELS } from "@/lib/test-posts";
 import type { Division } from "@prisma/client";
@@ -72,7 +71,7 @@ export default async function SearchPage({
     : divisionLabel || "All study material";
 
   return (
-    <div className={`${fredoka.variable} ${nunito.variable} ${s.page} flex-1`}>
+    <div className={`${s.page} flex-1`}>
       <div className="mx-auto w-full max-w-[1100px] px-4 pt-6 pb-14 sm:px-8 md:pt-8">
         <nav
           aria-label="Breadcrumb"

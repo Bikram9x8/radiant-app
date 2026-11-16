@@ -5,7 +5,6 @@ import dynamic from "next/dynamic";
 const PlainTestViewer = dynamic(() => import("./PlainTestViewer"), { ssr: false });
 import { IconLock, IconLockOpen, IconFileText, IconTool, IconTargetArrow, IconPackage, IconClipboardList, IconSchool, IconBook, IconBook2 } from "@tabler/icons-react";
 import { getShortLabel } from "@/lib/categoryLabel";
-import { fredoka, nunito } from "@/components/home/fonts";
 import s from "@/components/school/school.module.css";
 
 // Icon and tile colour per division (Option B pastels, ink outline)
@@ -34,7 +33,7 @@ import { entranceMeta, isTestPost } from "@/lib/test-posts";
 const READING_TYPES = ["NOTES", "SOLUTION"];
 
 // Page wrapper: fonts + colour tokens; a calm, wide reading column (PDF pages get more width)
-const shell = `${fredoka.variable} ${nunito.variable} ${s.page} flex-1`;
+const shell = `${s.page} flex-1`;
 const column = "mx-auto w-full max-w-[880px] px-3 pt-6 pb-14 sm:px-6 md:pt-10";
 const backLinkClass =
   "inline-flex min-h-11 items-center px-1 text-[15px] font-extrabold text-(--hp-link) underline-offset-4 hover:underline";
