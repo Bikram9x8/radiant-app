@@ -14,6 +14,7 @@ import RecentlyAdded from "@/components/landing/RecentlyAdded";
 import CareerBlock from "@/components/landing/CareerBlock";
 import Guides from "@/components/landing/Guides";
 import JoinBanner from "@/components/landing/JoinBanner";
+import RevealOnScroll from "@/components/landing/RevealOnScroll";
 import AdSlot from "@/components/AdSlot";
 import { SHOW_SCHOOL } from "@/lib/features";
 import { notSchoolWhere } from "@/lib/school-posts";
@@ -61,6 +62,7 @@ export default async function Home() {
       <CareerBlock />
       <Guides />
       <JoinBanner />
+      <RevealOnScroll />
     </div>
   );
 }

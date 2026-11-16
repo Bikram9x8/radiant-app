@@ -39,14 +39,14 @@ export default function Hero() {
             Build your <Accent>career.</Accent>
           </span>
         </h1>
-        <p className={s.lead}>
+        <p className={`${s.lead} ${s.enter}`}>
           Entrance exam prep for JEE and NEET, scholarships and internships after Class 12. A college finder
           for all of India is coming soon.
         </p>
 
-        <div className={s.cta}>
+        <div className={`${s.cta} ${s.enter}`}>
           <Link href="/higher" className={`${s.btn} ${s.pri}`}>
-            Find colleges
+            Explore after Class 12
           </Link>
           <Link href="/opportunities" className={`${s.btn} ${s.out}`}>
             Explore entrance prep
@@ -54,7 +54,7 @@ export default function Hero() {
         </div>
 
         {/* Slim site search (searches posts: tests, notes, solutions) */}
-        <form action="/search" method="get" role="search" className={s.search}>
+        <form action="/search" method="get" role="search" className={`${s.search} ${s.enter}`}>
           <label htmlFor="home-search" className="sr-only">
             Search tests and topics
           </label>
@@ -63,7 +63,7 @@ export default function Hero() {
           <button type="submit">Search</button>
         </form>
 
-        <ul className={s.stats}>
+        <ul className={`${s.stats} ${s.enter}`}>
           <li>JEE · NEET prep</li>
           <li>Scholarships &amp; internships</li>
           <li>Free to use</li>

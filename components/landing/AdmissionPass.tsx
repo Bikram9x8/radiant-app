@@ -91,15 +91,31 @@ export default function AdmissionPass() {
     { key: "entrance", label: "Entrance", value: entrance, set: setEntrance, options: ENTRANCES },
   ];
 
+  // The ticket tilts a little towards the mouse (pointer devices only, never with reduced motion)
+  function onTilt(e: React.MouseEvent<HTMLDivElement>) {
+    const pass = passRef.current;
+    if (!pass || reduceMotion || !window.matchMedia("(hover: hover)").matches) return;
+    const r = e.currentTarget.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width - 0.5;
+    const y = (e.clientY - r.top) / r.height - 0.5;
+    pass.style.transform = `perspective(900px) rotateY(${x * 8}deg) rotateX(${-y * 8}deg)`;
+  }
+
+  function resetTilt() {
+    if (passRef.current) passRef.current.style.transform = "";
+  }
+
   return (
-    <div className={s.passWrap}>
-      {/* Paper plane taking off from the ticket */}
+    <div className={s.passWrap} onMouseMove={onTilt} onMouseLeave={resetTilt}>
+      {/* Paper plane taking off from the ticket (bobs twice, then rests) */}
       <svg className={s.plane} viewBox="-40 -18 64 38" aria-hidden="true" focusable="false">
-        <circle cx="-24" cy="10" r="2" fill="#94a3b8" />
-        <circle cx="-33" cy="14" r="1.6" fill="#cbd5e1" />
-        <g transform="rotate(-18)">
-          <polygon points="21,0 -16,-13 -6,0" fill="#fff" stroke="#0f766e" strokeWidth="1.6" strokeLinejoin="round" />
-          <polygon points="21,0 -6,0 -11,13" fill="#f97350" stroke="#0f766e" strokeWidth="1.6" strokeLinejoin="round" />
+        <g className={s.planeFly}>
+          <circle cx="-24" cy="10" r="2" fill="#94a3b8" />
+          <circle cx="-33" cy="14" r="1.6" fill="#cbd5e1" />
+          <g transform="rotate(-18)">
+            <polygon points="21,0 -16,-13 -6,0" fill="#fff" stroke="#0f766e" strokeWidth="1.6" strokeLinejoin="round" />
+            <polygon points="21,0 -6,0 -11,13" fill="#f97350" stroke="#0f766e" strokeWidth="1.6" strokeLinejoin="round" />
+          </g>
         </g>
       </svg>
 
@@ -140,7 +156,8 @@ export default function AdmissionPass() {
           <div ref={perfRef} className={s.perf} />
           <ul className={s.results} aria-label="Sample results">
             {RESULTS.map((r) => (
-              <li key={r.ini} className={s.result}>
+              // A new key per choice re-creates the rows, so they rise in again (Part D)
+              <li key={`${r.ini}-${course}-${state}-${entrance}`} className={s.result}>
                 <span className={s.ini} style={{ background: r.bg }} aria-hidden="true">
                   {r.ini}
                 </span>
@@ -160,6 +177,7 @@ export default function AdmissionPass() {
             <p className={s.sample}>Sample colleges and numbers, to show how the finder will work.</p>
             <span className={s.barcode}>
               <Barcode />
+              <span className={s.scan} aria-hidden="true" />
             </span>
           </div>
         </div>

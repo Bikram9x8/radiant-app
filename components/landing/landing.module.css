@@ -1095,7 +1095,9 @@ a.exam:hover {
 .types small {
   display: block;
   margin-top: 2px;
-  color: var(--muted);
+  /* Follows the card's text colour, so it stays readable when the card turns dark */
+  color: inherit;
+  opacity: 0.75;
   font-family: var(--font-figtree), sans-serif;
   font-size: 12px;
   font-weight: 500;
@@ -1258,5 +1260,430 @@ a.exam:hover {
   .landing *::before,
   .landing *::after {
     transition: none !important;
+  }
+}
+
+/* =====================================================================================
+   MOTION (Phase 2 Part D)
+   - One-time entrance: h1 lines rise (transform only, so the headline is never invisible),
+     underlines draw, the pass slides in, the stamp pops, sections reveal on scroll (RevealOnScroll).
+   - Short loops are capped and finish within 5 seconds of starting: barcode scan, button shine,
+     pass plane bob, blob drift, window twinkle, flag, cap bob, career-type highlight (once).
+   - Longer loops have their own pause buttons: the ticker (Ticker.tsx) and the campus scene's
+     clouds and flying plane (ScenePlayer.tsx).
+   - prefers-reduced-motion: none of this runs; everything is visible and still.
+   ===================================================================================== */
+
+/* Barcode scan line (hidden unless animating) */
+.scan {
+  position: absolute;
+  top: -4px;
+  bottom: -4px;
+  left: 0;
+  width: 3px;
+  border-radius: 2px;
+  background: var(--coral);
+  box-shadow: 0 0 10px #fb923c;
+  opacity: 0;
+}
+
+/* Scene pause button */
+.scenePlayer {
+  position: relative;
+}
+
+.scenePause {
+  position: absolute;
+  right: max(5vw, 16px);
+  bottom: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 36px;
+  padding: 0 12px;
+  border: 1px solid var(--btn-line);
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.9);
+  color: var(--ink);
+  font: 700 13px var(--font-figtree), sans-serif;
+  cursor: pointer;
+}
+
+.scenePause:hover {
+  border-color: var(--ink);
+}
+
+.scenePause[aria-pressed="true"] {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: #ffffff;
+}
+
+/* Reduced motion: the scene is still, so no button */
+@media (prefers-reduced-motion: reduce) {
+  .scenePause {
+    display: none;
+  }
+}
+
+/* Scroll reveal: RevealOnScroll adds .rv (hidden, only to elements below the fold) and then .in */
+.rv {
+  opacity: 0;
+  transform: translateY(34px);
+}
+
+.rv.in {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity 0.7s ease,
+    transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* ---- Hero, once ---- */
+  .h1 .line {
+    animation: riseT 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  }
+
+  .h1 .line:nth-child(2) {
+    animation-delay: 0.15s;
+  }
+
+  .h1 .line:nth-child(3) {
+    animation-delay: 0.3s;
+  }
+
+  .ul path {
+    stroke-dasharray: 300;
+    animation: draw 0.9s ease 0.9s both;
+  }
+
+  .h1 .line:nth-child(2) .ul path {
+    animation-delay: 1.15s;
+  }
+
+  .h1 .line:nth-child(3) .ul path {
+    animation-delay: 1.4s;
+  }
+
+  .enter {
+    animation: rise 0.8s ease 0.55s both;
+  }
+
+  .passWrap {
+    animation: passIn 1s cubic-bezier(0.2, 0.8, 0.2, 1) 0.25s both;
+  }
+
+  .stamp {
+    animation: stampIn 0.45s cubic-bezier(0.3, 1.6, 0.5, 1) 1.6s both;
+  }
+
+  /* Finder results rise in again after each change (rows are re-created) */
+  .result {
+    animation: rise 0.5s ease both;
+  }
+
+  .result:nth-child(2) {
+    animation-delay: 90ms;
+  }
+
+  .result:nth-child(3) {
+    animation-delay: 180ms;
+  }
+
+  /* ---- Short loops, capped ---- */
+  .scan {
+    animation: scan 2.4s ease-in-out 1.8s 1; /* ends at 4.2s */
+  }
+
+  .pri,
+  .dark {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .pri::after,
+  .dark::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -60%;
+    width: 40%;
+    height: 100%;
+    background: linear-gradient(100deg, transparent, rgb(255 255 255 / 0.35), transparent);
+    transform: skewX(-20deg);
+    pointer-events: none;
+    animation: shine 2.4s ease 1.6s 1; /* the sweep ends at about 2.6s */
+  }
+
+  .planeFly {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: fly 1.8s ease-in-out 1.2s 2; /* ends at 4.8s */
+  }
+
+  .blob {
+    animation: drift 4s ease-in-out 1 forwards; /* drifts once, then stays */
+  }
+
+  /* Campus scene: short loops end within 5 s; clouds and the flying plane run on with a pause button */
+  .scene [data-anim="flag"] {
+    transform-box: fill-box;
+    transform-origin: left center;
+    animation: flag 1.2s ease-in-out 4 alternate; /* 4.8s */
+  }
+
+  .scene [data-anim="twinkle"] {
+    animation: twinkle 1.5s ease-in-out 2; /* 3s */
+  }
+
+  .scene [data-anim="cap"] {
+    animation: bob 2s ease-in-out 2; /* 4s */
+  }
+
+  .scene [data-anim="cap"]:nth-of-type(2n) {
+    animation-delay: 0.5s;
+  }
+
+  .scene [data-anim="cloud"] {
+    animation: cloud 40s linear infinite;
+  }
+
+  .scene [data-anim="cloud"]:nth-of-type(2) {
+    animation-delay: -14s;
+  }
+
+  .scene [data-anim="cloud"]:nth-of-type(3) {
+    animation-delay: -27s;
+  }
+
+  .scenePaused [data-anim] {
+    animation-play-state: paused;
+  }
+
+  /* Career types: the highlight steps through all six once when the block scrolls in (4.8 s) */
+  .career.in .types li {
+    animation: typeOn 0.8s ease both;
+  }
+
+  .career.in .types li:nth-child(2) {
+    animation-delay: 0.8s;
+  }
+
+  .career.in .types li:nth-child(3) {
+    animation-delay: 1.6s;
+  }
+
+  .career.in .types li:nth-child(4) {
+    animation-delay: 2.4s;
+  }
+
+  .career.in .types li:nth-child(5) {
+    animation-delay: 3.2s;
+  }
+
+  .career.in .types li:nth-child(6) {
+    animation-delay: 4s;
+  }
+
+  /* Hover reactions */
+  .types li {
+    transition:
+      translate 250ms ease,
+      background-color 250ms ease,
+      color 250ms ease;
+  }
+
+  .chip {
+    transition:
+      background-color 200ms ease,
+      color 200ms ease,
+      translate 200ms ease,
+      rotate 200ms ease,
+      border-color 200ms ease;
+  }
+
+  .pass {
+    transition: transform 250ms ease;
+  }
+
+  .collegeTop svg,
+  .thumb {
+    transition: scale 500ms ease;
+  }
+
+  .college,
+  .guide {
+    transition:
+      translate 250ms ease,
+      box-shadow 250ms ease;
+  }
+}
+
+/* Hover states */
+.types li:hover {
+  background: var(--ink);
+  color: #ffffff;
+}
+
+.types li:hover small {
+  color: var(--tint-peach-strong);
+}
+
+@media (hover: hover) {
+  .types li:hover {
+    translate: 0 -4px;
+  }
+
+  .chip:hover {
+    background: var(--ink);
+    border-color: var(--ink);
+    color: #ffffff;
+    translate: 0 -3px;
+    rotate: -2deg;
+  }
+
+  .college:hover,
+  .guide:hover {
+    translate: 0 -6px;
+    box-shadow: 0 26px 50px -26px rgb(15 46 51 / 0.45);
+  }
+
+  .college:hover .collegeTop svg,
+  .guide:hover .thumb {
+    scale: 1.06;
+  }
+}
+
+@keyframes riseT {
+  from {
+    transform: translateY(40px);
+  }
+  to {
+    transform: none;
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes draw {
+  from {
+    stroke-dashoffset: 300;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes passIn {
+  from {
+    opacity: 0;
+    transform: translateY(60px) rotate(4deg);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes stampIn {
+  from {
+    opacity: 0;
+    scale: 2.4;
+    rotate: -30deg;
+  }
+  to {
+    opacity: 1;
+    scale: 1;
+    rotate: -14deg;
+  }
+}
+
+@keyframes scan {
+  0% {
+    left: 0;
+    opacity: 1;
+  }
+  50% {
+    left: calc(100% - 3px);
+    opacity: 1;
+  }
+  100% {
+    left: 0;
+    opacity: 0;
+  }
+}
+
+@keyframes shine {
+  0% {
+    left: -60%;
+  }
+  40%,
+  100% {
+    left: 130%;
+  }
+}
+
+@keyframes fly {
+  50% {
+    transform: translate(5px, -6px) rotate(-5deg);
+  }
+}
+
+@keyframes drift {
+  to {
+    transform: translate(-60px, 40px) scale(1.15);
+  }
+}
+
+@keyframes flag {
+  to {
+    transform: scaleX(0.75) skewY(6deg);
+  }
+}
+
+@keyframes twinkle {
+  50% {
+    opacity: 0.35;
+  }
+}
+
+@keyframes bob {
+  50% {
+    transform: translateY(-8px) rotate(6deg);
+  }
+}
+
+@keyframes cloud {
+  from {
+    transform: translateX(-500px);
+  }
+  to {
+    transform: translateX(1200px);
+  }
+}
+
+@keyframes typeOn {
+  0%,
+  100% {
+    background: #ffffff;
+    color: var(--ink);
+    translate: 0 0;
+  }
+  20%,
+  80% {
+    background: var(--ink);
+    color: #ffffff;
+    translate: 0 -4px;
   }
 }

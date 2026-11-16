@@ -1,8 +1,10 @@
 import s from "./landing.module.css";
+import ScenePlayer from "./ScenePlayer";
 
 // Campus illustration under the hero, ported from the design's JavaScript generator to static SVG.
-// Decorative only: hidden from screen readers. Class names (cloud, twk, flag, cap, plane) are hooks
-// for the Part D animations; in Part C everything stands still.
+// Decorative only: hidden from screen readers. data-anim attributes are the animation hooks
+// (landing.module.css): flag, twinkle and caps run briefly; clouds and the flying plane keep going
+// and can be paused with the scene's own button (ScenePlayer). Still with reduced motion.
 
 function Tree({ x, scale }: { x: number; scale: number }) {
   return (
@@ -60,7 +62,7 @@ const WINDOWS = Array.from({ length: 30 }, (_, i) => ({ r: Math.floor(i / 5), c:
 
 export default function CampusScene() {
   return (
-    <div className={s.sceneWrap}>
+    <ScenePlayer>
       <svg
         className={s.scene}
         viewBox="0 0 1200 300"
@@ -167,13 +169,26 @@ export default function CampusScene() {
         <Cap x={470} y={60} r={-6} />
         <Cap x={760} y={40} r={12} />
 
-        {/* Paper plane and its dotted trail (still here; Part D flies it along the path) */}
+        {/* Paper plane and its dotted trail. It rests here until ScenePlayer starts the flight
+            (begin="indefinite"), so it never moves with reduced motion. The flight path is the
+            design's path shifted by the resting point (400, 74). */}
         <path d="M120 90q120-50 230-10" stroke="#94a3b8" strokeWidth="2" strokeDasharray="5 7" fill="none" />
-        <g data-anim="plane" transform="translate(400 74) rotate(-12)">
-          <polygon points="24,0 -18,-14 -7,0" fill="#fff" stroke="#0f2e33" strokeWidth="2" strokeLinejoin="round" />
-          <polygon points="24,0 -7,0 -12,14" fill="#f97350" stroke="#0f2e33" strokeWidth="2" strokeLinejoin="round" />
+        <g transform="translate(400 74)">
+          <g>
+            <animateMotion
+              begin="indefinite"
+              dur="14s"
+              repeatCount="indefinite"
+              rotate="auto"
+              path="M-460 46 C -200 -54, 20 86, 240 -4 S 600 -34, 880 36"
+            />
+            <g transform="rotate(-12)">
+              <polygon points="24,0 -18,-14 -7,0" fill="#fff" stroke="#0f2e33" strokeWidth="2" strokeLinejoin="round" />
+              <polygon points="24,0 -7,0 -12,14" fill="#f97350" stroke="#0f2e33" strokeWidth="2" strokeLinejoin="round" />
+            </g>
+          </g>
         </g>
       </svg>
-    </div>
+    </ScenePlayer>
   );
 }
