@@ -21,16 +21,38 @@ function Accent({ children, coral = false }: { children: React.ReactNode; coral?
   );
 }
 
+// Line 1 accent: "college." -> "course." -> "scholarship." -> "internship." -> "college.", once.
+// All words share one grid cell, so the width of the longest word is reserved (no layout jump).
+// Screen readers only hear the static "college."; the rotating words are hidden from them.
+// Without motion (or before/after the run) only "college." shows. Timing: landing.module.css.
+const ROTATING = ["college.", "course.", "scholarship.", "internship.", "college."];
+
+function RotatingAccent() {
+  return (
+    <span className={s.ser}>
+      <span className="sr-only">college.</span>
+      <span className={s.rotWords} aria-hidden="true">
+        {ROTATING.map((w, i) => (
+          <span key={i} className={s.rotWord} data-step={i}>
+            {w}
+            <Underline />
+          </span>
+        ))}
+      </span>
+    </span>
+  );
+}
+
 export default function Hero() {
   return (
     <div className={`${s.wrap} ${s.hero}`}>
       <span className={`${s.blob} ${s.blobA}`} aria-hidden="true" />
       <span className={`${s.blob} ${s.blobB}`} aria-hidden="true" />
 
-      <div>
+      <div className={s.heroText}>
         <h1 className={s.h1}>
           <span className={s.line}>
-            Find your <Accent>college.</Accent>
+            Find your <RotatingAccent />
           </span>
           <span className={s.line}>
             Crack the <Accent coral>entrance.</Accent>
