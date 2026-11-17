@@ -33,7 +33,7 @@ const ALL_QUICK_LINKS = [
     href: "/school",
     label: "School Education",
     desc: "Pick your board and class",
-    colour: "pastel-purple",
+    colour: "bg-tint-teal text-teal-dark",
     Art: SchoolArt,
   },
   {
@@ -66,7 +66,7 @@ const ALL_LINK_GROUPS = [
   },
   {
     label: "Study material",
-    colour: "pastel-purple",
+    colour: "bg-tint-teal text-teal-dark",
     links: [
       { href: "/search?division=NCERT_SOLUTION", label: "NCERT Solution", Icon: IconBook2 },
       { href: "/search?division=STUDY_PACKAGE", label: "Study Package", Icon: IconPackage },
@@ -145,7 +145,7 @@ export default function StudentDashboard({
   return (
     <div className="flex-1 w-full max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
       {/* Welcome */}
-      <section className="pastel-purple rounded-[18px] border border-(--line) shadow-soft px-5 py-6 sm:px-10 sm:py-10 grid grid-cols-[1fr_auto] items-center gap-4 sm:gap-8">
+      <section className="bg-tint-teal text-teal-dark rounded-[18px] border border-(--line) shadow-soft px-5 py-6 sm:px-10 sm:py-10 grid grid-cols-[1fr_auto] items-center gap-4 sm:gap-8">
         <div className="min-w-0">
           <h1 className="font-display text-[40px] leading-[0.95] font-extrabold uppercase text-(--ink) sm:text-6xl">
             Welcome <span className="font-serif font-normal normal-case italic text-(--teal)">back</span>

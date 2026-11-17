@@ -34,7 +34,6 @@
   --navbar-bg: var(--paper);
 
   /* Pastel palette (old names) */
-  --pastel-purple: var(--tint-teal);
   --pastel-blue: var(--tint-aqua);
   --pastel-mint: var(--tint-mint);
   --pastel-yellow: var(--tint-sand);
@@ -129,7 +128,6 @@ button:not(:disabled):active {
 
 /* ---------- Pastel backgrounds with matching text colour ---------- */
 /* (old class names; colours now from the Teal + Coral palette) */
-.pastel-purple { background: var(--pastel-purple); color: var(--teal-dark); }
 .pastel-blue   { background: var(--pastel-blue);   color: var(--teal-dark); }
 .pastel-mint   { background: var(--pastel-mint);   color: var(--teal-dark); }
 .pastel-yellow { background: var(--pastel-yellow); color: var(--coral-text); }

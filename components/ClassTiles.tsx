@@ -40,7 +40,7 @@ export default function ClassTiles({ items, visible }: { items: Item[]; visible:
           type="button"
           onClick={() => setExpanded(!expanded)}
           aria-expanded={expanded}
-          className={`${s.flat} mt-5 inline-flex min-h-12 items-center rounded-full border-[3px] border-(--hp-ink) bg-white px-6 text-[15px] font-extrabold text-(--hp-ink)`}
+          className={`${s.flat} mt-5 inline-flex min-h-12 items-center rounded-full border border-(--line) bg-white px-6 text-[15px] font-extrabold text-(--hp-ink)`}
         >
           {expanded ? "Show fewer classes" : `Show all ${items.length} classes`}
         </button>
