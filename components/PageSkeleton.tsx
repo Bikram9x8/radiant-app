@@ -11,7 +11,7 @@ export default function PageSkeleton({ cards = 6 }: { cards?: number }) {
         <div className="skeleton mt-3 h-4 w-80 max-w-full" />
         <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {Array.from({ length: cards }).map((_, i) => (
-            <div key={i} className="skeleton h-44 rounded-[24px]!" />
+            <div key={i} className="skeleton h-44 rounded-[18px]!" />
           ))}
         </div>
       </div>

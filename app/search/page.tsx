@@ -90,7 +90,7 @@ export default async function SearchPage({
           )}
         </nav>
 
-        <div className="mt-2 rounded-[28px] border-[3px] border-(--hp-ink) bg-(--hp-lavender) p-5 shadow-[6px_6px_0_var(--hp-ink)] sm:p-8 md:rounded-[36px]">
+        <div className="mt-2 rounded-[18px] border border-(--line) bg-(--hp-lavender) p-5 shadow-soft sm:p-8 md:rounded-[18px]">
           <h1 className={`${s.display} m-0 text-[34px] leading-[1.12] font-bold break-words sm:text-[42px] md:text-[50px]`}>
             {heading}
           </h1>
@@ -103,7 +103,7 @@ export default async function SearchPage({
             action="/search"
             method="get"
             role="search"
-            className={`${s.search} mt-5 flex h-14 w-full max-w-[640px] items-center gap-2 rounded-full border-[3px] border-(--hp-ink) bg-white pr-1.5 pl-4 sm:h-16`}
+            className={`${s.search} mt-5 flex h-14 w-full max-w-[640px] items-center gap-2 rounded-full border border-(--line) bg-white pr-1.5 pl-4 sm:h-16`}
           >
             {/* Searching while a division is chosen stays inside that division */}
             {division && <input type="hidden" name="division" value={division} />}
@@ -128,7 +128,7 @@ export default async function SearchPage({
           </form>
           {divisionLabel && (
             <p className="mt-4 flex flex-wrap items-center gap-2 text-[15px] font-bold">
-              <span className="rounded-full border-2 border-(--hp-ink) bg-white px-3 py-1">Only: {divisionLabel}</span>
+              <span className="rounded-full border border-(--line) bg-white px-3 py-1">Only: {divisionLabel}</span>
               <Link
                 href={q ? `/search?q=${encodeURIComponent(q)}` : "/search"}
                 className="inline-flex min-h-11 items-center font-extrabold text-(--hp-link) underline underline-offset-4"
@@ -146,7 +146,7 @@ export default async function SearchPage({
         </p>
 
         {posts.length === 0 ? (
-          <div className="rounded-[24px] border-[3px] border-(--hp-ink) bg-white p-8 text-center">
+          <div className="rounded-[18px] border border-(--line) bg-white p-8 text-center">
             <p className={`${s.display} m-0 text-2xl font-bold`}>
               {q ? `Nothing matches “${q}”` : `No ${divisionLabel || "study material"} yet`}
             </p>

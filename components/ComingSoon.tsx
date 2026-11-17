@@ -84,7 +84,7 @@ export default function ComingSoon({
   }
 
   return (
-    <div className="rounded-[28px] border-[3px] border-(--hp-ink) bg-white px-6 py-8 text-center sm:px-10 sm:py-10">
+    <div className="rounded-[18px] border border-(--line) bg-white px-6 py-8 text-center sm:px-10 sm:py-10">
       <WritingNotes className="mx-auto block h-auto w-52 sm:w-60" />
       <h2
         className="m-0 mt-4 text-[30px] leading-tight font-bold"
@@ -98,7 +98,7 @@ export default function ComingSoon({
       {back && (
         <Link
           href={back.href}
-          className="mt-5 inline-flex min-h-12 items-center rounded-full border-[3px] border-(--hp-ink) bg-white px-6 text-base font-extrabold text-(--hp-ink) no-underline hover:bg-(--hp-butter)"
+          className="mt-5 inline-flex min-h-12 items-center rounded-full border border-(--line) bg-white px-6 text-base font-extrabold text-(--hp-ink) no-underline hover:bg-(--hp-butter)"
         >
           ← Back to {back.label}
         </Link>

@@ -41,7 +41,12 @@
   --pastel-peach: var(--tint-coral);
   --pastel-pink: var(--tint-peach);
 
-  --radius-card: 16px;
+  --radius-card: 18px;
+
+  /* Calm card style (Phase 2): 1px line, 18px corners, soft shadow. Tailwind: shadow-soft, shadow-lift */
+  --soft-shadow: 0 1px 2px rgb(15 46 51 / 0.04), 0 18px 40px -28px rgb(15 46 51 / 0.35);
+  --lift-shadow: 0 26px 50px -26px rgb(15 46 51 / 0.45);
+  --btn-line: #d3dce6;
 }
 
 @theme inline {
@@ -61,6 +66,9 @@
   --color-tint-peach-strong: var(--tint-peach-strong);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-btn-line: var(--btn-line);
+  --shadow-soft: var(--soft-shadow);
+  --shadow-lift: var(--lift-shadow);
   /* Fonts (loaded in app/layout.tsx): Figtree body, Big Shoulders Display headings, Instrument Serif accents */
   --font-sans: var(--font-figtree);
   --font-display: var(--font-big-shoulders);
@@ -96,26 +104,27 @@ button:not(:disabled):active {
   background: #ffffff;
   border: 1px solid var(--border);
   border-radius: var(--radius-card);
-  box-shadow: 0 2px 8px rgba(20, 20, 43, 0.06);
+  box-shadow: var(--soft-shadow);
 }
 
 /* Use together with a pastel background: lifts on hover, shrinks a little on click */
 .card-lift {
   border-radius: var(--radius-card);
-  box-shadow: 0 2px 8px rgba(20, 20, 43, 0.06);
-  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  border: 1px solid var(--line);
+  box-shadow: var(--soft-shadow);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
 @media (hover: hover) {
   .card-lift:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 16px 32px rgba(20, 20, 43, 0.14);
+    transform: translateY(-6px);
+    box-shadow: var(--lift-shadow);
   }
 }
 
 .card-lift:active {
   transform: scale(0.98);
-  box-shadow: 0 4px 12px rgba(20, 20, 43, 0.1);
+  box-shadow: var(--soft-shadow);
 }
 
 /* ---------- Pastel backgrounds with matching text colour ---------- */
@@ -238,7 +247,7 @@ button:not(:disabled):active {
 .glass {
   background: #ffffff;
   border: 1px solid var(--border);
-  box-shadow: 0 1px 2px rgba(20, 20, 43, 0.04);
+  box-shadow: var(--soft-shadow);
 }
 
 .glass-card {
@@ -249,7 +258,7 @@ button:not(:disabled):active {
 
 .glass-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(20, 20, 43, 0.12);
+  box-shadow: var(--lift-shadow);
 }
 
 /* ---------- Old main button ---------- */

@@ -1,11 +1,12 @@
-/* School Education flow ("Option B · Light & playful"): /school, /courses/..., /opportunities/[id].
-   Same tokens as components/landing/landing.module.css and components/site-chrome.module.css.
-   Scoped under .page or local classes, so no other page changes.
-   Lists, cards and navigation use the playful sticker style; reading views (the notes/solutions
-   page) use a calmer frame: thinner lines, no sticker shadows, comfortable text size and line length.
-   Only transform and opacity animate. */
+/* Shared style for the student pages: /higher, /courses/..., /opportunities (tests), /search,
+   /opportunities/[id] (reading page and PDF viewers), /school.
+   Phase 2 calm style, same as components/landing/landing.module.css: 1px lines, 18px corners,
+   soft shadows, Big Shoulders uppercase headings, Instrument Serif accent words (.ser).
+   Scoped under .page or local classes, so no other page changes. Only transform/translate,
+   opacity and colours animate. */
 
 .page {
+  /* Older names, still used by utility classes in these pages */
   --hp-cream: var(--paper);
   --hp-ink: var(--ink);
   --hp-muted: var(--muted);
@@ -30,13 +31,8 @@
   color: var(--hp-ink);
 }
 
-/* globals.css fades colours/shadows on every link and button; here only transform/opacity move */
-.page :where(a, button, input, textarea) {
-  transition: none;
-}
-
 .page :focus-visible {
-  outline: 3px solid var(--hp-purple);
+  outline: 3px solid var(--teal);
   outline-offset: 3px;
 }
 
@@ -47,63 +43,79 @@
   font-weight: 800;
 }
 
+/* Card and post titles (user content, often long): Figtree, not uppercase */
+.cardTitle {
+  font-family: var(--font-figtree), system-ui, sans-serif;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  text-transform: none;
+}
+
+/* Italic serif accent word inside a .display heading ("Higher <span class=ser>Education</span>") */
+.ser {
+  font-family: var(--font-instrument-serif), Georgia, serif;
+  font-style: italic;
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--teal);
+}
+
 /* ---------- Breadcrumb ---------- */
 .crumbs a {
   color: var(--hp-muted);
   text-decoration: underline;
   text-decoration-color: transparent;
   text-underline-offset: 4px;
+  transition: color 150ms ease, text-decoration-color 150ms ease;
 }
 
 .crumbs a:hover {
-  color: var(--hp-purple-deep);
+  color: var(--teal-dark);
   text-decoration-color: currentColor;
 }
 
-/* ---------- Sticker cards and buttons: the face presses into a fixed shadow ---------- */
-/* <a class="press"><span|div class="face">…</span></a>. Offsets/colour/radius via
-   [--sx:..] [--sy:..] [--shadow:..] [--radius:..]; defaults are var() fallbacks because this
-   file is unlayered and would otherwise beat Tailwind's layered utilities. */
+/* ---------- Cards that are links ---------- */
+/* <a class="press"><span|div class="face">…</span></a>: a white or tinted card with a 1px line
+   and a soft shadow; it lifts a little on hover. Radius via [--radius:..] (default 18px). */
 .press {
   position: relative;
-  isolation: isolate;
   display: flex;
-  border-radius: var(--radius, 24px);
+  border-radius: var(--radius, 18px);
   text-decoration: none;
   color: var(--hp-ink);
-}
-
-.press::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  border-radius: inherit;
-  background: var(--shadow, var(--hp-ink));
-  translate: var(--sx, 5px) var(--sy, 5px);
 }
 
 .face {
   display: flex;
   width: 100%;
   border-radius: inherit;
-  border: 3px solid var(--hp-ink);
-  transition: translate 160ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  border: 1px solid var(--line);
+  box-shadow: var(--soft-shadow);
+  transition:
+    translate 200ms ease,
+    box-shadow 200ms ease,
+    border-color 200ms ease;
 }
 
 @media (hover: hover) {
   .press:hover .face {
-    translate: calc(var(--sx, 5px) * 0.5) calc(var(--sy, 5px) * 0.5);
+    translate: 0 -4px;
+    box-shadow: var(--lift-shadow);
+    border-color: var(--btn-line);
   }
 }
 
 .press:active .face {
-  translate: var(--sx, 5px) var(--sy, 5px);
+  translate: 0 0;
 }
 
-/* Flat pills: a small squash when pressed */
+/* Pills and buttons: a small squash when pressed */
 .flat {
-  transition: scale 140ms ease-out;
+  transition:
+    scale 140ms ease-out,
+    background-color 150ms ease,
+    border-color 150ms ease;
 }
 
 .flat:active {
@@ -113,9 +125,9 @@
 /* ---------- White list card with rows (chapters, posts) ---------- */
 .listCard {
   background: #ffffff;
-  border: 3px solid var(--hp-ink);
-  border-radius: 24px;
-  box-shadow: 5px 5px 0 var(--hp-ink);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  box-shadow: var(--soft-shadow);
   overflow: hidden;
 }
 
@@ -128,15 +140,16 @@
   color: var(--hp-ink);
   text-decoration: none;
   font-weight: 700;
+  transition: background-color 150ms ease;
 }
 
 .row + .row,
 .rowItem + .rowItem {
-  border-top: 2px solid var(--hp-line);
+  border-top: 1px solid var(--line);
 }
 
 .row:hover {
-  background: var(--hp-butter);
+  background: #f6f8fb;
 }
 
 .rowArrow {
@@ -155,8 +168,9 @@
 /* ---------- Calm reading view (notes, solutions, tests) ---------- */
 .readCard {
   background: #ffffff;
-  border: 2px solid var(--hp-line);
-  border-radius: 24px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  box-shadow: var(--soft-shadow);
 }
 
 /* Long text: ~65 characters per line, 17px on phones, generous line height */
@@ -169,17 +183,18 @@
 
 .pdfFrame {
   background: #ffffff;
-  border: 2px solid var(--hp-line);
-  border-radius: 20px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  box-shadow: var(--soft-shadow);
   overflow: hidden;
 }
 
 .pdfToolbar {
   background: #ffffff;
-  border-bottom: 2px solid var(--hp-line);
+  border-bottom: 1px solid var(--line);
 }
 
-/* Soft warm backdrop behind white PDF pages: less glare than the old near-black */
+/* Soft warm backdrop behind white PDF pages: less glare than near-black */
 .pdfStage {
   background: var(--hp-paper);
 }
@@ -190,19 +205,25 @@
 
 /* ---------- Pill search box (Tests page, Search page): the whole pill shows focus ---------- */
 .search:focus-within {
-  outline: 3px solid var(--hp-purple);
-  outline-offset: 3px;
+  border-color: var(--ink);
+  outline: 3px solid var(--teal);
+  outline-offset: 2px;
 }
 
 .search input:focus-visible {
   outline: none;
 }
 
-/* ---------- Form fields on the reading page ---------- */
+/* ---------- Form fields ---------- */
 .field {
   background: #ffffff;
-  border: 2px solid var(--hp-ink);
+  border: 1.5px solid var(--btn-line);
   color: var(--hp-ink);
+  transition: border-color 150ms ease;
+}
+
+.field:hover {
+  border-color: #b8c4d1;
 }
 
 .field::placeholder {
@@ -210,7 +231,8 @@
 }
 
 .field:focus-visible {
-  outline: 3px solid var(--hp-purple);
+  border-color: var(--ink);
+  outline: 3px solid var(--teal);
   outline-offset: 2px;
 }
 

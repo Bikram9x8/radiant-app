@@ -51,7 +51,7 @@ export default function SecureTestViewer({
 
   if (locked) {
     return (
-      <div className="rounded-[20px] border-2 border-red-200 bg-red-50 p-6 text-center sm:p-8">
+      <div className="rounded-[18px] border border-red-200 bg-red-50 p-6 text-center sm:p-8">
         <h2 className={`${s.display} mb-2 text-xl font-bold text-red-700`}>Test Locked</h2>
         <p className={`${s.readingCopy} mx-auto`}>
           This test was locked because you switched tabs or apps. Contact your institute to request access again.
@@ -68,7 +68,7 @@ export default function SecureTestViewer({
     >
       <button
         onClick={() => setIsFullscreen(!isFullscreen)}
-        className={`${s.flat} mb-2 inline-flex min-h-11 items-center rounded-full bg-(--hp-purple) px-4 text-sm font-extrabold text-white`}
+        className={`${s.flat} mb-2 inline-flex min-h-11 items-center rounded-full bg-(--teal) px-4 text-sm font-extrabold text-white`}
       >
         {isFullscreen ? "Exit Fullscreen" : "Fullscreen"}
       </button>

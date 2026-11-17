@@ -48,7 +48,7 @@ function PageSlot({
         elRef.current = el;
         register(el);
       }}
-      className="mb-3 bg-white shadow-[0_1px_4px_rgba(36,26,61,0.18)]"
+      className="mb-3 bg-white shadow-soft"
       style={{ width, minHeight: height }}
     >
       {near && <Page pageNumber={pageNumber} width={width} />}
@@ -142,7 +142,7 @@ function ViewerBody({
       >
         <button
           onClick={() => setIsFullscreen(!isFullscreen)}
-          className={`${pill} bg-(--hp-purple) text-white`}
+          className={`${pill} bg-(--teal) text-white`}
         >
           {isFullscreen ? "Exit Fullscreen" : "Fullscreen"}
         </button>
@@ -172,7 +172,7 @@ function ViewerBody({
                   setDraft(String(pageNumber));
                 }}
                 aria-label="Go to page number"
-                className="h-11 w-14 rounded-full border-2 border-(--hp-ink) bg-white px-1 text-center font-extrabold text-(--hp-ink)"
+                className="h-11 w-14 rounded-full border border-(--line) bg-white px-1 text-center font-extrabold text-(--hp-ink)"
               />{" "}
               of {numPages}
             </span>
