@@ -2,18 +2,26 @@ import { getServerSession } from "next-auth/next";
 import { redirect } from "next/navigation";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { fredoka, nunito } from "@/components/home/fonts";
-import s from "@/components/home/home.module.css";
-import Hero from "@/components/home/Hero";
-import PathCards from "@/components/home/PathCards";
-import ChapterChips from "@/components/home/ChapterChips";
-import ScoreCard from "@/components/home/ScoreCard";
-import RecentlyAdded from "@/components/home/RecentlyAdded";
-import JoinBanner from "@/components/home/JoinBanner";
-import AdSlot from "@/components/home/AdSlot";
+import s from "@/components/landing/landing.module.css";
+import Hero from "@/components/landing/Hero";
+import CampusScene from "@/components/landing/CampusScene";
+import Ticker from "@/components/landing/Ticker";
+import JourneyCards from "@/components/landing/JourneyCards";
+import CourseChips from "@/components/landing/CourseChips";
+import CollegeCards from "@/components/landing/CollegeCards";
+import ExamsBand from "@/components/landing/ExamsBand";
+import RecentlyAdded from "@/components/landing/RecentlyAdded";
+import CareerBlock from "@/components/landing/CareerBlock";
+import Guides from "@/components/landing/Guides";
+import JoinBanner from "@/components/landing/JoinBanner";
+import RevealOnScroll from "@/components/landing/RevealOnScroll";
+import AdSlot from "@/components/AdSlot";
 import { SHOW_SCHOOL } from "@/lib/features";
 import { notSchoolWhere } from "@/lib/school-posts";
 
+// Homepage (Phase 2 "Teal + Coral", radiant-design/home-teal-coral.html).
+// Logged-in visitors go to their dashboard. Colleges, course chips, guides and the career test are
+// sample or "Coming soon" (clearly marked); "Recently added" is real data.
 export default async function Home() {
   const session = await getServerSession(authOptions);
 
@@ -30,26 +38,31 @@ export default async function Home() {
   });
 
   return (
-    <div className={`${fredoka.variable} ${nunito.variable} ${s.home} flex-1`}>
+    <div className={`${s.landing} flex-1`}>
       <Hero />
+      <CampusScene />
+      <Ticker />
 
-      {/* Ad slot 1 (moved below the hero so the headline comes first) */}
-      <div className="mx-auto max-w-[1200px] px-4 pb-8 sm:px-8 md:pb-10">
+      {/* Ad slot 1, below the hero */}
+      <div className={`${s.wrap} ${s.adRow}`}>
         <AdSlot label="728 × 90 banner space" className="h-[90px] max-w-[728px]" />
       </div>
 
-      <PathCards />
+      <JourneyCards />
+      <CourseChips />
+      <CollegeCards />
 
-      {/* Ad slot 2 */}
-      <div className="mx-auto max-w-[1200px] px-4 pb-8 sm:px-8 md:pb-10">
+      {/* Ad slot 2, between the cards and the exams band */}
+      <div className={`${s.wrap} ${s.adRow}`}>
         <AdSlot label="970 × 120 banner space" className="h-[120px] max-w-[970px]" />
       </div>
 
-      {/* "Every chapter has it all" is about school chapters */}
-      {SHOW_SCHOOL && <ChapterChips />}
-      <ScoreCard />
+      <ExamsBand />
       <RecentlyAdded items={latestOpportunities} />
+      <CareerBlock />
+      <Guides />
       <JoinBanner />
+      <RevealOnScroll />
     </div>
   );
 }

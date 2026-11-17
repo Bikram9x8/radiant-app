@@ -5,7 +5,6 @@ import dynamic from "next/dynamic";
 const PlainTestViewer = dynamic(() => import("./PlainTestViewer"), { ssr: false });
 import { IconLock, IconLockOpen, IconFileText, IconTool, IconTargetArrow, IconPackage, IconClipboardList, IconSchool, IconBook, IconBook2 } from "@tabler/icons-react";
 import { getShortLabel } from "@/lib/categoryLabel";
-import { fredoka, nunito } from "@/components/home/fonts";
 import s from "@/components/school/school.module.css";
 
 // Icon and tile colour per division (Option B pastels, ink outline)
@@ -34,13 +33,13 @@ import { entranceMeta, isTestPost } from "@/lib/test-posts";
 const READING_TYPES = ["NOTES", "SOLUTION"];
 
 // Page wrapper: fonts + colour tokens; a calm, wide reading column (PDF pages get more width)
-const shell = `${fredoka.variable} ${nunito.variable} ${s.page} flex-1`;
+const shell = `${s.page} flex-1`;
 const column = "mx-auto w-full max-w-[880px] px-3 pt-6 pb-14 sm:px-6 md:pt-10";
 const backLinkClass =
   "inline-flex min-h-11 items-center px-1 text-[15px] font-extrabold text-(--hp-link) underline-offset-4 hover:underline";
-// Buttons: ink pill (main action on this page), purple pill (sign up)
+// Buttons: ink pill (main action on this page), teal pill (sign up)
 const inkButton = `${s.flat} inline-flex min-h-12 items-center justify-center rounded-full bg-(--hp-ink) px-6 text-base font-extrabold text-white disabled:opacity-50`;
-const purpleButton = `${s.flat} inline-flex min-h-12 items-center justify-center rounded-full bg-(--hp-purple) px-6 text-base font-extrabold text-white no-underline`;
+const tealButton = `${s.flat} inline-flex min-h-12 items-center justify-center rounded-full bg-(--teal) px-6 text-base font-extrabold text-white no-underline`;
 
 export default function OpportunityDetailPage() {
   const params = useParams();
@@ -202,14 +201,16 @@ export default function OpportunityDetailPage() {
             <div className="flex min-w-0 items-start gap-3">
               {(() => {
                 const meta = DIVISION_ICONS[opportunity.division] ?? DIVISION_ICONS.TEST_SERIES;
-                const label = getShortLabel(opportunity.category?.name);
+                // Small badge on the icon ("12" for "Class 12 - Physics"): hidden for tests while
+                // School is switched off, so no class number is shown
+                const label = !SHOW_SCHOOL && isTestPost(opportunity) ? "" : getShortLabel(opportunity.category?.name);
                 return (
                   <div
-                    className={`relative shrink-0 w-12 h-12 rounded-2xl border-2 border-(--hp-ink) ${meta.bg} flex items-center justify-center`}
+                    className={`relative shrink-0 w-12 h-12 rounded-2xl border border-(--line) ${meta.bg} flex items-center justify-center`}
                   >
                     <meta.Icon size={22} color="var(--hp-ink)" stroke={2} aria-hidden="true" />
                     {label && (
-                      <span className="absolute -bottom-1.5 -right-1.5 min-w-[18px] rounded-full border-2 border-(--hp-ink) bg-white px-1 text-center text-[9px] font-extrabold leading-[14px]">
+                      <span className="absolute -bottom-1.5 -right-1.5 min-w-[18px] rounded-full border border-(--line) bg-white px-1 text-center text-[9px] font-extrabold leading-[14px]">
                         {label}
                       </span>
                     )}
@@ -217,7 +218,7 @@ export default function OpportunityDetailPage() {
                 );
               })()}
               <div className="min-w-0">
-                <h1 className={`${s.display} m-0 text-[28px] leading-[1.15] font-bold break-words sm:text-[34px]`}>
+                <h1 className={`${s.cardTitle} m-0 text-[26px] leading-[1.2] break-words sm:text-[32px]`}>
                   {opportunity.title}
                 </h1>
                 <p className="mt-1.5 text-[15px] font-semibold text-(--hp-muted)">
@@ -228,7 +229,7 @@ export default function OpportunityDetailPage() {
                 </p>
               </div>
             </div>
-            <span className="shrink-0 rounded-full bg-(--hp-lavender-soft) px-3.5 py-1.5 text-xs font-extrabold text-(--hp-purple-deep)">
+            <span className="shrink-0 rounded-full bg-(--hp-lavender-soft) px-3.5 py-1.5 text-xs font-extrabold text-(--teal-dark)">
               {opportunity.type}
             </span>
           </div>
@@ -273,10 +274,10 @@ export default function OpportunityDetailPage() {
             </div>
           )}
 
-          <div className="mt-7 border-t-2 border-(--hp-line) pt-6">
+          <div className="mt-7 border-t border-(--line) pt-6">
             {isQuiz ? (
               opportunity.requiresCode && codeUnlocked && alreadyLocked ? (
-                <div className="rounded-[20px] border-2 border-red-200 bg-red-50 p-6 text-center sm:p-8">
+                <div className="rounded-[18px] border border-red-200 bg-red-50 p-6 text-center sm:p-8">
                   <h2 className={`${s.display} mb-2 text-xl font-bold text-red-700`}>Test Locked</h2>
                   <p className={`${s.readingCopy} mx-auto`}>
                     This test was locked because you switched tabs or apps. Contact your institute to request access again.
@@ -288,7 +289,7 @@ export default function OpportunityDetailPage() {
                 <div>
                   <div className="flex justify-center mb-4">
                     <div
-                      className="flex h-14 w-14 items-center justify-center rounded-full border-2 border-(--hp-ink) bg-(--hp-butter) transition-transform duration-300"
+                      className="flex h-14 w-14 items-center justify-center rounded-full border border-(--line) bg-(--hp-butter) transition-transform duration-300"
                       style={{ transform: justUnlocked ? "scale(1.3) rotate(-8deg)" : "scale(1)" }}
                     >
                       {justUnlocked ? (
@@ -335,7 +336,7 @@ export default function OpportunityDetailPage() {
                         Download PDF
                       </a>
                     ) : (
-                      <Link href="/signup" className={purpleButton}>
+                      <Link href="/signup" className={tealButton}>
                         Sign up to download →
                       </Link>
                     )}
@@ -352,7 +353,7 @@ export default function OpportunityDetailPage() {
                 </p>
               </div>
             ) : status !== "authenticated" ? (
-              <Link href="/signup" className={purpleButton}>
+              <Link href="/signup" className={tealButton}>
                 Sign up to apply →
               </Link>
             ) : success || alreadyApplied ? (

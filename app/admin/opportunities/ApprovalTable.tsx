@@ -44,7 +44,7 @@ export default function ApprovalTable({
 
   if (opportunities.length === 0) {
     return (
-      <div className="glass rounded-2xl p-10 text-center text-zinc-600 dark:text-zinc-400">
+      <div className="glass rounded-[18px] p-10 text-center text-muted">
         Nothing pending. All caught up.
       </div>
     );
@@ -58,26 +58,26 @@ export default function ApprovalTable({
           <div className="flex items-start justify-between gap-4">
             <div className="min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
-                <h3 className="font-semibold text-zinc-900 dark:text-white">{o.title}</h3>
-                <span className="text-xs px-2 py-0.5 rounded-full bg-purple-100/70 dark:bg-purple-900/40 text-purple-800 dark:text-purple-300">
+                <h3 className="font-semibold text-ink">{o.title}</h3>
+                <span className="text-xs px-2 py-0.5 rounded-full bg-tint-teal/70 text-teal-dark">
                   {o.type}
                 </span>
               </div>
-              <p className="text-sm text-zinc-600 dark:text-zinc-400 mt-1">
+              <p className="text-sm text-muted mt-1">
                 {o.company.companyName} · {o.category.name}
               </p>
-              <p className="text-sm mt-3 text-zinc-700 dark:text-zinc-300">{o.description}</p>
+              <p className="text-sm mt-3 text-ink-2">{o.description}</p>
               {o.externalLink && (
                 <a
                   href={o.externalLink}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-sm text-purple-600 dark:text-purple-400 hover:underline mt-2 inline-block"
+                  className="text-sm text-teal-dark hover:underline mt-2 inline-block"
                 >
                   {o.externalLink}
                 </a>
               )}
-              <p className="text-xs text-zinc-500 mt-2">
+              <p className="text-xs text-muted mt-2">
                 Deadline: {new Date(o.applyDeadline).toLocaleDateString()} · Submitted:{" "}
                 {new Date(o.createdAt).toLocaleDateString()}
               </p>
@@ -94,7 +94,7 @@ export default function ApprovalTable({
               <button
                 disabled={updatingId === o.id}
                 onClick={() => setRejectingId(rejectingId === o.id ? null : o.id)}
-                className="text-sm px-4 py-2 rounded-xl glass font-semibold text-zinc-900 dark:text-white disabled:opacity-50"
+                className="text-sm px-4 py-2 rounded-xl glass font-semibold text-ink disabled:opacity-50"
               >
                 Reject
               </button>
@@ -102,13 +102,13 @@ export default function ApprovalTable({
           </div>
 
           {rejectingId === o.id && (
-            <div className="mt-4 pt-4 border-t border-white/20 dark:border-white/10 flex flex-col gap-2">
-              <label className="text-sm font-medium text-zinc-900 dark:text-white">Rejection reason (optional)</label>
+            <div className="mt-4 pt-4 border-t border-white/20 flex flex-col gap-2">
+              <label className="text-sm font-medium text-ink">Rejection reason (optional)</label>
               <textarea
                 value={rejectionReason}
                 onChange={(e) => setRejectionReason(e.target.value)}
                 rows={2}
-                className="w-full rounded-xl bg-white/70 dark:bg-zinc-900/70 px-3 py-2 outline-none text-sm text-zinc-900 dark:text-white placeholder:text-zinc-500"
+                className="w-full rounded-xl bg-white/70 px-3 py-2 outline-none text-sm text-ink placeholder:text-muted"
                 placeholder="e.g. Test link is broken"
               />
               <div className="flex gap-2">
@@ -121,7 +121,7 @@ export default function ApprovalTable({
                 </button>
                 <button
                   onClick={() => setRejectingId(null)}
-                  className="text-sm px-4 py-2 rounded-xl glass font-semibold text-zinc-900 dark:text-white"
+                  className="text-sm px-4 py-2 rounded-xl glass font-semibold text-ink"
                 >
                   Cancel
                 </button>

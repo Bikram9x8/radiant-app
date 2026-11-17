@@ -4,38 +4,83 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 :root {
-  --background: #ffffff;
-  --foreground: #14142b;
-  --accent: #5b33d6;
-  --accent-dark: #4a28b8;
-  --border: #e4e2ef;
-  --soft: #f6f5fb;
-  --navbar-bg: #ffffff;
+  /* ---------- Teal + Coral (Phase 2). The single source of colour for the whole site. ---------- */
+  --ink: #0f2e33;
+  --ink-2: #1d4e55;
+  --teal: #0f766e;
+  --teal-dark: #115e59;
+  --coral: #f97350;        /* shapes and large display text only (too light for small text on white) */
+  --coral-text: #c2410c;   /* coral for small text: ~5.2:1 on white */
+  --paper: #fcfaf6;
+  --muted: #4b5b6e;
+  --line: #e2e8ef;
+  /* Tints (backgrounds behind ink text) */
+  --tint-teal: #ccfbf1;
+  --tint-teal-strong: #99f6e4;
+  --tint-peach: #fff4ec;
+  --tint-peach-strong: #fed7aa;
+  --tint-mint: #dcf6ec;
+  --tint-aqua: #dff7f4;
+  --tint-coral: #ffe6dd;
+  --tint-sand: #fff1c2;
 
-  /* Pastel palette */
-  --pastel-purple: #ede9fe;
-  --pastel-blue: #dbeafe;
-  --pastel-mint: #ccfbf1;
-  --pastel-yellow: #fef3c7;
-  --pastel-peach: #ffedd5;
-  --pastel-pink: #fce7f3;
+  /* ---------- Older names, now pointing at the new colours (pages not yet restyled) ---------- */
+  --background: var(--paper);
+  --foreground: var(--ink);
+  --accent: var(--teal);
+  --accent-dark: var(--teal-dark);
+  --border: var(--line);
+  --soft: var(--tint-aqua);
+  --navbar-bg: var(--paper);
 
-  --radius-card: 16px;
+  /* Pastel palette (old names) */
+  --pastel-blue: var(--tint-aqua);
+  --pastel-mint: var(--tint-mint);
+  --pastel-yellow: var(--tint-sand);
+  --pastel-peach: var(--tint-coral);
+  --pastel-pink: var(--tint-peach);
+
+  --radius-card: 18px;
+
+  /* Calm card style (Phase 2): 1px line, 18px corners, soft shadow. Tailwind: shadow-soft, shadow-lift */
+  --soft-shadow: 0 1px 2px rgb(15 46 51 / 0.04), 0 18px 40px -28px rgb(15 46 51 / 0.35);
+  --lift-shadow: 0 26px 50px -26px rgb(15 46 51 / 0.45);
+  --btn-line: #d3dce6;
 }
 
 @theme inline {
+  /* Tailwind colour utilities: bg-ink, text-teal, border-line, bg-tint-peach ... */
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-teal: var(--teal);
+  --color-teal-dark: var(--teal-dark);
+  --color-coral: var(--coral);
+  --color-coral-text: var(--coral-text);
+  --color-paper: var(--paper);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-tint-teal: var(--tint-teal);
+  --color-tint-teal-strong: var(--tint-teal-strong);
+  --color-tint-peach: var(--tint-peach);
+  --color-tint-peach-strong: var(--tint-peach-strong);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-inter);
+  --color-btn-line: var(--btn-line);
+  --shadow-soft: var(--soft-shadow);
+  --shadow-lift: var(--lift-shadow);
+  /* Fonts (loaded in app/layout.tsx): Figtree body, Big Shoulders Display headings, Instrument Serif accents */
+  --font-sans: var(--font-figtree);
+  --font-display: var(--font-big-shoulders);
+  --font-serif: var(--font-instrument-serif);
   --font-mono: var(--font-geist-mono);
-  /* MCQ question text: Inter for Latin, Noto for Hindi and Punjabi (class: font-question) */
-  --font-question: var(--font-inter), var(--font-devanagari), var(--font-gurmukhi), system-ui, sans-serif;
+  /* MCQ question text: Figtree for Latin, Noto for Hindi and Punjabi (class: font-question) */
+  --font-question: var(--font-figtree), var(--font-devanagari), var(--font-gurmukhi), system-ui, sans-serif;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-inter), system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+  font-family: var(--font-figtree), system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
   overflow-x: hidden;
 }
 
@@ -58,35 +103,36 @@ button:not(:disabled):active {
   background: #ffffff;
   border: 1px solid var(--border);
   border-radius: var(--radius-card);
-  box-shadow: 0 2px 8px rgba(20, 20, 43, 0.06);
+  box-shadow: var(--soft-shadow);
 }
 
 /* Use together with a pastel background: lifts on hover, shrinks a little on click */
 .card-lift {
   border-radius: var(--radius-card);
-  box-shadow: 0 2px 8px rgba(20, 20, 43, 0.06);
-  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  border: 1px solid var(--line);
+  box-shadow: var(--soft-shadow);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
 @media (hover: hover) {
   .card-lift:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 16px 32px rgba(20, 20, 43, 0.14);
+    transform: translateY(-6px);
+    box-shadow: var(--lift-shadow);
   }
 }
 
 .card-lift:active {
   transform: scale(0.98);
-  box-shadow: 0 4px 12px rgba(20, 20, 43, 0.1);
+  box-shadow: var(--soft-shadow);
 }
 
 /* ---------- Pastel backgrounds with matching text colour ---------- */
-.pastel-purple { background: var(--pastel-purple); color: #6d28d9; }
-.pastel-blue   { background: var(--pastel-blue);   color: #1d4ed8; }
-.pastel-mint   { background: var(--pastel-mint);   color: #0f766e; }
-.pastel-yellow { background: var(--pastel-yellow); color: #a16207; }
-.pastel-peach  { background: var(--pastel-peach);  color: #c2410c; }
-.pastel-pink   { background: var(--pastel-pink);   color: #be185d; }
+/* (old class names; colours now from the Teal + Coral palette) */
+.pastel-blue   { background: var(--pastel-blue);   color: var(--teal-dark); }
+.pastel-mint   { background: var(--pastel-mint);   color: var(--teal-dark); }
+.pastel-yellow { background: var(--pastel-yellow); color: var(--coral-text); }
+.pastel-peach  { background: var(--pastel-peach);  color: var(--coral-text); }
+.pastel-pink   { background: var(--pastel-pink);   color: var(--coral-text); }
 
 /* ---------- Buttons ---------- */
 .btn {
@@ -118,7 +164,7 @@ button:not(:disabled):active {
 
 .btn-primary:hover {
   background: var(--accent-dark);
-  box-shadow: 0 6px 16px rgba(91, 51, 214, 0.3);
+  box-shadow: 0 6px 16px rgba(15, 118, 110, 0.3);
 }
 
 .btn-secondary {
@@ -164,7 +210,7 @@ button:not(:disabled):active {
 }
 
 .skeleton {
-  background: linear-gradient(90deg, #f1f0f7 25%, #e4e2ef 50%, #f1f0f7 75%);
+  background: linear-gradient(90deg, #eef3f2 25%, #e2e8ef 50%, #eef3f2 75%);
   background-size: 200% 100%;
   animation: skeleton-shimmer 1.4s ease-in-out infinite;
   border-radius: var(--radius-card);
@@ -199,7 +245,7 @@ button:not(:disabled):active {
 .glass {
   background: #ffffff;
   border: 1px solid var(--border);
-  box-shadow: 0 1px 2px rgba(20, 20, 43, 0.04);
+  box-shadow: var(--soft-shadow);
 }
 
 .glass-card {
@@ -210,14 +256,17 @@ button:not(:disabled):active {
 
 .glass-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(20, 20, 43, 0.12);
+  box-shadow: var(--lift-shadow);
 }
 
 /* ---------- Old main button ---------- */
 .btn-neon {
+  /* Old main button name: a teal pill in the Phase 2 style */
   background: var(--accent);
   color: #ffffff;
-  box-shadow: none;
+  border-radius: 999px;
+  font-weight: 700;
+  box-shadow: 0 8px 20px -10px rgb(15 118 110 / 0.6);
 }
 
 .btn-neon:hover {

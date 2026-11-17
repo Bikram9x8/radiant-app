@@ -2,9 +2,10 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
+// Calm form style (Phase 2): white fields with a 1.5px line, teal focus ring
 const inputClass =
-  "bg-white/70 dark:bg-zinc-900/70 rounded-xl px-3 py-2 w-full outline-none text-zinc-900 dark:text-white placeholder:text-zinc-500";
-const labelClass = "block text-sm font-medium mb-1 text-zinc-900 dark:text-white";
+  "w-full min-h-[46px] rounded-xl border-[1.5px] border-(--btn-line) bg-white px-3 py-2 text-base text-(--ink) placeholder:text-(--muted) hover:border-[#b8c4d1] focus-visible:border-(--ink) focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-teal";
+const labelClass = "block text-sm font-bold mb-1.5 text-(--ink)";
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -97,15 +98,17 @@ export default function ProfilePage() {
   if (loading) {
     return (
       <div className="flex flex-1 items-center justify-center">
-        <p className="text-zinc-600 dark:text-zinc-400">Loading...</p>
+        <p className="text-(--muted)">Loading...</p>
       </div>
     );
   }
 
   return (
-    <div className="max-w-2xl mx-auto mt-12 px-6 mb-12">
-      <div className="glass rounded-2xl p-8">
-        <h1 className="text-2xl font-bold mb-6 text-zinc-900 dark:text-white">Edit Profile</h1>
+    <div className="max-w-2xl mx-auto mt-10 px-4 sm:px-6 mb-12 w-full">
+      <div className="rounded-[18px] border border-(--line) bg-white p-6 shadow-soft sm:p-8">
+        <h1 className="mb-6 font-display text-[40px] leading-[0.95] font-extrabold uppercase text-(--ink) sm:text-5xl">
+          Edit <span className="font-serif font-normal normal-case italic text-(--teal)">profile</span>
+        </h1>
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <div>
             <label className={labelClass}>Full name</label>
@@ -157,29 +160,29 @@ export default function ProfilePage() {
             <input type="url" className={inputClass}
               value={form.portfolioUrl} onChange={(e) => setForm({ ...form, portfolioUrl: e.target.value })} />
           </div>
-          <div className="border-t border-white/20 dark:border-white/10 pt-4 mt-2">
+          <div className="border-t border-(--line) pt-4 mt-2">
             <label className={`${labelClass} mb-2`}>Resume (PDF, max 5MB)</label>
             <input
               type="file"
               accept="application/pdf"
               onChange={(e) => setResumeFile(e.target.files?.[0] || null)}
-              className="text-sm text-zinc-700 dark:text-zinc-300"
+              className="text-sm text-(--ink-2)"
             />
             <button
               type="button"
               onClick={handleResumeUpload}
               disabled={!resumeFile || uploadingResume}
-              className="mt-3 rounded-xl px-4 py-2 glass font-semibold text-sm text-zinc-900 dark:text-white disabled:opacity-50"
+              className="mt-3 inline-flex min-h-[44px] items-center rounded-full border-[1.5px] border-(--btn-line) bg-white px-5 text-sm font-bold text-(--ink) hover:border-(--ink) disabled:opacity-50"
             >
               {uploadingResume ? "Uploading..." : "Upload Resume"}
             </button>
           </div>
 
-          {error && <p className="text-red-600 dark:text-red-400 text-sm">{error}</p>}
-          {success && <p className="text-emerald-600 dark:text-emerald-400 text-sm">Profile saved!</p>}
+          {error && <p className="text-red-700 text-sm font-semibold">{error}</p>}
+          {success && <p className="text-(--teal-dark) text-sm font-semibold">Profile saved!</p>}
 
           <button type="submit" disabled={saving}
-            className="bg-purple-600 text-white rounded-xl px-3 py-2.5 font-semibold mt-2 hover:bg-purple-700 transition-colors disabled:opacity-50">
+            className="mt-2 inline-flex min-h-12 items-center justify-center rounded-full bg-(--teal) px-6 font-bold text-white shadow-[0_8px_20px_-10px_rgb(15_118_110/0.6)] transition-colors hover:bg-(--teal-dark) disabled:opacity-50">
             {saving ? "Saving..." : "Save profile"}
           </button>
         </form>

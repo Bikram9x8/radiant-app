@@ -29,8 +29,8 @@ function toDateInputValue(d: Date | null): string {
 }
 
 const inputClass =
-  "w-full rounded-xl bg-white/70 dark:bg-zinc-900/70 px-3 py-2 outline-none text-zinc-900 dark:text-white placeholder:text-zinc-500";
-const labelClass = "block text-sm font-medium mb-1 text-zinc-900 dark:text-white";
+  "w-full rounded-xl bg-white/70 px-3 py-2 outline-none text-ink placeholder:text-muted";
+const labelClass = "block text-sm font-medium mb-1 text-ink";
 
 export default function EditOpportunityForm({
   categories,
@@ -146,7 +146,7 @@ export default function EditOpportunityForm({
   }
 
   return (
-    <form onSubmit={handleSubmit} className="glass rounded-2xl p-6 flex flex-col gap-5">
+    <form onSubmit={handleSubmit} className="glass rounded-[18px] p-6 flex flex-col gap-5">
       <div>
         <label className={labelClass}>Type *</label>
         {isInternship ? (
@@ -154,7 +154,7 @@ export default function EditOpportunityForm({
             <select value="INTERNSHIP" disabled className={inputClass}>
               <option value="INTERNSHIP">Internship</option>
             </select>
-            <p className="text-xs text-zinc-600 dark:text-zinc-400 mt-1">
+            <p className="text-xs text-muted mt-1">
               Type can&apos;t be changed for internships.
             </p>
           </>
@@ -172,8 +172,8 @@ export default function EditOpportunityForm({
 
       {isInternship && (
         <>
-          <p className="text-sm text-zinc-600 dark:text-zinc-400">
-            Category: <span className="font-medium text-zinc-900 dark:text-white">Internships</span> (set
+          <p className="text-sm text-muted">
+            Category: <span className="font-medium text-ink">Internships</span> (set
             automatically)
           </p>
           <InternshipPicker
@@ -303,28 +303,28 @@ export default function EditOpportunityForm({
         </>
       )}
 
-      {error && <p className="text-sm text-red-600 dark:text-red-400">{error}</p>}
+      {error && <p className="text-sm text-red-600">{error}</p>}
 
       <button
         type="submit"
         disabled={submitting}
-        className="rounded-xl px-5 py-2.5 bg-purple-600 text-white font-semibold hover:bg-purple-700 transition-colors disabled:opacity-50"
+        className="rounded-xl px-5 py-2.5 bg-teal text-white font-semibold hover:bg-teal-dark transition-colors disabled:opacity-50"
       >
         {submitting ? "Saving..." : "Save Changes"}
       </button>
 
-      <div className="border-t border-white/20 dark:border-white/10 pt-5 mt-2">
+      <div className="border-t border-white/20 pt-5 mt-2">
         {!confirmingDelete ? (
           <button
             type="button"
             onClick={() => setConfirmingDelete(true)}
-            className="text-sm font-semibold text-red-600 dark:text-red-400 hover:underline"
+            className="text-sm font-semibold text-red-600 hover:underline"
           >
             Delete this opportunity
           </button>
         ) : (
           <div className="flex flex-col gap-3">
-            <p className="text-sm text-red-600 dark:text-red-400 font-medium">
+            <p className="text-sm text-red-600 font-medium">
               This will permanently delete this opportunity, along with all student applications and access codes tied to it. This cannot be undone.
             </p>
             <div className="flex gap-3">
@@ -340,12 +340,12 @@ export default function EditOpportunityForm({
                 type="button"
                 onClick={() => setConfirmingDelete(false)}
                 disabled={deleting}
-                className="rounded-xl px-4 py-2 glass font-semibold text-sm text-zinc-900 dark:text-white"
+                className="rounded-xl px-4 py-2 glass font-semibold text-sm text-ink"
               >
                 Cancel
               </button>
             </div>
-            {deleteError && <p className="text-sm text-red-600 dark:text-red-400">{deleteError}</p>}
+            {deleteError && <p className="text-sm text-red-600">{deleteError}</p>}
           </div>
         )}
       </div>

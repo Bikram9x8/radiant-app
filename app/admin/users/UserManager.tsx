@@ -14,10 +14,10 @@ type UserRow = {
 };
 
 const statusStyles: Record<string, string> = {
-  APPROVED: "bg-emerald-100/80 dark:bg-emerald-900/40 text-emerald-800 dark:text-emerald-300",
-  PENDING: "bg-amber-100/80 dark:bg-amber-900/40 text-amber-800 dark:text-amber-300",
-  BLOCKED: "bg-red-100/80 dark:bg-red-900/40 text-red-800 dark:text-red-300",
-  REJECTED: "bg-zinc-200/80 dark:bg-zinc-800/60 text-zinc-600 dark:text-zinc-400",
+  APPROVED: "bg-emerald-100/80 text-emerald-800",
+  PENDING: "bg-amber-100/80 text-amber-800",
+  BLOCKED: "bg-red-100/80 text-red-800",
+  REJECTED: "bg-zinc-200/80 text-muted",
 };
 
 export default function UserManager({
@@ -71,7 +71,7 @@ export default function UserManager({
             className={`text-sm px-3 py-1.5 rounded-xl ${
               filter === f
                 ? "btn-neon"
-                : "glass text-zinc-900 dark:text-white"
+                : "glass text-ink"
             }`}
           >
             {f === "ALL" ? "All" : f.charAt(0) + f.slice(1).toLowerCase()}
@@ -79,48 +79,48 @@ export default function UserManager({
         ))}
       </div>
 
-      {error && <p className="text-sm text-red-600 dark:text-red-400 mb-4">{error}</p>}
+      {error && <p className="text-sm text-red-600 mb-4">{error}</p>}
 
-      <div className="glass rounded-2xl overflow-hidden">
+      <div className="glass rounded-[18px] overflow-hidden">
         <div className="overflow-x-auto">
         <table className="w-full text-sm min-w-[600px]">
           <thead>
-            <tr className="border-b border-white/20 dark:border-white/10">
-              <th className="text-left px-4 py-3 font-medium text-zinc-600 dark:text-zinc-400">Name</th>
-              <th className="text-left px-4 py-3 font-medium text-zinc-600 dark:text-zinc-400">Email</th>
-              <th className="text-left px-4 py-3 font-medium text-zinc-600 dark:text-zinc-400">Role</th>
-              <th className="text-left px-4 py-3 font-medium text-zinc-600 dark:text-zinc-400">Status</th>
-              <th className="text-left px-4 py-3 font-medium text-zinc-600 dark:text-zinc-400">Joined</th>
-              <th className="text-left px-4 py-3 font-medium text-zinc-600 dark:text-zinc-400">Actions</th>
+            <tr className="border-b border-white/20">
+              <th className="text-left px-4 py-3 font-medium text-muted">Name</th>
+              <th className="text-left px-4 py-3 font-medium text-muted">Email</th>
+              <th className="text-left px-4 py-3 font-medium text-muted">Role</th>
+              <th className="text-left px-4 py-3 font-medium text-muted">Status</th>
+              <th className="text-left px-4 py-3 font-medium text-muted">Joined</th>
+              <th className="text-left px-4 py-3 font-medium text-muted">Actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-white/10 dark:divide-white/5">
+          <tbody className="divide-y divide-white/10">
             {filtered.map((u) => (
               <tr key={u.id}>
-                <td className="px-4 py-3 font-medium text-zinc-900 dark:text-white">{displayName(u)}</td>
-                <td className="px-4 py-3 text-zinc-600 dark:text-zinc-400">{u.email}</td>
-                <td className="px-4 py-3 text-zinc-600 dark:text-zinc-400">{u.role}</td>
+                <td className="px-4 py-3 font-medium text-ink">{displayName(u)}</td>
+                <td className="px-4 py-3 text-muted">{u.email}</td>
+                <td className="px-4 py-3 text-muted">{u.role}</td>
                 <td className="px-4 py-3">
                   <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${statusStyles[u.status]}`}>
                     {u.status}
                   </span>
                 </td>
-                <td className="px-4 py-3 text-zinc-600 dark:text-zinc-400">
+                <td className="px-4 py-3 text-muted">
                   {new Date(u.createdAt).toLocaleDateString()}
                 </td>
                 <td className="px-4 py-3">
                   {u.id === currentUserId ? (
-                    <span className="text-xs text-zinc-500">You</span>
+                    <span className="text-xs text-muted">You</span>
                   ) : u.status === "PENDING" || u.status === "REJECTED" ? (
-                    <span className="text-xs text-zinc-500">—</span>
+                    <span className="text-xs text-muted">—</span>
                   ) : (
                     <button
                       disabled={updatingId === u.id}
                       onClick={() => toggleBlock(u.id, u.status)}
                       className={`text-xs px-3 py-1 rounded-lg glass disabled:opacity-50 ${
                         u.status === "BLOCKED"
-                          ? "text-emerald-600 dark:text-emerald-400"
-                          : "text-red-600 dark:text-red-400"
+                          ? "text-emerald-600"
+                          : "text-red-600"
                       }`}
                     >
                       {u.status === "BLOCKED" ? "Unblock" : "Block"}

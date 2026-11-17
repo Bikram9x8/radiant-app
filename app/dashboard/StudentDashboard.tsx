@@ -26,14 +26,14 @@ type RecentApplication = {
 };
 
 const focusRing =
-  "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#6d28d9]";
+  "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal";
 
 const ALL_QUICK_LINKS = [
   {
     href: "/school",
     label: "School Education",
     desc: "Pick your board and class",
-    colour: "pastel-purple",
+    colour: "bg-tint-teal text-teal-dark",
     Art: SchoolArt,
   },
   {
@@ -66,7 +66,7 @@ const ALL_LINK_GROUPS = [
   },
   {
     label: "Study material",
-    colour: "pastel-purple",
+    colour: "bg-tint-teal text-teal-dark",
     links: [
       { href: "/search?division=NCERT_SOLUTION", label: "NCERT Solution", Icon: IconBook2 },
       { href: "/search?division=STUDY_PACKAGE", label: "Study Package", Icon: IconPackage },
@@ -111,7 +111,7 @@ function ApplicationTrack({ status }: { status: string }) {
   // Rejected isn't a step on the way to Selected, so it gets no track
   if (reached === -1) {
     const label = status.charAt(0) + status.slice(1).toLowerCase();
-    return <p className="mt-3 text-sm font-semibold text-[#3b3a55]">{label}</p>;
+    return <p className="mt-3 text-sm font-semibold text-(--muted)">{label}</p>;
   }
 
   return (
@@ -119,16 +119,16 @@ function ApplicationTrack({ status }: { status: string }) {
       <div aria-hidden="true" className="flex w-28 shrink-0 items-center">
         {TRACK.map((step, i) => (
           <div key={step.status} className={`flex items-center ${i === 0 ? "" : "flex-1"}`}>
-            {i > 0 && <span className={`h-0.5 flex-1 ${i <= reached ? "bg-[#6d28d9]" : "bg-[#d4d4d8]"}`} />}
+            {i > 0 && <span className={`h-0.5 flex-1 ${i <= reached ? "bg-(--teal)" : "bg-(--line)"}`} />}
             <span
               className={`h-3 w-3 rounded-full border-2 ${
-                i <= reached ? "border-[#6d28d9] bg-[#6d28d9]" : "border-[#d4d4d8] bg-white"
+                i <= reached ? "border-(--teal) bg-(--teal)" : "border-(--btn-line) bg-white"
               }`}
             />
           </div>
         ))}
       </div>
-      <p className="text-sm font-semibold text-[#6d28d9]">{TRACK[reached].label}</p>
+      <p className="text-sm font-semibold text-(--teal-dark)">{TRACK[reached].label}</p>
     </div>
   );
 }
@@ -145,17 +145,18 @@ export default function StudentDashboard({
   return (
     <div className="flex-1 w-full max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
       {/* Welcome */}
-      <section className="pastel-purple rounded-[16px] px-5 py-6 sm:px-10 sm:py-10 grid grid-cols-[1fr_auto] items-center gap-4 sm:gap-8">
+      <section className="bg-tint-teal text-teal-dark rounded-[18px] border border-(--line) shadow-soft px-5 py-6 sm:px-10 sm:py-10 grid grid-cols-[1fr_auto] items-center gap-4 sm:gap-8">
         <div className="min-w-0">
-          <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-[#14142b]">
-            {firstName ? `Welcome back, ${firstName}` : "Welcome back"}
+          <h1 className="font-display text-[40px] leading-[0.95] font-extrabold uppercase text-(--ink) sm:text-6xl">
+            Welcome <span className="font-serif font-normal normal-case italic text-(--teal)">back</span>
+            {firstName ? `, ${firstName}` : ""}
           </h1>
-          <p className="mt-3 max-w-prose text-[#3b3a55] sm:text-lg">
+          <p className="mt-3 max-w-prose text-(--muted) sm:text-lg">
             Practice tests, career tools, and more — all in one place.
           </p>
           <Link
             href="/profile"
-            className={`mt-5 inline-flex min-h-[44px] items-center rounded-xl border border-[#d4d4d8] bg-white px-4 text-sm font-semibold text-[#14142b] hover:border-[#6d28d9] hover:text-[#6d28d9] ${focusRing}`}
+            className={`mt-5 inline-flex min-h-[44px] items-center rounded-full border-[1.5px] border-(--btn-line) bg-white px-5 text-sm font-bold text-(--ink) hover:border-(--ink) ${focusRing}`}
           >
             Edit profile
           </Link>
@@ -176,8 +177,8 @@ export default function StudentDashboard({
               className={`card-lift ${colour} flex items-center justify-between gap-4 p-5 md:flex-col md:items-start md:p-6 ${focusRing}`}
             >
               <span className="min-w-0">
-                <span className="block text-xl font-extrabold tracking-tight text-[#14142b]">{label}</span>
-                <span className="mt-1 block text-sm text-[#3b3a55]">{desc}</span>
+                <span className="block font-display text-[26px] leading-none font-extrabold uppercase text-(--ink)">{label}</span>
+                <span className="mt-1 block text-sm text-(--muted)">{desc}</span>
               </span>
               <span aria-hidden="true" className="shrink-0 md:self-end">
                 <Art className="w-24 md:w-44 lg:w-52" />
@@ -191,12 +192,12 @@ export default function StudentDashboard({
         {/* Recent applications */}
         <section aria-labelledby="recent-applications" className="card p-5 sm:p-6 lg:col-span-7">
           <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-            <h2 id="recent-applications" className="text-lg font-bold text-[#14142b]">
+            <h2 id="recent-applications" className="font-display text-2xl leading-none font-extrabold uppercase text-(--ink)">
               Recent applications
             </h2>
             <Link
               href="/my-applications"
-              className={`rounded text-sm font-semibold text-[#6d28d9] hover:underline ${focusRing}`}
+              className={`rounded text-sm font-semibold text-(--teal-dark) hover:underline ${focusRing}`}
             >
               My Applications
             </Link>
@@ -204,25 +205,25 @@ export default function StudentDashboard({
 
           {applications.length === 0 ? (
             <div className="mt-4">
-              <p className="text-[#3b3a55]">You haven&apos;t applied to anything yet.</p>
+              <p className="text-(--muted)">You haven&apos;t applied to anything yet.</p>
               <Link
                 href="/opportunities"
-                className={`mt-4 inline-flex min-h-[44px] items-center rounded-xl bg-[#6d28d9] px-4 text-sm font-semibold text-white hover:bg-[#5b21b6] ${focusRing}`}
+                className={`mt-4 inline-flex min-h-[44px] items-center rounded-full bg-(--teal) px-5 text-sm font-bold text-white hover:bg-(--teal-dark) ${focusRing}`}
               >
                 Browse opportunities
               </Link>
             </div>
           ) : (
-            <ul className="mt-2 divide-y divide-[#e4e2ef]">
+            <ul className="mt-2 divide-y divide-(--line)">
               {applications.map((app) => (
                 <li key={app.id} className="py-4 last:pb-0">
                   <Link
                     href={`/opportunities/${app.opportunity.id}`}
-                    className={`rounded font-semibold text-[#14142b] hover:text-[#6d28d9] hover:underline ${focusRing}`}
+                    className={`rounded font-semibold text-(--ink) hover:text-(--teal-dark) hover:underline ${focusRing}`}
                   >
                     {app.opportunity.title}
                   </Link>
-                  <p className="mt-1 text-sm text-[#3b3a55]">
+                  <p className="mt-1 text-sm text-(--muted)">
                     {app.opportunity.company?.companyName
                       ? `${app.opportunity.company.companyName}, applied `
                       : "Applied "}
@@ -242,19 +243,19 @@ export default function StudentDashboard({
 
         {/* Practice and study */}
         <section aria-labelledby="practice-and-study" className="card p-5 sm:p-6 lg:col-span-5">
-          <h2 id="practice-and-study" className="text-lg font-bold text-[#14142b]">
+          <h2 id="practice-and-study" className="font-display text-2xl leading-none font-extrabold uppercase text-(--ink)">
             Practice and study
           </h2>
           <div className="mt-3 grid gap-x-6 gap-y-4 sm:grid-cols-2 lg:grid-cols-1">
             {linkGroups.map((group) => (
               <div key={group.label} className={group.label === "Tests" ? "sm:row-span-2 lg:row-span-1" : ""}>
-                <h3 className="text-sm font-semibold text-[#3b3a55]">{group.label}</h3>
+                <h3 className="text-sm font-semibold text-(--muted)">{group.label}</h3>
                 <ul className="mt-1">
                   {group.links.map(({ href, label, Icon }) => (
                     <li key={label}>
                       <Link
                         href={href}
-                        className={`-mx-2 flex min-h-[44px] items-center gap-3 rounded-xl px-2 text-sm font-semibold text-[#14142b] hover:bg-[#f6f5fb] hover:text-[#6d28d9] ${focusRing}`}
+                        className={`-mx-2 flex min-h-[44px] items-center gap-3 rounded-xl px-2 text-sm font-semibold text-(--ink) hover:bg-[#f6f8fb] hover:text-(--teal-dark) ${focusRing}`}
                       >
                         <span
                           aria-hidden="true"

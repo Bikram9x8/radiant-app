@@ -124,7 +124,7 @@ export default function ImportForm({
         </h2>
 
         {chapter ? (
-          <p className="text-[#14142b]">
+          <p className="text-ink">
             <span className="font-bold">Questions go into:</span> {chapterLabel(chapter)}
           </p>
         ) : invalidChapter ? (
@@ -143,8 +143,8 @@ export default function ImportForm({
           }}
         />
 
-        <div className="rounded-xl bg-[#f6f5fb] p-4 flex flex-col gap-3">
-          <p className="text-sm text-[#14142b]">
+        <div className="rounded-xl bg-[#f6f8fb] p-4 flex flex-col gap-3">
+          <p className="text-sm text-ink">
             Start from the template. It has two example rows (English and Hindi) that are skipped on import. For
             Hindi and Punjabi, keep the file as .xlsx, or save CSV as “CSV UTF-8”.
           </p>
@@ -175,7 +175,7 @@ export default function ImportForm({
                   setDone(null);
                   setError("");
                 }}
-                className={`${inputClass} file:mr-3 file:rounded-lg file:border-0 file:bg-[#f6f5fb] file:px-3 file:py-1.5 file:text-sm file:font-semibold file:text-[#6d28d9]`}
+                className={`${inputClass} file:mr-3 file:rounded-lg file:border-0 file:bg-[#f6f8fb] file:px-3 file:py-1.5 file:text-sm file:font-semibold file:text-teal-dark`}
               />
             </div>
             <div>
@@ -199,12 +199,12 @@ export default function ImportForm({
             </p>
             <div className="flex flex-wrap gap-4 text-sm">
               {chapter && (
-                <Link href={`/admin/mcq/questions?chapterId=${chapter.id}`} className={`rounded font-semibold text-[#6d28d9] hover:underline ${focusRing}`}>
+                <Link href={`/admin/mcq/questions?chapterId=${chapter.id}`} className={`rounded font-semibold text-teal-dark hover:underline ${focusRing}`}>
                   Open the question bank
                 </Link>
               )}
               {done.testId && (
-                <Link href={`/admin/mcq/tests/${done.testId}`} className={`rounded font-semibold text-[#6d28d9] hover:underline ${focusRing}`}>
+                <Link href={`/admin/mcq/tests/${done.testId}`} className={`rounded font-semibold text-teal-dark hover:underline ${focusRing}`}>
                   Open the draft test
                 </Link>
               )}
@@ -235,22 +235,22 @@ export default function ImportForm({
           ) : (
             <div className="flex flex-col gap-4">
               {duplicates > 0 && (
-                <label className="flex min-h-[44px] items-center gap-3 text-sm font-semibold text-[#14142b]">
+                <label className="flex min-h-[44px] items-center gap-3 text-sm font-semibold text-ink">
                   <input
                     type="checkbox"
                     checked={importDuplicates}
                     onChange={(e) => setImportDuplicates(e.target.checked)}
-                    className={`h-5 w-5 accent-[#6d28d9] ${focusRing}`}
+                    className={`h-5 w-5 accent-teal ${focusRing}`}
                   />
                   Import the {duplicates} duplicate{duplicates === 1 ? "" : "s"} anyway (skipped otherwise)
                 </label>
               )}
-              <label className="flex min-h-[44px] items-center gap-3 text-sm font-semibold text-[#14142b]">
+              <label className="flex min-h-[44px] items-center gap-3 text-sm font-semibold text-ink">
                 <input
                   type="checkbox"
                   checked={createTest}
                   onChange={(e) => setCreateTest(e.target.checked)}
-                  className={`h-5 w-5 accent-[#6d28d9] ${focusRing}`}
+                  className={`h-5 w-5 accent-teal ${focusRing}`}
                 />
                 Also create a draft test from these questions
               </label>
@@ -285,7 +285,7 @@ export default function ImportForm({
             </div>
           )}
 
-          <nav aria-label="Filter rows" className="inline-flex self-start gap-1 rounded-xl bg-[#f6f5fb] p-1">
+          <nav aria-label="Filter rows" className="inline-flex self-start gap-1 rounded-xl bg-[#f6f8fb] p-1">
             {(
               [
                 ["all", `All (${rows.length})`],
@@ -300,8 +300,8 @@ export default function ImportForm({
                 aria-pressed={filter === key}
                 className={`flex min-h-[40px] items-center rounded-lg px-4 text-sm font-semibold ${
                   filter === key
-                    ? "bg-white text-[#6d28d9] shadow-[0_1px_4px_rgba(20,20,43,0.12)]"
-                    : "text-[#3b3a55] hover:text-[#6d28d9]"
+                    ? "bg-white text-teal-dark shadow-soft"
+                    : "text-muted hover:text-teal-dark"
                 } ${focusRing}`}
               >
                 {label}
@@ -312,10 +312,10 @@ export default function ImportForm({
           {shown.length === 0 ? (
             <p className={successText}>No rows to show for this filter.</p>
           ) : (
-            <div className="overflow-x-auto rounded-xl border border-[#e4e2ef]">
+            <div className="overflow-x-auto rounded-xl border border-line">
               <table className="w-full min-w-[720px] text-sm">
                 <thead>
-                  <tr className="border-b border-[#e4e2ef] bg-[#f6f5fb] text-left text-[#3b3a55]">
+                  <tr className="border-b border-line bg-[#f6f8fb] text-left text-muted">
                     <th scope="col" className="px-4 py-3 font-semibold">Row</th>
                     <th scope="col" className="px-4 py-3 font-semibold">Status</th>
                     <th scope="col" className="px-4 py-3 font-semibold">Question</th>
@@ -323,31 +323,31 @@ export default function ImportForm({
                     <th scope="col" className="px-4 py-3 font-semibold">What to fix</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-[#e4e2ef]">
+                <tbody className="divide-y divide-line">
                   {shown.map((r) => (
                     <tr key={r.rowNumber} className="align-top">
-                      <td className="px-4 py-3 font-semibold text-[#14142b]">{r.rowNumber}</td>
+                      <td className="px-4 py-3 font-semibold text-ink">{r.rowNumber}</td>
                       <td className="px-4 py-3">
                         <span className={STATUS[r.status].className}>
                           {r.duplicate && r.status === "warning" ? "Duplicate" : STATUS[r.status].label}
                         </span>
                       </td>
-                      <td className="px-4 py-3 text-[#14142b]">
+                      <td className="px-4 py-3 text-ink">
                         <span dir="auto" className={`${questionText} line-clamp-2 max-w-[340px] whitespace-pre-line`}>
-                          {r.question || <span className="text-[#3b3a55]">(empty)</span>}
+                          {r.question || <span className="text-muted">(empty)</span>}
                         </span>
                       </td>
-                      <td className="px-4 py-3 text-[#14142b]">
+                      <td className="px-4 py-3 text-ink">
                         {r.correct ? (
                           <span dir="auto" className={questionText}>
                             {r.correct}
                             {r.correctText ? `: ${r.correctText}` : ""}
                           </span>
                         ) : (
-                          <span className="text-[#3b3a55]">-</span>
+                          <span className="text-muted">-</span>
                         )}
                       </td>
-                      <td className={`px-4 py-3 ${r.status === "error" ? "text-red-700" : "text-[#3b3a55]"}`}>
+                      <td className={`px-4 py-3 ${r.status === "error" ? "text-red-700" : "text-muted"}`}>
                         {r.messages.length === 0 ? (
                           "-"
                         ) : (

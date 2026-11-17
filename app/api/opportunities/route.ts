@@ -3,7 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
 import { cleanDuration, getInternshipsCategoryId, isInternshipSubcategory } from "@/lib/internships";
-import { EXPLICIT_TEST_DIVISIONS, TEST_CLASSES, isTestDivision } from "@/lib/test-posts";
+import { EXPLICIT_TEST_DIVISIONS, TEST_CLASSES, isTestDivision, parseClassSubject } from "@/lib/test-posts";
 import type { Division } from "@prisma/client";
 import { SHOW_SCHOOL } from "@/lib/features";
 import { SCHOOL_TEST_DIVISION, notSchoolWhere } from "@/lib/school-posts";
@@ -29,8 +29,23 @@ export async function GET(req: Request) {
   const testsWhere = testsOnly
     ? { OR: [{ type: "QUIZ" as const }, { division: { in: EXPLICIT_TEST_DIVISIONS as Division[] } }] }
     : {};
+  // ?subject=Physics (Tests page while School is off): the subject part of the category name, any class.
+  // Only plain subject names are accepted; anything else is ignored.
+  const subjectParam = (searchParams.get("subject") || "").trim();
+  const subject = /^[A-Za-z][A-Za-z &.-]{0,39}$/.test(subjectParam) ? subjectParam : "";
   // Category names look like "Class 12 - Physics"
-  const classWhere = classNo ? { category: { name: { startsWith: `Class ${classNo} -` } } } : {};
+  const classWhere =
+    classNo || subject
+      ? {
+          category: {
+            name: {
+              ...(classNo ? { startsWith: `Class ${classNo} -` } : {}),
+              ...(subject ? { endsWith: `- ${subject}` } : {}),
+              mode: "insensitive" as const,
+            },
+          },
+        }
+      : {};
 
   const opportunities = await prisma.opportunity.findMany({
     where: {
@@ -67,7 +82,26 @@ export async function GET(req: Request) {
     subjects = rows.map((r) => r.category).sort((a, b) => a.name.localeCompare(b.name));
   }
 
-  return NextResponse.json({ opportunities, categories, subjects });
+  // Tests page without a class (School switched off): subject names that have tests, across classes,
+  // within the chosen test type ("Physics", "Mathematics"...). Category names are not changed.
+  let subjectNames: string[] = [];
+  if (testsOnly && !classNo) {
+    const rows = await prisma.opportunity.findMany({
+      where: {
+        status: "APPROVED",
+        ...testsWhere,
+        ...schoolWhere,
+        ...(divisionFilter ? { division: divisionFilter as Division } : {}),
+      },
+      distinct: ["categoryId"],
+      select: { category: { select: { name: true } } },
+    });
+    subjectNames = [
+      ...new Set(rows.map((r) => parseClassSubject(r.category.name).subject).filter((s): s is string => !!s)),
+    ].sort((a, b) => a.localeCompare(b));
+  }
+
+  return NextResponse.json({ opportunities, categories, subjects, subjectNames });
 }
 export async function POST(req: Request) {
   const session = await getServerSession(authOptions);

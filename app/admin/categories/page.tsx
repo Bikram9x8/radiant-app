@@ -21,8 +21,8 @@ export default async function AdminCategoriesPage() {
 
   return (
     <div className="flex-1 px-6 py-8 max-w-3xl mx-auto w-full">
-      <h1 className="text-2xl font-bold mb-1 text-zinc-900 dark:text-white">Categories</h1>
-      <p className="text-zinc-600 dark:text-zinc-400 text-sm mb-8">
+      <h1 className="text-2xl font-bold mb-1 text-ink">Categories</h1>
+      <p className="text-muted text-sm mb-8">
         Subjects and exams companies/data-entry can post opportunities under.
       </p>
       <CategoryManager categories={categories} />

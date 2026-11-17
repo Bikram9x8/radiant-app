@@ -5,7 +5,6 @@ import Link from "next/link";
 import { IconSearch } from "@tabler/icons-react";
 import { Skeleton } from "@/components/Skeleton";
 import PostCard, { type PostCardData } from "@/components/tests/PostCard";
-import { fredoka, nunito } from "@/components/home/fonts";
 import s from "@/components/school/school.module.css";
 import { SCHOOL_TEST_DIVISION, TEST_CLASSES, TEST_TYPE_FILTERS, parseClassSubject } from "@/lib/test-posts";
 import { SHOW_SCHOOL } from "@/lib/features";
@@ -16,15 +15,19 @@ const VISIBLE_TYPE_FILTERS = SHOW_SCHOOL
   ? TEST_TYPE_FILTERS
   : TEST_TYPE_FILTERS.filter((f) => f.division !== SCHOOL_TEST_DIVISION);
 
-// Class chips: with School Education switched off the tests are entrance prep (Class 11 and 12 only)
-const VISIBLE_CLASSES = SHOW_SCHOOL ? TEST_CLASSES : TEST_CLASSES.filter((c) => c === "11" || c === "12");
+// Class chips (and the per-class Subject chips that follow a class) only while School Education is on.
+// With it off, students never see "Class 11/12": a Subject row (Physics, Mathematics...) is shown
+// straight away instead, across classes. Old ?class= links simply show every test (the page doesn't
+// read that parameter).
+const SHOW_CLASS_FILTER = SHOW_SCHOOL;
+const VISIBLE_CLASSES = TEST_CLASSES;
 
 // Tests page: only tests (type QUIZ, or a chapter / board-level / DPP division; see lib/test-posts.ts).
 // All filtering happens on the server: GET /api/opportunities?tests=1&...
 
 const chip = `${s.flat} inline-flex min-h-11 items-center rounded-full px-4 text-sm font-extrabold no-underline`;
-const chipOn = "border-[3px] border-(--hp-ink) bg-(--hp-ink) text-white";
-const chipOff = "border-2 border-(--hp-ink) bg-white text-(--hp-ink) hover:bg-(--hp-butter)";
+const chipOn = "border border-(--line) bg-(--hp-ink) text-white";
+const chipOff = "border border-(--line) bg-white text-(--hp-ink) hover:bg-(--hp-butter)";
 const rowLabel = "m-0 mr-1 text-sm font-extrabold text-(--hp-muted)";
 
 function TestsContent() {
@@ -38,9 +41,11 @@ function TestsContent() {
   const [search, setSearch] = useState(searchParams.get("q") || "");
   const [query, setQuery] = useState(search); // search text actually sent (debounced)
   const [classNo, setClassNo] = useState("");
-  const [categoryId, setCategoryId] = useState(""); // subject
+  const [categoryId, setCategoryId] = useState(""); // subject within a class (School on)
+  const [subjectName, setSubjectName] = useState(""); // subject across classes (School off)
   const [tests, setTests] = useState<PostCardData[]>([]);
   const [subjects, setSubjects] = useState<{ id: string; name: string }[]>([]);
+  const [subjectNames, setSubjectNames] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [now, setNow] = useState(0); // time of the last load, for "Open till" / "Ended"
 
@@ -59,19 +64,27 @@ function TestsContent() {
       if (activeDivision) params.set("division", activeDivision);
       if (classNo) params.set("classNo", classNo);
       if (categoryId) params.set("categoryId", categoryId);
+      if (subjectName) params.set("subject", subjectName);
       const res = await fetch(`/api/opportunities?${params.toString()}`);
       const data = await res.json();
       if (cancelled) return;
+      const names: string[] = data.subjectNames || [];
+      // The chosen subject has no tests under the new Type filter: go back to all subjects
+      if (subjectName && !names.includes(subjectName)) {
+        setSubjectName("");
+        return;
+      }
       setNow(Date.now());
       setTests(data.opportunities || []);
       setSubjects(data.subjects || []);
+      setSubjectNames(names);
       setLoading(false);
     }
     load();
     return () => {
       cancelled = true;
     };
-  }, [query, activeDivision, classNo, categoryId]);
+  }, [query, activeDivision, classNo, categoryId, subjectName]);
 
   function pickClass(c: string) {
     setClassNo(c);
@@ -90,7 +103,7 @@ function TestsContent() {
       </nav>
 
       {/* Header card with the search box */}
-      <div className="mt-2 rounded-[28px] border-[3px] border-(--hp-ink) bg-(--hp-lavender) p-5 shadow-[6px_6px_0_var(--hp-ink)] sm:p-8 md:rounded-[36px]">
+      <div className="mt-2 rounded-[18px] border border-(--line) bg-(--hp-lavender) p-5 shadow-soft sm:p-8 md:rounded-[18px]">
         <h1 className={`${s.display} m-0 text-[38px] leading-[1.1] font-bold sm:text-[46px] md:text-[54px]`}>Tests</h1>
         <p className="mt-2 max-w-[56ch] text-[17px] leading-[1.55] font-semibold">
           {SHOW_SCHOOL
@@ -103,7 +116,7 @@ function TestsContent() {
             e.preventDefault();
             setQuery(search.trim());
           }}
-          className={`${s.search} mt-5 flex h-14 w-full max-w-[640px] items-center gap-2 rounded-full border-[3px] border-(--hp-ink) bg-white pr-1.5 pl-4 sm:h-16`}
+          className={`${s.search} mt-5 flex h-14 w-full max-w-[640px] items-center gap-2 rounded-full border border-(--line) bg-white pr-1.5 pl-4 sm:h-16`}
         >
           <label htmlFor="tests-search" className="sr-only">Search tests</label>
           <IconSearch aria-hidden="true" size={22} className="shrink-0 text-(--hp-muted)" />
@@ -125,7 +138,7 @@ function TestsContent() {
       </div>
 
       {nonTestDivision && (
-        <div role="note" className="mt-6 rounded-[20px] border-2 border-(--hp-ink) bg-(--hp-butter) p-4 text-[15px] font-semibold sm:p-5">
+        <div role="note" className="mt-6 rounded-[20px] border border-(--line) bg-(--hp-butter) p-4 text-[15px] font-semibold sm:p-5">
           {SHOW_SCHOOL ? (
             <>
               This page now shows tests only. Notes, NCERT solutions and sample papers are in{" "}
@@ -168,26 +181,54 @@ function TestsContent() {
           })}
         </div>
 
-        <div className="flex flex-wrap items-center gap-2">
-          <p className={rowLabel}>Class</p>
-          <button type="button" onClick={() => pickClass("")} aria-pressed={!classNo} className={`${chip} ${!classNo ? chipOn : chipOff}`}>
-            All
-          </button>
-          {VISIBLE_CLASSES.map((c) => (
+        {/* School switched off: Subject chips straight away, across classes (no class is shown) */}
+        {!SHOW_CLASS_FILTER && subjectNames.length > 0 && (
+          <div className="flex flex-wrap items-center gap-2">
+            <p className={rowLabel}>Subject</p>
             <button
-              key={c}
               type="button"
-              onClick={() => pickClass(c)}
-              aria-pressed={classNo === c}
-              aria-label={`Class ${c}`}
-              className={`${chip} min-w-11 justify-center ${classNo === c ? chipOn : chipOff}`}
+              onClick={() => setSubjectName("")}
+              aria-pressed={!subjectName}
+              className={`${chip} ${!subjectName ? chipOn : chipOff}`}
             >
-              {c}
+              All
             </button>
-          ))}
-        </div>
+            {subjectNames.map((name) => (
+              <button
+                key={name}
+                type="button"
+                onClick={() => setSubjectName(name)}
+                aria-pressed={subjectName === name}
+                className={`${chip} ${subjectName === name ? chipOn : chipOff}`}
+              >
+                {name}
+              </button>
+            ))}
+          </div>
+        )}
 
-        {classNo && subjects.length > 0 && (
+        {SHOW_CLASS_FILTER && (
+          <div className="flex flex-wrap items-center gap-2">
+            <p className={rowLabel}>Class</p>
+            <button type="button" onClick={() => pickClass("")} aria-pressed={!classNo} className={`${chip} ${!classNo ? chipOn : chipOff}`}>
+              All
+            </button>
+            {VISIBLE_CLASSES.map((c) => (
+              <button
+                key={c}
+                type="button"
+                onClick={() => pickClass(c)}
+                aria-pressed={classNo === c}
+                aria-label={`Class ${c}`}
+                className={`${chip} min-w-11 justify-center ${classNo === c ? chipOn : chipOff}`}
+              >
+                {c}
+              </button>
+            ))}
+          </div>
+        )}
+
+        {SHOW_CLASS_FILTER && classNo && subjects.length > 0 && (
           <div className="flex flex-wrap items-center gap-2">
             <p className={rowLabel}>Subject</p>
             <button
@@ -221,7 +262,7 @@ function TestsContent() {
       {loading && tests.length === 0 ? (
         <div className="grid gap-5 sm:grid-cols-2">
           {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="rounded-[22px] border-[3px] border-(--hp-ink)/20 bg-white p-5">
+            <div key={i} className="rounded-[22px] border border-(--line)/20 bg-white p-5">
               <Skeleton className="h-4 w-24" />
               <Skeleton className="mt-4 h-6 w-3/4" />
               <Skeleton className="mt-3 h-4 w-1/2" />
@@ -230,7 +271,7 @@ function TestsContent() {
           ))}
         </div>
       ) : tests.length === 0 ? (
-        <div className="rounded-[24px] border-[3px] border-(--hp-ink) bg-white p-8 text-center">
+        <div className="rounded-[18px] border border-(--line) bg-white p-8 text-center">
           <p className={`${s.display} m-0 text-2xl font-bold`}>No tests found</p>
           <p className="mx-auto mt-2 max-w-[44ch] text-base font-semibold text-(--hp-muted)">
             Try another class or test type, or clear the search.
@@ -249,7 +290,7 @@ function TestsContent() {
 
 export default function TestsPage() {
   return (
-    <div className={`${fredoka.variable} ${nunito.variable} ${s.page} flex-1`}>
+    <div className={`${s.page} flex-1`}>
       <Suspense
         fallback={<div className="flex flex-1 items-center justify-center py-20 font-bold text-(--hp-muted)">Loading...</div>}
       >

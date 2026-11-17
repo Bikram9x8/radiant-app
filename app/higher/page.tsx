@@ -2,8 +2,7 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import HigherTabs from "@/components/HigherTabs";
 import { HigherArt } from "@/components/Illustrations";
-import AdSlot from "@/components/home/AdSlot";
-import { fredoka, nunito } from "@/components/home/fonts";
+import AdSlot from "@/components/AdSlot";
 import s from "@/components/school/school.module.css";
 import ComingSoon from "@/components/ComingSoon";
 export const dynamic = "force-dynamic";
@@ -32,7 +31,7 @@ export default async function HigherPage() {
     : [];
 
   return (
-    <div className={`${fredoka.variable} ${nunito.variable} ${s.page} flex-1`}>
+    <div className={`${s.page} flex-1`}>
       <div className="mx-auto max-w-[1200px] px-4 pt-4 sm:px-8">
         <AdSlot label="728 × 90 banner space" className="h-[90px] max-w-[728px]" />
       </div>
@@ -48,10 +47,10 @@ export default async function HigherPage() {
         </nav>
 
         {/* Hero card */}
-        <div className="mt-3 flex flex-wrap items-center gap-6 rounded-[28px] border-[3px] border-(--hp-ink) bg-(--hp-mint) p-6 shadow-[6px_6px_0_var(--hp-ink)] sm:p-8 md:rounded-[36px] md:p-10">
+        <div className="mt-3 flex flex-wrap items-center gap-6 rounded-[18px] border border-(--line) bg-(--hp-mint) p-6 shadow-soft sm:p-8 md:rounded-[18px] md:p-10">
           <div className="min-w-0 flex-1 basis-[260px]">
             <h1 className={`${s.display} m-0 text-[38px] leading-[1.1] font-bold sm:text-[46px] md:text-[56px]`}>
-              Higher Education
+              Higher <span className={s.ser}>Education</span>
             </h1>
             <p className="mt-3 max-w-[46ch] text-[17px] leading-[1.55] font-semibold md:text-lg">
               Choose where you are in your studies, then pick what you need.

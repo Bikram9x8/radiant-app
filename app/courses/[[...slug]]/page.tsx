@@ -19,8 +19,7 @@ import {
 } from "@/lib/internships";
 import ViewTracker from "@/components/ViewTracker";
 import { SubjectArt } from "@/components/Illustrations";
-import AdSlot from "@/components/home/AdSlot";
-import { fredoka, nunito } from "@/components/home/fonts";
+import AdSlot from "@/components/AdSlot";
 import s from "@/components/school/school.module.css";
 import ComingSoon from "@/components/ComingSoon";
 import { SHOW_SCHOOL } from "@/lib/features";
@@ -160,7 +159,7 @@ export default async function CoursePage({
   const labelFor = (t: string) => (isSchool && SCHOOL_LABELS[t]) || CONTENT_LABELS[t] || t;
 
   return (
-    <div className={`${fredoka.variable} ${nunito.variable} ${s.page} flex-1`}>
+    <div className={`${s.page} flex-1`}>
       {current && <ViewTracker courseNodeId={current.id} />}
 
       <div className="mx-auto max-w-[1200px] px-4 pt-4 sm:px-8">
@@ -205,7 +204,7 @@ export default async function CoursePage({
           {activeSection ? `${title}: ${activeSection.label}` : title}
         </h1>
         {current?.bookName && (
-          <p className="mt-3 inline-flex rounded-full border-2 border-(--hp-ink) bg-(--hp-butter) px-4 py-1.5 text-[15px] font-bold">
+          <p className="mt-3 inline-flex rounded-full border border-(--line) bg-(--hp-butter) px-4 py-1.5 text-[15px] font-bold">
             Book: {current.bookName}
           </p>
         )}
@@ -216,9 +215,9 @@ export default async function CoursePage({
             {isClassPage && !activeSection && (
               <div className="grid gap-5 sm:grid-cols-2">
                 {CLASS_SECTIONS.map((sec, i) => (
-                  <Link key={sec.slug} href={`${basePath}?section=${sec.slug}`} className={`${s.press} [--radius:24px]`}>
+                  <Link key={sec.slug} href={`${basePath}?section=${sec.slug}`} className={`${s.press} [--radius:18px]`}>
                     <span className={`${s.face} ${PASTELS[i % PASTELS.length]} flex-col p-6`}>
-                      <span className="flex h-12 w-12 items-center justify-center rounded-2xl border-2 border-(--hp-ink) bg-white">
+                      <span className="flex h-12 w-12 items-center justify-center rounded-2xl border border-(--line) bg-white">
                         <sec.Icon size={26} stroke={2} aria-hidden="true" />
                       </span>
                       <span className={`${s.display} mt-4 block text-2xl font-bold`}>{sec.label}</span>
@@ -250,7 +249,7 @@ export default async function CoursePage({
                   ) : (
                     <div className="mt-5 grid grid-cols-2 gap-4 sm:grid-cols-3 md:gap-5">
                       {children.map((c, i) => (
-                        <Link key={c.id} href={`${basePath}/${c.slug}`} className={`${s.press} [--radius:22px]`}>
+                        <Link key={c.id} href={`${basePath}/${c.slug}`} className={`${s.press} [--radius:18px]`}>
                           <span className={`${s.face} ${PASTELS[i % PASTELS.length]} min-h-[120px] flex-col p-5`}>
                             <span className={`${s.display} block text-xl leading-tight font-bold break-words sm:text-[22px]`}>
                               {c.name}
@@ -286,11 +285,11 @@ export default async function CoursePage({
                   return (
                     <section key={t} className={s.listCard} aria-label={labelFor(t)}>
                       <div
-                        className={`flex min-h-14 items-center justify-between gap-3 border-b-[3px] border-(--hp-ink) px-5 py-3 ${PASTELS[i % PASTELS.length]}`}
+                        className={`flex min-h-14 items-center justify-between gap-3 border-b border-(--line) px-5 py-3 ${PASTELS[i % PASTELS.length]}`}
                       >
                         <h2 className={`${s.display} m-0 text-[22px] font-bold`}>{labelFor(t)}</h2>
                         {posts.length > 0 && (
-                          <span className="inline-flex min-w-8 justify-center rounded-full border-2 border-(--hp-ink) bg-white px-2.5 py-0.5 text-sm font-extrabold">
+                          <span className="inline-flex min-w-8 justify-center rounded-full border border-(--line) bg-white px-2.5 py-0.5 text-sm font-extrabold">
                             {posts.length}
                           </span>
                         )}
@@ -321,7 +320,7 @@ export default async function CoursePage({
                 {children.map((c) => (
                   <Link key={c.id} href={`${basePath}/${c.slug}`} className={s.row}>
                     <span
-                      className={`${s.display} flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-2 border-(--hp-ink) bg-(--hp-yellow) text-base font-bold`}
+                      className={`${s.display} flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-(--line) bg-(--hp-yellow) text-base font-bold`}
                     >
                       {c.chapterNo}
                     </span>
@@ -339,11 +338,11 @@ export default async function CoursePage({
                   <Link
                     key={c.id}
                     href={`${basePath === "/courses/" ? "/courses" : basePath}/${c.slug}`}
-                    className={`${s.press} [--radius:22px]`}
+                    className={`${s.press} [--radius:18px]`}
                   >
                     <span className={`${s.face} ${PASTELS[i % PASTELS.length]} min-h-[120px] flex-col p-4 sm:p-5`}>
                       {isSchool && c.kind === "SUBJECT" && (
-                        <span className="mb-3 flex h-12 w-12 items-center justify-center rounded-2xl border-2 border-(--hp-ink) bg-white">
+                        <span className="mb-3 flex h-12 w-12 items-center justify-center rounded-2xl border border-(--line) bg-white">
                           <SubjectArt name={c.name} className="h-9 w-9" />
                         </span>
                       )}
@@ -370,19 +369,19 @@ export default async function CoursePage({
                       <Link
                         key={p.id}
                         href={`/opportunities/${p.id}?level=${trail[1].slug}`}
-                        className={`${s.press} [--radius:24px]`}
+                        className={`${s.press} [--radius:18px]`}
                       >
                         <span className={`${s.face} ${PASTELS[i % PASTELS.length]} flex-col p-5`}>
-                          <span className={`${s.display} block text-xl leading-tight font-bold break-words`}>{p.title}</span>
+                          <span className={`${s.cardTitle} block text-lg leading-snug break-words`}>{p.title}</span>
                           <span className="mt-1 block text-[15px] font-semibold">{p.company.companyName}</span>
                           <span className="mt-3 flex flex-wrap gap-2 text-[13px] font-bold">
                             {p.duration && (
-                              <span className="rounded-full border-2 border-(--hp-ink) bg-white px-2.5 py-0.5">⏱ {p.duration}</span>
+                              <span className="rounded-full border border-(--line) bg-white px-2.5 py-0.5">⏱ {p.duration}</span>
                             )}
                             {p.stipendOrPrize && (
-                              <span className="rounded-full border-2 border-(--hp-ink) bg-white px-2.5 py-0.5">₹ {p.stipendOrPrize}</span>
+                              <span className="rounded-full border border-(--line) bg-white px-2.5 py-0.5">₹ {p.stipendOrPrize}</span>
                             )}
-                            <span className="rounded-full border-2 border-(--hp-ink) bg-white px-2.5 py-0.5">
+                            <span className="rounded-full border border-(--line) bg-white px-2.5 py-0.5">
                               📍 {p.location ? `${p.location} · ${p.mode}` : p.mode}
                             </span>
                           </span>

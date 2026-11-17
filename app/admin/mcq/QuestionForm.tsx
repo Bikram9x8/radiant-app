@@ -121,7 +121,7 @@ export default function QuestionForm({
 
   return (
     <form onSubmit={handleSubmit} className="card p-5 sm:p-6 flex flex-col gap-5">
-      <h3 className="text-lg font-bold text-[#14142b]">{question ? "Edit question" : "New question"}</h3>
+      <h3 className="text-lg font-bold text-ink">{question ? "Edit question" : "New question"}</h3>
 
       {question && question.usedInPublished > 0 && (
         <p className="pastel-yellow rounded-xl px-4 py-3 text-sm font-semibold">
@@ -155,10 +155,10 @@ export default function QuestionForm({
               id={`mcq-correct-${o}`}
               checked={correct === o}
               onChange={() => setCorrect(o)}
-              className={`h-5 w-5 shrink-0 accent-[#6d28d9] ${focusRing}`}
+              className={`h-5 w-5 shrink-0 accent-teal ${focusRing}`}
               aria-label={`Option ${o} is correct`}
             />
-            <label htmlFor={`mcq-option-${o}`} className="w-5 shrink-0 text-sm font-bold text-[#14142b]">
+            <label htmlFor={`mcq-option-${o}`} className="w-5 shrink-0 text-sm font-bold text-ink">
               {o}
             </label>
             <input
@@ -194,7 +194,7 @@ export default function QuestionForm({
         {imageUrl ? (
           <div className="flex flex-wrap items-start gap-3">
             {/* eslint-disable-next-line @next/next/no-img-element -- R2 URL, not in next/image config */}
-            <img src={imageUrl} alt="Question image preview" className="max-h-40 rounded-xl border border-[#e4e2ef]" />
+            <img src={imageUrl} alt="Question image preview" className="max-h-40 rounded-xl border border-line" />
             <button type="button" onClick={() => setImageUrl(null)} className={rowDangerButton}>
               Remove image
             </button>
@@ -206,10 +206,10 @@ export default function QuestionForm({
             accept={IMAGE_TYPES.join(",")}
             onChange={(e) => handleImage(e.target.files?.[0] ?? null)}
             disabled={uploading}
-            className={`${inputClass} file:mr-3 file:rounded-lg file:border-0 file:bg-[#f6f5fb] file:px-3 file:py-1.5 file:text-sm file:font-semibold file:text-[#6d28d9]`}
+            className={`${inputClass} file:mr-3 file:rounded-lg file:border-0 file:bg-[#f6f8fb] file:px-3 file:py-1.5 file:text-sm file:font-semibold file:text-teal-dark`}
           />
         )}
-        {uploading && <p className="mt-1.5 text-sm text-[#3b3a55]">Uploading image...</p>}
+        {uploading && <p className="mt-1.5 text-sm text-muted">Uploading image...</p>}
       </div>
 
       {error && (

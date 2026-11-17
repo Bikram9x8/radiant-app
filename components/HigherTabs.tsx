@@ -63,8 +63,8 @@ export default function HigherTabs({ rootSlug, stages }: { rootSlug: string; sta
             onClick={() => setActive(i)}
             className={`${s.flat} min-h-11 shrink-0 rounded-full px-5 text-[15px] font-extrabold whitespace-nowrap ${
               i === active
-                ? "border-[3px] border-(--hp-ink) bg-(--hp-ink) text-white"
-                : "border-2 border-(--hp-ink) bg-white text-(--hp-ink) hover:bg-(--hp-butter)"
+                ? "border-[1.5px] border-(--ink) bg-(--ink) text-white"
+                : "border-[1.5px] border-(--btn-line) bg-white text-(--ink) hover:border-(--ink)"
             }`}
           >
             {st.name}
@@ -91,13 +91,13 @@ export default function HigherTabs({ rootSlug, stages }: { rootSlug: string; sta
               <Link
                 key={card.id}
                 href={`/courses/${rootSlug}/${stage.slug}/${card.slug}`}
-                className={`${s.press} [--radius:26px]`}
+                className={`${s.press} [--radius:18px]`}
               >
                 <span className={`${s.face} ${COLORS[i % COLORS.length]} flex-col p-6`}>
-                  <span className="flex h-14 w-14 items-center justify-center rounded-2xl border-2 border-(--hp-ink) bg-white">
+                  <span className="flex h-14 w-14 items-center justify-center rounded-2xl border border-(--line) bg-white">
                     <Icon size={30} stroke={2} aria-hidden="true" />
                   </span>
-                  <span className={`${s.display} mt-5 block text-2xl leading-tight font-bold break-words`}>{card.name}</span>
+                  <span className={`${s.cardTitle} mt-5 block text-xl leading-snug break-words`}>{card.name}</span>
                   <span className="mt-2 block text-[15px] leading-relaxed font-semibold">
                     {DESCRIPTIONS[card.slug] ?? "Explore this section."}
                   </span>

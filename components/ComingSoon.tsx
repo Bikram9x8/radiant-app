@@ -5,7 +5,7 @@ import cs from "./ComingSoon.module.css";
 // Render inside a page with the Option B tokens (components/school/school.module.css .page).
 //   size="page":   "Writing notes" animation, title, text, and a back pill to the parent page
 //   size="inline": a small (56px) version of the same notebook and pencil next to "Coming soon"
-// The drawing is option 1 "Writing notes" from the user's design, copied exactly.
+// The drawing is option 1 "Writing notes" from the user's design (shapes copied exactly; colours moved to the Teal + Coral palette in Phase 2).
 
 function WritingNotes({ className, decorative }: { className: string; decorative?: boolean }) {
   return (
@@ -17,10 +17,10 @@ function WritingNotes({ className, decorative }: { className: string; decorative
         ? { "aria-hidden": true }
         : { role: "img", "aria-label": "A pencil writing notes in a notebook" })}
     >
-      <rect x="34" y="20" width="152" height="120" rx="14" fill="#241a3d" transform="translate(5 5)" />
-      <rect x="34" y="20" width="152" height="120" rx="14" fill="#fff" stroke="#241a3d" strokeWidth="4" />
-      <rect x="34" y="20" width="26" height="120" rx="12" fill="#c9b6ff" stroke="#241a3d" strokeWidth="4" />
-      <g stroke="#e9e2f7" strokeWidth="3">
+      <rect x="34" y="20" width="152" height="120" rx="14" fill="#0f2e33" transform="translate(5 5)" />
+      <rect x="34" y="20" width="152" height="120" rx="14" fill="#fff" stroke="#0f2e33" strokeWidth="4" />
+      <rect x="34" y="20" width="26" height="120" rx="12" fill="#99f6e4" stroke="#0f2e33" strokeWidth="4" />
+      <g stroke="#e2e8ef" strokeWidth="3">
         <line x1="72" y1="56" x2="172" y2="56" />
         <line x1="72" y1="74" x2="172" y2="74" />
         <line x1="72" y1="92" x2="172" y2="92" />
@@ -31,7 +31,7 @@ function WritingNotes({ className, decorative }: { className: string; decorative
         pathLength={100}
         d="M74 54 q6 -6 10 0 t10 0 t10 0 t10 0 t10 0 t10 0 t10 0 t10 0"
         fill="none"
-        stroke="#6d28d9"
+        stroke="#0f766e"
         strokeWidth="3.5"
         strokeLinecap="round"
       />
@@ -40,7 +40,7 @@ function WritingNotes({ className, decorative }: { className: string; decorative
         pathLength={100}
         d="M74 72 q6 -6 10 0 t10 0 t10 0 t10 0 t10 0 t10 0 t10 0 t10 0"
         fill="none"
-        stroke="#6d28d9"
+        stroke="#0f766e"
         strokeWidth="3.5"
         strokeLinecap="round"
       />
@@ -49,16 +49,16 @@ function WritingNotes({ className, decorative }: { className: string; decorative
         pathLength={100}
         d="M74 90 q6 -6 10 0 t10 0 t10 0 t10 0 t10 0 t10 0"
         fill="none"
-        stroke="#06b6d4"
+        stroke="#f97350"
         strokeWidth="3.5"
         strokeLinecap="round"
       />
       <g className={cs.csPencil}>
         <g transform="translate(76 52) rotate(-40)">
-          <rect x="0" y="-52" width="12" height="40" rx="2" fill="#ff6b3d" stroke="#241a3d" strokeWidth="3" />
-          <rect x="0" y="-60" width="12" height="9" rx="3" fill="#ffb3d6" stroke="#241a3d" strokeWidth="3" />
-          <path d="M0 -12 L12 -12 L6 0 Z" fill="#ffe2b8" stroke="#241a3d" strokeWidth="3" strokeLinejoin="round" />
-          <path d="M4 -4 L8 -4 L6 0 Z" fill="#241a3d" />
+          <rect x="0" y="-52" width="12" height="40" rx="2" fill="#f97350" stroke="#0f2e33" strokeWidth="3" />
+          <rect x="0" y="-60" width="12" height="9" rx="3" fill="#fed7aa" stroke="#0f2e33" strokeWidth="3" />
+          <path d="M0 -12 L12 -12 L6 0 Z" fill="#ffe2b8" stroke="#0f2e33" strokeWidth="3" strokeLinejoin="round" />
+          <path d="M4 -4 L8 -4 L6 0 Z" fill="#0f2e33" />
         </g>
       </g>
     </svg>
@@ -84,11 +84,11 @@ export default function ComingSoon({
   }
 
   return (
-    <div className="rounded-[28px] border-[3px] border-(--hp-ink) bg-white px-6 py-8 text-center sm:px-10 sm:py-10">
+    <div className="rounded-[18px] border border-(--line) bg-white px-6 py-8 text-center sm:px-10 sm:py-10">
       <WritingNotes className="mx-auto block h-auto w-52 sm:w-60" />
       <h2
         className="m-0 mt-4 text-[30px] leading-tight font-bold"
-        style={{ fontFamily: "var(--font-fredoka), var(--font-nunito), sans-serif" }}
+        style={{ fontFamily: "var(--font-big-shoulders), var(--font-figtree), sans-serif", textTransform: "uppercase", fontWeight: 800 }}
       >
         Coming soon
       </h2>
@@ -98,7 +98,7 @@ export default function ComingSoon({
       {back && (
         <Link
           href={back.href}
-          className="mt-5 inline-flex min-h-12 items-center rounded-full border-[3px] border-(--hp-ink) bg-white px-6 text-base font-extrabold text-(--hp-ink) no-underline hover:bg-(--hp-butter)"
+          className="mt-5 inline-flex min-h-12 items-center rounded-full border border-(--line) bg-white px-6 text-base font-extrabold text-(--hp-ink) no-underline hover:bg-(--hp-butter)"
         >
           ← Back to {back.label}
         </Link>

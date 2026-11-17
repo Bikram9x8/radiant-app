@@ -1,12 +1,43 @@
 import Providers from "./providers";
 import type { Metadata } from "next";
-import { Inter, Geist_Mono, Noto_Sans_Devanagari, Noto_Sans_Gurmukhi } from "next/font/google";
+import {
+  Figtree,
+  Big_Shoulders,
+  Instrument_Serif,
+  Geist_Mono,
+  Noto_Sans_Devanagari,
+  Noto_Sans_Gurmukhi,
+} from "next/font/google";
 import "./globals.css";
 import Footer from "@/components/Footer";
 
-const inter = Inter({
-  variable: "--font-inter",
+// Teal + Coral type: Figtree for text, Big Shoulders Display for uppercase headings,
+// Instrument Serif italic for accent words. Tailwind: font-sans / font-display / font-serif (globals.css).
+const figtree = Figtree({
+  variable: "--font-figtree",
   subsets: ["latin"],
+  display: "swap",
+});
+
+// Google Fonts merged "Big Shoulders Display" into "Big Shoulders" (a variable font with an
+// optical-size axis). With the opsz axis loaded, browsers use the Display cut automatically at
+// heading sizes (font-optical-sizing: auto), which is the design's look.
+// next/font has no size data for the merged family yet, so no metric-matched fallback can be
+// generated: use a condensed system font while it loads instead.
+const bigShoulders = Big_Shoulders({
+  variable: "--font-big-shoulders",
+  subsets: ["latin"],
+  axes: ["opsz"],
+  display: "swap",
+  adjustFontFallback: false,
+  fallback: ["Arial Narrow", "Roboto Condensed", "sans-serif"],
+});
+
+const instrumentSerif = Instrument_Serif({
+  variable: "--font-instrument-serif",
+  subsets: ["latin"],
+  weight: "400",
+  style: ["normal", "italic"],
   display: "swap",
 });
 
@@ -36,13 +67,8 @@ const notoGurmukhi = Noto_Sans_Gurmukhi({
 export const metadata: Metadata = {
   title: "Radiant Educations",
   description: "Connecting students with opportunities from verified companies.",
-  icons: {
-    icon: [
-      { url: "/favicon.ico", sizes: "any" },
-      { url: "/icon-512.png", sizes: "512x512", type: "image/png" },
-    ],
-    apple: "/apple-touch-icon.png",
-  },
+  // Icons come from Next's file conventions: app/favicon.ico, app/icon.svg, app/apple-icon.png
+  // and app/manifest.ts (all made from the logo mark in components/brand/brand-svg.ts).
 };
 
 export default function RootLayout({
@@ -55,9 +81,9 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${geistMono.variable} ${notoDevanagari.variable} ${notoGurmukhi.variable} h-full antialiased`}
+      className={`${figtree.variable} ${bigShoulders.variable} ${instrumentSerif.variable} ${geistMono.variable} ${notoDevanagari.variable} ${notoGurmukhi.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col relative bg-white text-[#14142b]">
+      <body className="min-h-full flex flex-col relative bg-paper text-ink">
         <Providers modal={modal}>
           {children}
           <Footer />

@@ -3,14 +3,14 @@ import Link from "next/link";
 export default function ComingSoonPage() {
   return (
     <div className="flex flex-1 flex-col items-center justify-center gap-4 px-6 text-center">
-      <div className="glass rounded-3xl px-10 py-14 max-w-md">
-        <h1 className="text-2xl font-bold text-zinc-900 dark:text-white">Coming Soon</h1>
-        <p className="text-zinc-600 dark:text-zinc-400 mt-2">
+      <div className="glass rounded-[18px] px-10 py-14 max-w-md">
+        <h1 className="font-display text-[40px] leading-[0.95] font-extrabold uppercase text-ink sm:text-5xl">Coming <span className="font-serif font-normal normal-case italic text-teal">soon</span></h1>
+        <p className="text-muted mt-2">
           This feature is on the way. Check back soon!
         </p>
         <Link
           href="/dashboard"
-          className="inline-block mt-6 rounded-xl px-5 py-2.5 bg-purple-600 text-white font-semibold hover:bg-purple-700 transition-colors"
+          className="mt-6 inline-flex min-h-12 items-center justify-center rounded-full bg-teal px-6 font-bold text-white shadow-[0_8px_20px_-10px_rgb(15_118_110/0.6)] transition-colors hover:bg-teal-dark"
         >
           Back to Dashboard
         </Link>

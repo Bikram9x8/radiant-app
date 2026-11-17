@@ -2,11 +2,12 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 
+// Status pills (Phase 2 palette)
 const STATUS_COLORS: Record<string, string> = {
-  APPLIED: "text-blue-600",
-  SHORTLISTED: "text-amber-600",
-  REJECTED: "text-red-600",
-  SELECTED: "text-green-600",
+  APPLIED: "bg-(--tint-aqua) text-(--teal-dark)",
+  SHORTLISTED: "bg-(--tint-sand) text-[#92400e]",
+  REJECTED: "bg-red-50 text-red-700",
+  SELECTED: "bg-(--tint-teal) text-(--teal-dark)",
 };
 
 export default function MyApplicationsPage() {
@@ -26,35 +27,37 @@ export default function MyApplicationsPage() {
   }, []);
 
   return (
-    <div className="max-w-3xl mx-auto mt-12 px-6 mb-12">
-      <h1 className="text-2xl font-bold mb-6">My Applications</h1>
+    <div className="max-w-3xl mx-auto mt-10 px-4 sm:px-6 mb-12 w-full">
+      <h1 className="mb-6 font-display text-[40px] leading-[0.95] font-extrabold uppercase text-(--ink) sm:text-5xl">
+        My <span className="font-serif font-normal normal-case italic text-(--teal)">applications</span>
+      </h1>
 
-      {loading && <p className="text-zinc-500">Loading...</p>}
+      {loading && <p className="text-(--muted)">Loading...</p>}
 
       {!loading && applications.length === 0 && (
-        <p className="text-zinc-500">
+        <p className="text-(--muted)">
           You haven't applied to anything yet.{" "}
-          <Link href="/opportunities" className="text-blue-700 font-semibold">
+          <Link href="/opportunities" className="font-bold text-(--teal-dark) underline-offset-4 hover:underline">
             Browse opportunities
           </Link>
         </p>
       )}
 
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-3">
         {applications.map((app) => (
-          <div key={app.id} className="border rounded-lg p-4">
-            <div className="flex justify-between items-start">
+          <div key={app.id} className="rounded-[18px] border border-(--line) bg-white p-5 shadow-soft">
+            <div className="flex justify-between items-start gap-4">
               <div>
-                <Link href={`/opportunities/${app.opportunity.id}`} className="font-semibold hover:underline">
+                <Link href={`/opportunities/${app.opportunity.id}`} className="font-bold text-(--ink) underline-offset-4 hover:text-(--teal-dark) hover:underline">
                   {app.opportunity.title}
                 </Link>
-                <p className="text-sm text-zinc-500">{app.opportunity.company?.companyName}</p>
+                <p className="text-sm text-(--muted)">{app.opportunity.company?.companyName}</p>
               </div>
-              <span className={`text-xs font-bold ${STATUS_COLORS[app.status] || ""}`}>
+              <span className={`shrink-0 rounded-full px-2.5 py-1 text-xs font-bold ${STATUS_COLORS[app.status] || "bg-[#f1f5f9] text-(--ink-2)"}`}>
                 {app.status}
               </span>
             </div>
-            <p className="text-xs text-zinc-500 mt-2">
+            <p className="text-xs text-(--muted) mt-2">
               Applied on {new Date(app.appliedAt).toLocaleDateString()}
             </p>
           </div>

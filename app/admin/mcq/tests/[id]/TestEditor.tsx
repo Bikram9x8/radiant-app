@@ -201,12 +201,12 @@ export default function TestEditor({
           <span className={isPublished ? badgePublished : badgeDraft}>{isPublished ? "Published" : "Draft"}</span>
         </div>
 
-        <p className="text-[#14142b]">
+        <p className="text-ink">
           <span className="font-bold">Chapter:</span>{" "}
           {chapter ? chapterLabel(chapter) : "This chapter is no longer available."}
         </p>
         {canChangeChapter && (
-          <div className="rounded-xl bg-[#f6f5fb] p-4 flex flex-col gap-3">
+          <div className="rounded-xl bg-[#f6f8fb] p-4 flex flex-col gap-3">
             <p className={mutedText}>
               You can change the chapter while the test has no questions. Choose one, then save details.
             </p>
@@ -300,9 +300,9 @@ export default function TestEditor({
         <MessageLine message={listMsg} />
 
         {list.length === 0 ? (
-          <p className="text-[#3b3a55]">No questions yet. Add them from the question bank below, or write a new one.</p>
+          <p className="text-muted">No questions yet. Add them from the question bank below, or write a new one.</p>
         ) : (
-          <ol className="divide-y divide-[#e4e2ef]">
+          <ol className="divide-y divide-line">
             {list.map((q, i) =>
               editingId === q.id && chapter ? (
                 <li key={q.id} className="py-4">
@@ -320,7 +320,7 @@ export default function TestEditor({
                 <li key={q.id} className="py-4 first:pt-0 last:pb-0">
                   <div className="flex flex-wrap items-start justify-between gap-3">
                     <div className="flex-1 min-w-[200px]">
-                      <p className={`${questionText} whitespace-pre-line font-semibold ${q.isActive ? "text-[#14142b]" : "text-[#3b3a55]"}`}>
+                      <p className={`${questionText} whitespace-pre-line font-semibold ${q.isActive ? "text-ink" : "text-muted"}`}>
                         {i + 1}. {q.text}
                       </p>
                       <p className={`${mutedText} ${questionText} mt-1`}>
@@ -416,16 +416,16 @@ export default function TestEditor({
           )}
 
           {available.length === 0 ? (
-            <p className="text-[#3b3a55]">Every active question in this chapter is already in the test.</p>
+            <p className="text-muted">Every active question in this chapter is already in the test.</p>
           ) : (
-            <ul className="divide-y divide-[#e4e2ef]">
+            <ul className="divide-y divide-line">
               {available.map((q) => (
                 <li key={q.id} className="py-3 first:pt-0 last:pb-0 flex flex-wrap items-center justify-between gap-3">
-                  <p className={`${questionText} flex-1 min-w-[200px] whitespace-pre-line text-[#14142b]`}>{q.text}</p>
+                  <p className={`${questionText} flex-1 min-w-[200px] whitespace-pre-line text-ink`}>{q.text}</p>
                   <button
                     type="button"
                     onClick={() => setList((prev) => [...prev, q])}
-                    className={`inline-flex min-h-[36px] items-center rounded-lg bg-[#6d28d9] px-3 text-sm font-semibold text-white hover:bg-[#5b21b6] ${focusRing}`}
+                    className={`inline-flex min-h-[36px] items-center rounded-lg bg-teal px-3 text-sm font-semibold text-white hover:bg-teal-dark ${focusRing}`}
                   >
                     Add to test
                   </button>
@@ -437,7 +437,7 @@ export default function TestEditor({
       )}
 
       {/* ---------- Delete ---------- */}
-      <section className="border-t border-[#e4e2ef] pt-5" aria-label="Delete test">
+      <section className="border-t border-line pt-5" aria-label="Delete test">
         {test.attempts > 0 ? (
           <p className={mutedText}>
             Students have taken this test {test.attempts} time{test.attempts === 1 ? "" : "s"}, so it can&apos;t be

@@ -57,7 +57,7 @@ export default function PostCard({ post, now }: { post: PostCardData; now: numbe
   const kind = kindOf(post);
   const isTest = isTestPost(post);
   const { classNo, subject } = parseClassSubject(post.category?.name);
-  // School Education switched off: tests read as entrance prep ("JEE / NEET prep · Physics Class 11")
+  // School Education switched off: tests read as entrance prep ("JEE / NEET prep · Physics"), no class
   const meta =
     !SHOW_SCHOOL && isTest
       ? [entranceMeta(post.category?.name), post.chapter ? `Chapter ${post.chapter}` : null].filter(Boolean)
@@ -69,23 +69,23 @@ export default function PostCard({ post, now }: { post: PostCardData; now: numbe
   const ended = new Date(post.applyDeadline).getTime() < now;
 
   return (
-    <Link href={`/opportunities/${post.id}`} className={`${s.press} h-full [--radius:22px]`}>
+    <Link href={`/opportunities/${post.id}`} className={`${s.press} h-full [--radius:18px]`}>
       <span className={`${s.face} h-full flex-col overflow-hidden bg-white`}>
         {/* Colour strip for the type (decorative; the type is also written in the pill) */}
-        <span aria-hidden="true" className={`block h-3 shrink-0 border-b-[3px] border-(--hp-ink) ${kind.strip}`} />
+        <span aria-hidden="true" className={`block h-3 shrink-0 border-b border-(--line) ${kind.strip}`} />
         <span className="flex flex-1 flex-col p-4 sm:p-5">
           <span className="flex flex-wrap items-center gap-1.5">
-            <span className={`rounded-full border-2 border-(--hp-ink) px-2.5 py-0.5 text-xs font-extrabold ${kind.strip}`}>
+            <span className={`rounded-full border border-(--line) px-2.5 py-0.5 text-xs font-extrabold ${kind.strip}`}>
               {kind.label}
             </span>
             {post.requiresCode && (
-              <span className="inline-flex items-center gap-1 rounded-full border-2 border-(--hp-ink) bg-(--hp-butter) px-2 py-0.5 text-xs font-extrabold">
+              <span className="inline-flex items-center gap-1 rounded-full border border-(--line) bg-(--hp-butter) px-2 py-0.5 text-xs font-extrabold">
                 <IconLock size={12} stroke={2.6} aria-hidden="true" />
                 Code
               </span>
             )}
           </span>
-          <span className={`${s.display} mt-2.5 block text-[19px] leading-snug font-bold break-words`}>{post.title}</span>
+          <span className={`${s.cardTitle} mt-2.5 block text-[18px] leading-snug break-words`}>{post.title}</span>
           {meta.length > 0 && (
             <span className="mt-1 block text-[15px] font-semibold text-(--hp-muted)">{meta.join(" · ")}</span>
           )}

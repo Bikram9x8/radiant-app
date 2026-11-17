@@ -88,7 +88,7 @@ export default function AuthModal({
 
   return (
     <div
-      className="fixed inset-0 z-[80] flex items-center justify-center bg-[#14142b]/50 p-3 sm:p-6"
+      className="fixed inset-0 z-[80] flex items-center justify-center bg-ink/50 p-3 sm:p-6"
       onMouseDown={(e) => {
         pressedBackdrop.current = e.target === e.currentTarget;
       }}
@@ -105,13 +105,13 @@ export default function AuthModal({
         aria-modal="true"
         aria-label={label}
         tabIndex={-1}
-        className="relative grid max-h-full w-full max-w-[440px] overflow-y-auto overscroll-contain rounded-[16px] bg-white shadow-[0_24px_64px_rgba(20,20,43,0.25)] outline-none md:max-w-[860px] md:grid-cols-[minmax(0,5fr)_minmax(0,6fr)]"
+        className="relative grid max-h-full w-full max-w-[440px] overflow-y-auto overscroll-contain rounded-[18px] border border-line bg-white shadow-lift outline-none md:max-w-[860px] md:grid-cols-[minmax(0,5fr)_minmax(0,6fr)]"
       >
         <button
           type="button"
           onClick={close}
           aria-label="Close"
-          className="absolute right-2 top-2 z-10 flex h-11 w-11 items-center justify-center rounded-full text-[#3b3a55] hover:bg-[#f6f5fb] hover:text-[#14142b] focus-visible:outline-2 focus-visible:outline-[#6d28d9]"
+          className="absolute right-2 top-2 z-10 flex h-11 w-11 items-center justify-center rounded-full text-muted hover:bg-[#f6f8fb] hover:text-ink focus-visible:outline-2 focus-visible:outline-teal"
         >
           <IconX size={22} aria-hidden="true" />
         </button>
@@ -121,7 +121,7 @@ export default function AuthModal({
           className="grid grid-cols-[1fr_auto] items-center gap-x-4 py-4 pl-6 pr-14 sm:pl-8 md:grid-cols-1 md:content-center md:gap-y-6 md:p-10"
         >
           <StudyArt className="col-start-2 row-start-1 w-20 md:col-start-1 md:mx-auto md:w-full md:max-w-[260px]" />
-          <p className="col-start-1 row-start-1 text-base font-bold leading-snug text-[#14142b] md:row-start-2 md:text-2xl md:tracking-tight">
+          <p className="col-start-1 row-start-1 font-display text-[22px] leading-[0.95] font-extrabold uppercase text-ink md:row-start-2 md:text-4xl">
             {panel.heading}
           </p>
           <AuthBenefits variant={variant} className="hidden flex-col gap-3 text-sm md:row-start-3 md:flex" />

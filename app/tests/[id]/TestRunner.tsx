@@ -219,16 +219,16 @@ export default function TestRunner({
     return (
       <div className="flex-1 w-full max-w-2xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
         {chapter && (
-          <Link href={chapter.path} className={`rounded text-sm font-semibold text-[#6d28d9] hover:underline ${focusRing}`}>
+          <Link href={chapter.path} className={`rounded text-sm font-semibold text-teal-dark hover:underline ${focusRing}`}>
             ← {chapter.label}
           </Link>
         )}
-        <section className="pastel-purple mt-4 rounded-[16px] px-5 py-6 sm:px-8 sm:py-8">
-          <h1 className={`${questionText} text-2xl sm:text-4xl font-extrabold tracking-tight text-[#14142b]`}>{test.title}</h1>
+        <section className="bg-tint-teal border border-line shadow-soft mt-4 rounded-[18px] px-5 py-6 sm:px-8 sm:py-8">
+          <h1 className={`${questionText} text-2xl sm:text-4xl font-extrabold tracking-tight text-ink`}>{test.title}</h1>
           {test.description && (
-            <p className={`${questionText} mt-3 max-w-prose whitespace-pre-line text-[#3b3a55]`}>{test.description}</p>
+            <p className={`${questionText} mt-3 max-w-prose whitespace-pre-line text-muted`}>{test.description}</p>
           )}
-          <ul className="mt-5 flex flex-wrap gap-2 text-sm font-semibold text-[#14142b]">
+          <ul className="mt-5 flex flex-wrap gap-2 text-sm font-semibold text-ink">
             <li className="rounded-full bg-white px-3 py-1.5">
               {questions.length} question{questions.length === 1 ? "" : "s"}
             </li>
@@ -239,10 +239,10 @@ export default function TestRunner({
         </section>
 
         <section className="card mt-4 p-5 sm:p-6" aria-labelledby="how-heading">
-          <h2 id="how-heading" className="text-lg font-bold text-[#14142b]">
+          <h2 id="how-heading" className="font-display text-2xl leading-none font-extrabold uppercase text-ink">
             Before you start
           </h2>
-          <ul className="mt-3 flex flex-col gap-2 text-[#3b3a55]">
+          <ul className="mt-3 flex flex-col gap-2 text-muted">
             <li>One question at a time. You can go back and change answers before you submit.</li>
             {test.timeLimitMin && <li>The timer starts when you press Start. When it reaches zero, the test is submitted.</li>}
             <li>If you leave or reload the page, the test starts again.</li>
@@ -257,7 +257,7 @@ export default function TestRunner({
             {viewer === "guest" && (
               <>
                 {" "}
-                <Link href={withReturnTo("/login", returnTo)} className={`rounded font-semibold text-[#6d28d9] hover:underline ${focusRing}`}>
+                <Link href={withReturnTo("/login", returnTo)} className={`rounded font-semibold text-teal-dark hover:underline ${focusRing}`}>
                   Log in
                 </Link>{" "}
                 to save it.
@@ -282,14 +282,14 @@ export default function TestRunner({
     const percent = result.total > 0 ? Math.round((result.score / result.total) * 100) : 0;
     return (
       <div className="flex-1 w-full max-w-2xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
-        <section className="pastel-purple rounded-[16px] px-5 py-6 sm:px-8 sm:py-8" aria-labelledby="score-heading">
-          <h1 id="score-heading" className="text-lg font-bold text-[#14142b]">
+        <section className="bg-tint-teal border border-line shadow-soft rounded-[18px] px-5 py-6 sm:px-8 sm:py-8" aria-labelledby="score-heading">
+          <h1 id="score-heading" className="font-display text-2xl leading-none font-extrabold uppercase text-ink">
             Your score
           </h1>
-          <p className="mt-1 text-5xl sm:text-6xl font-extrabold tracking-tight text-[#14142b]" role="status">
+          <p className="mt-1 font-display text-6xl sm:text-7xl font-extrabold leading-none text-ink" role="status">
             {result.score} / {result.total}
           </p>
-          <p className="mt-2 text-[#3b3a55]">
+          <p className="mt-2 text-muted">
             {percent}% correct, in {duration(result.timeTakenSec)}
           </p>
           <div className="mt-4 flex flex-wrap gap-2 text-sm font-semibold">
@@ -303,7 +303,7 @@ export default function TestRunner({
               </span>
             )}
             {result.viewer === "other" && (
-              <span className="rounded-full bg-white px-3 py-1.5 text-[#3b3a55]">
+              <span className="rounded-full bg-white px-3 py-1.5 text-muted">
                 Not saved: only student accounts save attempts
               </span>
             )}
@@ -312,10 +312,10 @@ export default function TestRunner({
 
         {result.viewer === "guest" && (
           <section className="card mt-4 p-5 sm:p-6" aria-labelledby="save-heading">
-            <h2 id="save-heading" className="text-lg font-bold text-[#14142b]">
+            <h2 id="save-heading" className="font-display text-2xl leading-none font-extrabold uppercase text-ink">
               Sign up to save your progress
             </h2>
-            <p className="mt-1 text-[#3b3a55]">
+            <p className="mt-1 text-muted">
               With a free student account, every attempt is saved and you can see which chapters to revise.
             </p>
             <div className="mt-4 flex flex-wrap gap-3">
@@ -345,12 +345,12 @@ export default function TestRunner({
           </p>
         )}
 
-        <h2 className="mt-8 text-lg font-bold text-[#14142b]">Answers</h2>
+        <h2 className="mt-8 font-display text-2xl leading-none font-extrabold uppercase text-ink">Answers</h2>
         <ol className="mt-3 flex flex-col gap-4">
           {result.review.map((q, i) => (
             <li key={q.id} className="card p-5 sm:p-6">
               <div className="flex items-start justify-between gap-3">
-                <p className={`${questionText} font-semibold text-[#14142b] whitespace-pre-line`}>
+                <p className={`${questionText} font-semibold text-ink whitespace-pre-line`}>
                   {i + 1}. {q.text}
                 </p>
                 <span
@@ -364,7 +364,7 @@ export default function TestRunner({
               </div>
               {q.imageUrl && (
                 // eslint-disable-next-line @next/next/no-img-element -- R2 URL, not in next/image config
-                <img src={q.imageUrl} alt={`Image for question ${i + 1}`} loading="lazy" className="mt-3 max-h-64 w-auto max-w-full rounded-xl border border-[#e4e2ef]" />
+                <img src={q.imageUrl} alt={`Image for question ${i + 1}`} loading="lazy" className="mt-3 max-h-64 w-auto max-w-full rounded-xl border border-line" />
               )}
               <ul className="mt-3 flex flex-col gap-2">
                 {MCQ_OPTIONS.map((o) => {
@@ -378,7 +378,7 @@ export default function TestRunner({
                           ? "pastel-mint"
                           : isPicked
                             ? "border border-red-700 bg-white text-red-700"
-                            : "bg-[#f6f5fb] text-[#14142b]"
+                            : "bg-[#f6f8fb] text-ink"
                       }`}
                     >
                       <span className="font-bold">{o}.</span>
@@ -391,8 +391,8 @@ export default function TestRunner({
               </ul>
               {!q.selected && <p className={`${mutedText} mt-2`}>Not answered</p>}
               {q.explanation && (
-                <p className={`${questionText} mt-3 whitespace-pre-line text-sm text-[#3b3a55]`}>
-                  <span className="font-semibold text-[#14142b]">Explanation:</span> {q.explanation}
+                <p className={`${questionText} mt-3 whitespace-pre-line text-sm text-muted`}>
+                  <span className="font-semibold text-ink">Explanation:</span> {q.explanation}
                 </p>
               )}
             </li>
@@ -413,17 +413,17 @@ export default function TestRunner({
   return (
     <div className="flex-1 w-full">
       {/* Top bar (below the site navbar) */}
-      <div className="sticky top-16 z-40 border-b border-[#e4e2ef] bg-white">
+      <div className="sticky top-16 z-40 border-b border-line bg-white">
         <div className="mx-auto max-w-2xl px-4 sm:px-6 py-2.5">
           <div className="flex items-center justify-between gap-3">
-            <p className={`${questionText} min-w-0 truncate font-semibold text-[#14142b]`}>{test.title}</p>
+            <p className={`${questionText} min-w-0 truncate font-semibold text-ink`}>{test.title}</p>
             <span
               className={`inline-flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1 text-sm font-bold tabular-nums ${
                 lastMinute
                   ? "border border-red-700 bg-white text-red-700"
                   : lastFive
                     ? "pastel-yellow"
-                    : "bg-[#f6f5fb] text-[#14142b]"
+                    : "bg-[#f6f8fb] text-ink"
               }`}
               aria-label={remainingMs !== null ? `Time left ${clock(remainingMs)}` : `Time taken ${clock(elapsedMs)}`}
             >
@@ -440,7 +440,7 @@ export default function TestRunner({
               onClick={() => setNavOpen((o) => !o)}
               aria-expanded={navOpen}
               aria-controls="question-nav"
-              className={`inline-flex min-h-[40px] items-center gap-1.5 rounded-lg px-2 text-sm font-semibold text-[#6d28d9] hover:bg-[#f6f5fb] ${focusRing}`}
+              className={`inline-flex min-h-[40px] items-center gap-1.5 rounded-lg px-2 text-sm font-semibold text-teal-dark hover:bg-[#f6f8fb] ${focusRing}`}
             >
               <IconLayoutGrid size={18} stroke={2} aria-hidden="true" />
               All questions
@@ -463,8 +463,8 @@ export default function TestRunner({
                         aria-current={current ? "step" : undefined}
                         aria-label={`Question ${i + 1}, ${done ? "answered" : "not answered"}`}
                         className={`flex h-11 w-full items-center justify-center rounded-lg text-sm font-bold ${
-                          done ? "bg-[#6d28d9] text-white" : "border border-[#d4d4d8] bg-white text-[#14142b]"
-                        } ${current ? "ring-2 ring-[#6d28d9] ring-offset-2" : ""} ${focusRing}`}
+                          done ? "bg-teal text-white" : "border border-btn-line bg-white text-ink"
+                        } ${current ? "ring-2 ring-teal ring-offset-2" : ""} ${focusRing}`}
                       >
                         {i + 1}
                       </button>
@@ -487,14 +487,14 @@ export default function TestRunner({
           ref={headingRef}
           tabIndex={-1}
           id={`q-${question.id}`}
-          className={`${questionText} whitespace-pre-line text-lg sm:text-xl font-semibold text-[#14142b] outline-none`}
+          className={`${questionText} whitespace-pre-line text-lg sm:text-xl font-semibold text-ink outline-none`}
         >
           <span className="sr-only">Question {index + 1}: </span>
           {question.text}
         </h1>
         {question.imageUrl && (
           // eslint-disable-next-line @next/next/no-img-element -- R2 URL, not in next/image config
-          <img src={question.imageUrl} alt={`Image for question ${index + 1}`} className="mt-4 max-h-80 w-auto max-w-full rounded-xl border border-[#e4e2ef]" />
+          <img src={question.imageUrl} alt={`Image for question ${index + 1}`} className="mt-4 max-h-80 w-auto max-w-full rounded-xl border border-line" />
         )}
 
         <div role="radiogroup" aria-labelledby={`q-${question.id}`} className="mt-5 flex flex-col gap-3">
@@ -503,8 +503,8 @@ export default function TestRunner({
             return (
               <label
                 key={o}
-                className={`flex min-h-[56px] cursor-pointer items-center gap-3 rounded-[16px] border-2 px-4 py-3 transition-colors has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-[#6d28d9] ${
-                  isSelected ? "border-[#6d28d9] bg-[#ede9fe]" : "border-[#e4e2ef] bg-white hover:border-[#c4b5fd]"
+                className={`flex min-h-[56px] cursor-pointer items-center gap-3 rounded-[14px] border-[1.5px] px-4 py-3 transition-colors has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-teal ${
+                  isSelected ? "border-teal bg-tint-teal" : "border-btn-line bg-white hover:border-[#5eead4]"
                 }`}
               >
                 <input
@@ -518,16 +518,16 @@ export default function TestRunner({
                 <span
                   aria-hidden="true"
                   className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-sm font-bold ${
-                    isSelected ? "bg-[#6d28d9] text-white" : "bg-[#f6f5fb] text-[#14142b]"
+                    isSelected ? "bg-teal text-white" : "bg-[#f6f8fb] text-ink"
                   }`}
                 >
                   {o}
                 </span>
-                <span className={`${questionText} flex-1 text-base text-[#14142b]`}>
+                <span className={`${questionText} flex-1 text-base text-ink`}>
                   <span className="sr-only">Option {o}: </span>
                   {question.options[o]}
                 </span>
-                {isSelected && <IconCheck size={22} stroke={2.5} className="shrink-0 text-[#6d28d9]" aria-hidden="true" />}
+                {isSelected && <IconCheck size={22} stroke={2.5} className="shrink-0 text-teal-dark" aria-hidden="true" />}
               </label>
             );
           })}
@@ -536,14 +536,14 @@ export default function TestRunner({
           <button
             type="button"
             onClick={clearAnswer}
-            className={`mt-3 inline-flex min-h-[40px] items-center rounded-lg px-2 text-sm font-semibold text-[#3b3a55] hover:text-[#6d28d9] ${focusRing}`}
+            className={`mt-3 inline-flex min-h-[40px] items-center rounded-lg px-2 text-sm font-semibold text-muted hover:text-teal-dark ${focusRing}`}
           >
             Clear my answer
           </button>
         )}
 
         {confirmOpen && (
-          <div role="alert" className="pastel-yellow mt-6 rounded-[16px] p-4 sm:p-5">
+          <div role="alert" className="pastel-yellow mt-6 rounded-[18px] p-4 sm:p-5">
             <p className="font-semibold">
               You haven&apos;t answered {unanswered} question{unanswered === 1 ? "" : "s"}. Submit anyway?
             </p>
@@ -563,7 +563,7 @@ export default function TestRunner({
         )}
 
         {error && (
-          <div role="alert" className="mt-6 rounded-[16px] border border-red-700 bg-white p-4 sm:p-5">
+          <div role="alert" className="mt-6 rounded-[18px] border border-red-700 bg-white p-4 sm:p-5">
             <p className="text-sm font-semibold text-red-700">{error}</p>
             <button type="button" onClick={() => void submit()} disabled={submitting} className={`${primaryButton} mt-3`}>
               {submitting ? "Submitting..." : "Try again"}
@@ -573,7 +573,7 @@ export default function TestRunner({
       </main>
 
       {/* Bottom bar: thumb reach on phones, clear of the iPhone home indicator */}
-      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-[#e4e2ef] bg-white pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3">
+      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-white pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3">
         <div className="mx-auto grid max-w-2xl grid-cols-2 gap-3 px-4 sm:px-6">
           <button type="button" onClick={() => go(index - 1)} disabled={index === 0 || submitting} className={`${secondaryButton} min-h-[52px] text-base`}>
             Previous

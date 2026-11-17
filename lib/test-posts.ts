@@ -56,12 +56,14 @@ export function entranceLabel(subject?: string | null) {
   return "Entrance exam prep";
 }
 
-// "JEE / NEET prep · Physics Class 11" from a category like "Class 11 - Physics"
+// "JEE / NEET prep · Physics" from a category like "Class 11 - Physics". No class number:
+// while School is switched off, students never see "Class 11/12" (the category itself is unchanged).
 export function entranceMeta(categoryName?: string | null) {
-  const { classNo, subject } = parseClassSubject(categoryName);
+  const { subject } = parseClassSubject(categoryName);
   const label = entranceLabel(subject);
-  if (!subject) return categoryName ? `${label} · ${categoryName}` : label;
-  return `${label} · ${subject}${classNo ? ` Class ${classNo}` : ""}`;
+  if (subject) return `${label} · ${subject}`;
+  // Not a "Class N - Subject" category: show it only if it isn't a class on its own
+  return categoryName && !/^class\s*\d/i.test(categoryName) ? `${label} · ${categoryName}` : label;
 }
 
 // Category names look like "Class 12 - Physics"
