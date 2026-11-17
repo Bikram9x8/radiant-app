@@ -226,9 +226,11 @@
   margin: 0;
   font-family: var(--disp);
   font-weight: 800;
-  /* Sized so each phrase ("Find your college.") fits on one line in the hero column, as the
-     design's three-line break intends. Phones: about 10vw, so even 320px keeps three lines */
-  font-size: clamp(34px, max(5.6vw, min(10.2vw, 40px)), 84px);
+  /* Sized from the hero text column (container query units), so each phrase stays on one line,
+     as the design's three-line break intends, at every screen width. The longest line is
+     "Find your scholarship." (rotating word, ~8.5em wide): column / 8.9 leaves ~4% to spare.
+     Never larger than before: max(40px, 5.1vw), and 84px at most. */
+  font-size: min(calc(100cqi / 8.9), max(40px, 5.1vw), 84px);
   line-height: 0.95;
   letter-spacing: 0.005em;
   text-transform: uppercase;
@@ -236,6 +238,12 @@
 
 .line {
   display: block;
+}
+
+/* The hero text column is the size container for the h1 (see .h1 font-size) */
+.heroText {
+  container-type: inline-size;
+  min-width: 0;
 }
 
 .h1 .ser {
@@ -1685,5 +1693,106 @@ a.exam:hover {
     background: var(--ink);
     color: #ffffff;
     translate: 0 -4px;
+  }
+}
+
+/* =====================================================================================
+   Hero line 1: rotating accent word (Hero.tsx RotatingAccent)
+   "college." -> "course." -> "scholarship." -> "internship." -> "college.", ONCE, then it stops
+   (no loop: WCAG 2.2.2). Starts at 2.2s, after the entrance and the first underline; the last
+   word settles at ~6.45s and its underline finishes at ~6.75s (about 4.5s of rotation).
+   Only opacity and transform move. All words share one grid cell, so the cell is as wide as the
+   longest word and nothing shifts. Default / reduced motion: only the first "college." shows.
+   ===================================================================================== */
+.rotWords {
+  display: inline-grid;
+  justify-items: start;
+}
+
+.rotWord {
+  grid-area: 1 / 1;
+  position: relative;
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.rotWord:not([data-step="0"]) {
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .rotWord[data-step="0"] {
+    animation: rotOut 0.35s ease 2.2s forwards;
+  }
+
+  .rotWord[data-step="1"] {
+    animation: rotShow 1.3s ease 2.2s both;
+  }
+
+  .rotWord[data-step="2"] {
+    animation: rotShow 1.3s ease 3.5s both;
+  }
+
+  .rotWord[data-step="3"] {
+    animation: rotShow 1.3s ease 4.8s both;
+  }
+
+  .rotWord[data-step="4"] {
+    animation: rotIn 0.35s ease 6.1s both;
+  }
+
+  /* Each new word's underline draws as it arrives (the first keeps the entrance timing) */
+  .rotWord[data-step="1"] .ul path {
+    animation: draw 0.5s ease 2.35s both;
+  }
+
+  .rotWord[data-step="2"] .ul path {
+    animation: draw 0.5s ease 3.65s both;
+  }
+
+  .rotWord[data-step="3"] .ul path {
+    animation: draw 0.5s ease 4.95s both;
+  }
+
+  .rotWord[data-step="4"] .ul path {
+    animation: draw 0.5s ease 6.25s both;
+  }
+}
+
+@keyframes rotOut {
+  from {
+    opacity: 1;
+    transform: none;
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-0.3em);
+  }
+}
+
+@keyframes rotIn {
+  from {
+    opacity: 0;
+    transform: translateY(0.3em);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes rotShow {
+  0% {
+    opacity: 0;
+    transform: translateY(0.3em);
+  }
+  23%,
+  77% {
+    opacity: 1;
+    transform: none;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-0.3em);
   }
 }
