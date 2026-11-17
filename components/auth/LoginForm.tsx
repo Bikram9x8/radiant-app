@@ -37,8 +37,10 @@ export default function LoginForm({ returnTo: rawReturnTo = null }: { returnTo?:
 
   return (
     <>
-      <h1 className="text-2xl font-bold tracking-tight text-[#14142b]">Welcome back</h1>
-      <p className="mt-1 mb-6 text-sm text-[#52516b]">Log in to continue learning.</p>
+      <h1 className="font-display text-[34px] leading-[0.95] font-extrabold uppercase text-ink">
+        Welcome <span className="font-serif font-normal normal-case italic text-teal">back</span>
+      </h1>
+      <p className="mt-1 mb-6 text-sm text-muted">Log in to continue learning.</p>
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <div>
           <label htmlFor={`${uid}-login-email`} className={authLabel}>
@@ -69,7 +71,7 @@ export default function LoginForm({ returnTo: rawReturnTo = null }: { returnTo?:
           {loading ? "Logging in..." : "Log in"}
         </button>
       </form>
-      <p className="mt-6 text-center text-sm text-[#52516b]">
+      <p className="mt-6 text-center text-sm text-muted">
         New here?{" "}
         <AuthLink href={withReturnTo("/signup", returnTo)} className={authLink}>
           Create a free account

@@ -38,8 +38,10 @@ export default function StudentSignupForm({ returnTo: rawReturnTo = null }: { re
   return (
     <>
       <SignupSwitch current="student" />
-      <h1 className="text-2xl font-bold tracking-tight text-[#14142b]">Create your free account</h1>
-      <p className="mt-1 mb-6 text-sm text-[#52516b]">It only takes a minute to get started.</p>
+      <h1 className="font-display text-[34px] leading-[0.95] font-extrabold uppercase text-ink">
+        Create your <span className="font-serif font-normal normal-case italic text-teal">free</span> account
+      </h1>
+      <p className="mt-1 mb-6 text-sm text-muted">It only takes a minute to get started.</p>
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <div>
           <label htmlFor={`${uid}-signup-fullName`} className={authLabel}>
@@ -85,7 +87,7 @@ export default function StudentSignupForm({ returnTo: rawReturnTo = null }: { re
           {loading ? "Creating account..." : "Sign up"}
         </button>
       </form>
-      <p className="mt-6 text-center text-sm text-[#52516b]">
+      <p className="mt-6 text-center text-sm text-muted">
         Already have an account?{" "}
         <AuthLink href={withReturnTo("/login", returnTo)} className={authLink}>
           Log in

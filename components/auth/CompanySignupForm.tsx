@@ -35,10 +35,12 @@ export default function CompanySignupForm() {
   return (
     <>
       <SignupSwitch current="company" />
-      <h1 className="text-2xl font-bold tracking-tight text-[#14142b]">Create your free account</h1>
-      <p className="mt-1 mb-6 text-sm text-[#52516b]">It only takes a minute to get started.</p>
+      <h1 className="font-display text-[34px] leading-[0.95] font-extrabold uppercase text-ink">
+        Create your <span className="font-serif font-normal normal-case italic text-teal">free</span> account
+      </h1>
+      <p className="mt-1 mb-6 text-sm text-muted">It only takes a minute to get started.</p>
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-        <p className="rounded-xl bg-[#fef3c7] px-4 py-3 text-sm text-[#713f12]">
+        <p className="rounded-xl border border-[#f5e3a3] bg-(--tint-sand) px-4 py-3 text-sm text-[#7c4a03]">
           Company accounts are checked by our team before you can post.
         </p>
         <div>
@@ -85,7 +87,7 @@ export default function CompanySignupForm() {
           {loading ? "Creating account..." : "Sign up"}
         </button>
       </form>
-      <p className="mt-6 text-center text-sm text-[#52516b]">
+      <p className="mt-6 text-center text-sm text-muted">
         Already have an account?{" "}
         <AuthLink href="/login" className={authLink}>
           Log in
