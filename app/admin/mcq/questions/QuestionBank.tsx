@@ -79,7 +79,7 @@ export default function QuestionBank({
     <div className="flex flex-col gap-6">
       <section aria-label="Chapter" className="card p-5 sm:p-6 flex flex-col gap-4">
         {chapter ? (
-          <p className="text-[#14142b]">
+          <p className="text-ink">
             <span className="font-bold">Chapter:</span> {chapterLabel(chapter)}
           </p>
         ) : invalidChapter ? (
@@ -108,12 +108,12 @@ export default function QuestionBank({
             </p>
             <div className="flex flex-wrap items-center gap-4">
               {inactiveCount > 0 && (
-                <label className="flex min-h-[44px] items-center gap-2 text-sm font-semibold text-[#14142b]">
+                <label className="flex min-h-[44px] items-center gap-2 text-sm font-semibold text-ink">
                   <input
                     type="checkbox"
                     checked={showInactive}
                     onChange={(e) => setShowInactive(e.target.checked)}
-                    className={`h-5 w-5 accent-[#6d28d9] ${focusRing}`}
+                    className={`h-5 w-5 accent-teal ${focusRing}`}
                   />
                   Show deactivated
                 </label>
@@ -155,7 +155,7 @@ export default function QuestionBank({
 
           {visible.length === 0 && !adding && (
             <div className="card p-5 sm:p-6">
-              <p className="text-[#3b3a55]">No questions in this chapter yet. Add the first one.</p>
+              <p className="text-muted">No questions in this chapter yet. Add the first one.</p>
             </div>
           )}
 
@@ -174,9 +174,9 @@ export default function QuestionBank({
                   />
                 </li>
               ) : (
-                <li key={q.id} className={`card p-5 sm:p-6 ${q.isActive ? "" : "bg-[#f6f5fb]"}`}>
+                <li key={q.id} className={`card p-5 sm:p-6 ${q.isActive ? "" : "bg-[#f6f8fb]"}`}>
                   <div className="flex flex-wrap items-start justify-between gap-3">
-                    <p className={`${questionText} flex-1 min-w-[200px] whitespace-pre-line font-semibold text-[#14142b]`}>
+                    <p className={`${questionText} flex-1 min-w-[200px] whitespace-pre-line font-semibold text-ink`}>
                       {i + 1}. {q.text}
                     </p>
                     <div className="flex flex-wrap gap-2">
@@ -191,7 +191,7 @@ export default function QuestionBank({
 
                   {q.imageUrl && (
                     // eslint-disable-next-line @next/next/no-img-element -- R2 URL, not in next/image config
-                    <img src={q.imageUrl} alt="" className="mt-3 max-h-40 rounded-xl border border-[#e4e2ef]" />
+                    <img src={q.imageUrl} alt="" className="mt-3 max-h-40 rounded-xl border border-line" />
                   )}
 
                   <ul className="mt-3 grid gap-2 sm:grid-cols-2 text-sm">
@@ -201,7 +201,7 @@ export default function QuestionBank({
                         <li
                           key={o}
                           className={`${questionText} rounded-xl px-3 py-2 ${
-                            isCorrect ? "pastel-mint font-semibold" : "bg-[#f6f5fb] text-[#14142b]"
+                            isCorrect ? "pastel-mint font-semibold" : "bg-[#f6f8fb] text-ink"
                           }`}
                         >
                           {o}. {q[`option${o}`]}
@@ -213,8 +213,8 @@ export default function QuestionBank({
                   </ul>
 
                   {q.explanation && (
-                    <p className={`${questionText} mt-3 whitespace-pre-line text-sm text-[#3b3a55]`}>
-                      <span className="font-semibold text-[#14142b]">Explanation:</span> {q.explanation}
+                    <p className={`${questionText} mt-3 whitespace-pre-line text-sm text-muted`}>
+                      <span className="font-semibold text-ink">Explanation:</span> {q.explanation}
                     </p>
                   )}
 

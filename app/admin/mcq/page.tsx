@@ -76,7 +76,7 @@ export default async function AdminMcqTestsPage({
         </div>
       </div>
 
-      <nav aria-label="Filter tests" className="mt-6 inline-flex gap-1 rounded-xl bg-[#f6f5fb] p-1">
+      <nav aria-label="Filter tests" className="mt-6 inline-flex gap-1 rounded-xl bg-[#f6f8fb] p-1">
         {FILTERS.map((f) => {
           const active = filter === f.key;
           return (
@@ -86,8 +86,8 @@ export default async function AdminMcqTestsPage({
               aria-current={active ? "page" : undefined}
               className={`flex min-h-[40px] items-center rounded-lg px-4 text-sm font-semibold ${
                 active
-                  ? "bg-white text-[#6d28d9] shadow-[0_1px_4px_rgba(20,20,43,0.12)]"
-                  : "text-[#3b3a55] hover:text-[#6d28d9]"
+                  ? "bg-white text-teal-dark shadow-soft"
+                  : "text-muted hover:text-teal-dark"
               } ${focusRing}`}
             >
               {f.label}
@@ -98,7 +98,7 @@ export default async function AdminMcqTestsPage({
 
       {tests.length === 0 ? (
         <div className="card mt-4 p-5 sm:p-6">
-          <p className="text-[#3b3a55]">
+          <p className="text-muted">
             {filter === "all" ? "No tests yet. Create the first one with New test." : "No tests match this filter."}
           </p>
         </div>
@@ -107,7 +107,7 @@ export default async function AdminMcqTestsPage({
           <div className="overflow-x-auto">
             <table className="w-full min-w-[720px] text-sm">
               <thead>
-                <tr className="border-b border-[#e4e2ef] bg-[#f6f5fb] text-left text-[#3b3a55]">
+                <tr className="border-b border-line bg-[#f6f8fb] text-left text-muted">
                   <th scope="col" className="px-5 py-3 font-semibold">Test</th>
                   <th scope="col" className="px-5 py-3 font-semibold">Questions</th>
                   <th scope="col" className="px-5 py-3 font-semibold">Status</th>
@@ -115,28 +115,28 @@ export default async function AdminMcqTestsPage({
                   <th scope="col" className="px-5 py-3 font-semibold">Updated</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#e4e2ef]">
+              <tbody className="divide-y divide-line">
                 {tests.map((t) => (
-                  <tr key={t.id} className="hover:bg-[#f6f5fb]">
+                  <tr key={t.id} className="hover:bg-[#f6f8fb]">
                     <td className="px-5 py-4">
                       <Link
                         href={`/admin/mcq/tests/${t.id}`}
-                        className={`rounded font-semibold text-[#14142b] hover:text-[#6d28d9] hover:underline ${focusRing}`}
+                        className={`rounded font-semibold text-ink hover:text-teal-dark hover:underline ${focusRing}`}
                       >
                         {t.title}
                       </Link>
-                      <p className="mt-1 text-[#3b3a55]">
+                      <p className="mt-1 text-muted">
                         {labels.get(t.chapterId)}. {t.timeLimitMin ? `${t.timeLimitMin} minutes` : "Untimed"}.
                       </p>
                     </td>
-                    <td className="px-5 py-4 text-[#14142b]">{t.questions.length}</td>
+                    <td className="px-5 py-4 text-ink">{t.questions.length}</td>
                     <td className="px-5 py-4">
                       <span className={t.isPublished ? badgePublished : badgeDraft}>
                         {t.isPublished ? "Published" : "Draft"}
                       </span>
                     </td>
-                    <td className="px-5 py-4 text-[#14142b]">{t._count.attempts}</td>
-                    <td className="px-5 py-4 text-[#3b3a55]">
+                    <td className="px-5 py-4 text-ink">{t._count.attempts}</td>
+                    <td className="px-5 py-4 text-muted">
                       {t.updatedAt.toLocaleDateString("en-IN", {
                         day: "numeric",
                         month: "short",
