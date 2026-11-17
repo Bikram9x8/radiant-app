@@ -9,8 +9,8 @@ import type { InternshipLevelOption } from "@/lib/internships";
 type Category = { id: string; name: string };
 
 const inputClass =
-  "w-full rounded-xl bg-white/70 dark:bg-zinc-900/70 px-3 py-2 outline-none text-zinc-900 dark:text-white placeholder:text-zinc-500";
-const labelClass = "block text-sm font-medium mb-1 text-zinc-900 dark:text-white";
+  "w-full rounded-xl bg-white/70 px-3 py-2 outline-none text-ink placeholder:text-muted";
+const labelClass = "block text-sm font-medium mb-1 text-ink";
 const CONTENT_LABELS: Record<string, string> = {
   NOTES: "Notes",
   SOLUTION: "Solutions",
@@ -173,7 +173,7 @@ export default function PostOpportunityForm({
 
   if (success) {
     return (
-      <div className="glass rounded-2xl p-6 text-emerald-700 dark:text-emerald-300">
+      <div className="glass rounded-[18px] p-6 text-emerald-700">
         <p className="font-semibold">Submitted for admin approval.</p>
         <p className="text-sm mt-1">Redirecting to your dashboard...</p>
       </div>
@@ -181,7 +181,7 @@ export default function PostOpportunityForm({
   }
 
   return (
-    <form onSubmit={handleSubmit} className="glass rounded-2xl p-6 flex flex-col gap-5">
+    <form onSubmit={handleSubmit} className="glass rounded-[18px] p-6 flex flex-col gap-5">
       <div>
         <label className={labelClass}>Type *</label>
         <select value={type} onChange={(e) => setType(e.target.value)} className={inputClass}>
@@ -224,8 +224,8 @@ export default function PostOpportunityForm({
 
       {isInternship && (
         <>
-          <p className="text-sm text-zinc-600 dark:text-zinc-400">
-            Category: <span className="font-medium text-zinc-900 dark:text-white">Internships</span> (set
+          <p className="text-sm text-muted">
+            Category: <span className="font-medium text-ink">Internships</span> (set
             automatically)
           </p>
           <InternshipPicker
@@ -303,7 +303,7 @@ export default function PostOpportunityForm({
         <div>
           <label className={labelClass}>Test Source *</label>
           <div className="flex gap-4 mb-3">
-            <label className="flex items-center gap-2 text-sm text-zinc-900 dark:text-white">
+            <label className="flex items-center gap-2 text-sm text-ink">
               <input
                 type="radio"
                 checked={linkType === "link"}
@@ -311,7 +311,7 @@ export default function PostOpportunityForm({
               />
               Link
             </label>
-            <label className="flex items-center gap-2 text-sm text-zinc-900 dark:text-white">
+            <label className="flex items-center gap-2 text-sm text-ink">
               <input
                 type="radio"
                 checked={linkType === "pdf"}
@@ -330,7 +330,7 @@ export default function PostOpportunityForm({
                 placeholder="https://..."
                 className={inputClass}
               />
-              <p className="text-xs text-zinc-600 dark:text-zinc-400 mt-1">
+              <p className="text-xs text-muted mt-1">
                 Link to the Google Form, PDF, or external site where students take the test.
               </p>
             </>
@@ -342,7 +342,7 @@ export default function PostOpportunityForm({
                 onChange={(e) => setPdfFile(e.target.files?.[0] || null)}
                 className={inputClass}
               />
-              <p className="text-xs text-zinc-600 dark:text-zinc-400 mt-1">
+              <p className="text-xs text-muted mt-1">
                 Upload the test as a PDF (max 10MB).
               </p>
             </>
@@ -370,7 +370,7 @@ export default function PostOpportunityForm({
             onChange={(e) => setRequiresCode(e.target.checked)}
             className="w-4 h-4 rounded"
           />
-          <label htmlFor="requiresCode" className="text-sm font-medium text-zinc-900 dark:text-white">
+          <label htmlFor="requiresCode" className="text-sm font-medium text-ink">
             Requires access code (students need a code from you to unlock this test)
           </label>
         </div>
@@ -459,12 +459,12 @@ export default function PostOpportunityForm({
         </>
       )}
 
-      {error && <p className="text-sm text-red-600 dark:text-red-400">{error}</p>}
+      {error && <p className="text-sm text-red-600">{error}</p>}
 
       <button
         type="submit"
         disabled={submitting}
-        className="rounded-xl px-5 py-2.5 bg-purple-600 text-white font-semibold hover:bg-purple-700 transition-colors disabled:opacity-50"
+        className="rounded-xl px-5 py-2.5 bg-teal text-white font-semibold hover:bg-teal-dark transition-colors disabled:opacity-50"
       >
         {uploadingPdf ? "Uploading PDF..." : submitting ? "Submitting..." : "Submit for Approval"}
       </button>

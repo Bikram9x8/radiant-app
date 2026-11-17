@@ -11,26 +11,22 @@ function StatCard({
   label,
   value,
   accent,
-  gradient,
-  glow,
   Icon,
 }: {
   label: string;
   value: number;
   accent?: string;
-  gradient?: string;
-  glow?: string;
   Icon?: any;
 }) {
   return (
-    <div className="glass glass-card rounded-3xl px-5 py-6 text-center flex flex-col items-center gap-2">
+    <div className="glass glass-card rounded-[18px] px-5 py-6 text-center flex flex-col items-center gap-2">
       {Icon && (
-        <div className={`w-9 h-9 rounded-lg bg-gradient-to-br ${gradient} ${glow} flex items-center justify-center mb-1`}>
-          <Icon size={16} color="white" stroke={2} />
+        <div className="w-10 h-10 rounded-xl bg-tint-teal text-teal-dark flex items-center justify-center mb-1">
+          <Icon size={18} stroke={2} />
         </div>
       )}
-      <div className={`text-3xl font-bold ${accent ?? "text-zinc-900 dark:text-white"}`}>{value}</div>
-      <div className="text-xs font-medium text-zinc-600 dark:text-zinc-400">{label}</div>
+      <div className={`font-display text-4xl leading-none font-extrabold ${accent ?? "text-ink"}`}>{value}</div>
+      <div className="text-xs font-medium text-muted">{label}</div>
     </div>
   );
 }
@@ -51,9 +47,9 @@ export default async function DashboardPage() {
   if (user.status === "PENDING") {
     return (
       <div className="flex flex-1 flex-col items-center justify-center gap-4 px-6 text-center">
-        <div className="glass rounded-2xl px-8 py-10 max-w-md">
-          <h1 className="text-2xl font-bold text-zinc-900 dark:text-white">Account pending approval</h1>
-          <p className="text-zinc-600 dark:text-zinc-400 mt-2">
+        <div className="glass rounded-[18px] px-8 py-10 max-w-md">
+          <h1 className="text-2xl font-bold text-ink">Account pending approval</h1>
+          <p className="text-muted mt-2">
             Your company account is awaiting admin approval. You'll be notified once it's approved.
           </p>
         </div>
@@ -103,9 +99,9 @@ if (user.role === "STUDENT") {
     if (!companyProfile) {
       return (
         <div className="flex flex-1 flex-col items-center justify-center gap-4 px-6 text-center">
-          <div className="glass rounded-2xl px-8 py-10">
-            <h1 className="text-2xl font-bold text-zinc-900 dark:text-white">Company profile not found</h1>
-            <p className="text-zinc-600 dark:text-zinc-400 mt-2">Something went wrong. Please contact support.</p>
+          <div className="glass rounded-[18px] px-8 py-10">
+            <h1 className="text-2xl font-bold text-ink">Company profile not found</h1>
+            <p className="text-muted mt-2">Something went wrong. Please contact support.</p>
           </div>
         </div>
       );
@@ -124,25 +120,25 @@ if (user.role === "STUDENT") {
     const recentOpportunities = opportunities.slice(0, 5);
 
     const statusStyles: Record<string, string> = {
-      APPROVED: "bg-emerald-100/80 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300",
-      PENDING: "bg-amber-100/80 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300",
-      REJECTED: "bg-red-100/80 dark:bg-red-900/40 text-red-700 dark:text-red-300",
-      CLOSED: "bg-zinc-200/80 dark:bg-zinc-800/60 text-zinc-600 dark:text-zinc-400",
+      APPROVED: "bg-emerald-100/80 text-emerald-700",
+      PENDING: "bg-amber-100/80 text-amber-700",
+      REJECTED: "bg-red-100/80 text-red-700",
+      CLOSED: "bg-zinc-200/80 text-muted",
     };
 
     return (
       <div className="flex-1 px-6 py-8 max-w-6xl mx-auto w-full">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-10">
           <div>
-            <h1 className="text-4xl font-bold tracking-tight text-zinc-900 dark:text-white">
+            <h1 className="text-4xl font-bold tracking-tight text-ink">
               {companyProfile.companyName}
             </h1>
-            <p className="text-zinc-600 dark:text-zinc-400 mt-2">Here's how your opportunities are performing.</p>
+            <p className="text-muted mt-2">Here's how your opportunities are performing.</p>
           </div>
           <div className="flex gap-3">
             <Link
               href="/company/profile"
-              className="rounded-lg px-4 py-2 glass font-semibold text-sm text-zinc-900 dark:text-white"
+              className="rounded-lg px-4 py-2 glass font-semibold text-sm text-ink"
             >
               Edit Company Profile
             </Link>
@@ -157,36 +153,36 @@ if (user.role === "STUDENT") {
 
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 mb-10">
           {[
-            { label: "Total Postings", value: totalOpportunities, accent: "text-purple-600 dark:text-purple-400", Icon: IconListDetails, gradient: "from-purple-400 to-pink-400", glow: "shadow-[0_0_12px_rgba(192,132,252,0.5)]" },
-            { label: "Live", value: approvedCount, accent: "text-emerald-600 dark:text-emerald-400", Icon: IconCircleCheck, gradient: "from-emerald-400 to-cyan-400", glow: "shadow-[0_0_12px_rgba(52,211,153,0.5)]" },
-            { label: "Pending Review", value: pendingCount, accent: "text-amber-600 dark:text-amber-400", Icon: IconClockHour4, gradient: "from-amber-400 to-pink-400", glow: "shadow-[0_0_12px_rgba(251,191,36,0.5)]" },
-            { label: "Closed", value: closedCount, accent: "text-zinc-500", Icon: IconX, gradient: "from-zinc-400 to-zinc-500", glow: "" },
-            { label: "Total Applicants", value: totalApplicants, accent: "text-cyan-600 dark:text-cyan-400", Icon: IconUsersGroup, gradient: "from-cyan-400 to-blue-400", glow: "shadow-[0_0_12px_rgba(34,211,238,0.5)]" },
-            { label: "Shortlisted", value: shortlistedCount, accent: "text-lime-600 dark:text-lime-400", Icon: IconStar, gradient: "from-lime-400 to-emerald-400", glow: "shadow-[0_0_12px_rgba(163,230,53,0.5)]" },
+            { label: "Total Postings", value: totalOpportunities, accent: "text-teal-dark", Icon: IconListDetails },
+            { label: "Live", value: approvedCount, accent: "text-emerald-600", Icon: IconCircleCheck },
+            { label: "Pending Review", value: pendingCount, accent: "text-amber-600", Icon: IconClockHour4 },
+            { label: "Closed", value: closedCount, accent: "text-muted", Icon: IconX },
+            { label: "Total Applicants", value: totalApplicants, accent: "text-cyan-600", Icon: IconUsersGroup },
+            { label: "Shortlisted", value: shortlistedCount, accent: "text-lime-600", Icon: IconStar },
           ].map((s, i) => (
             <FadeIn key={s.label} delay={i * 60}>
-              <StatCard label={s.label} value={s.value} accent={s.accent} Icon={s.Icon} gradient={s.gradient} glow={s.glow} />
+              <StatCard label={s.label} value={s.value} accent={s.accent} Icon={s.Icon} />
             </FadeIn>
           ))}
         </div>
 
-        <div className="glass rounded-3xl overflow-hidden">
-          <div className="flex items-center justify-between px-6 py-5 border-b border-white/20 dark:border-white/10">
-            <h2 className="font-semibold text-lg text-zinc-900 dark:text-white">Recent Opportunities</h2>
-            <Link href="/company/opportunities" className="text-sm text-purple-600 dark:text-purple-400 font-semibold hover:underline">
+        <div className="glass rounded-[18px] overflow-hidden">
+          <div className="flex items-center justify-between px-6 py-5 border-b border-white/20">
+            <h2 className="font-semibold text-lg text-ink">Recent Opportunities</h2>
+            <Link href="/company/opportunities" className="text-sm text-teal-dark font-semibold hover:underline">
               View all
             </Link>
           </div>
 
           {recentOpportunities.length === 0 ? (
-            <div className="px-5 py-10 text-center text-zinc-600 dark:text-zinc-400">
+            <div className="px-5 py-10 text-center text-muted">
               You haven't posted any opportunities yet.
             </div>
           ) : (
             <div className="overflow-x-auto">
             <table className="w-full text-sm min-w-[600px]">
               <thead>
-                <tr className="text-left text-zinc-600 dark:text-zinc-400 border-b border-white/20 dark:border-white/10">
+                <tr className="text-left text-muted border-b border-white/20">
                   <th className="px-5 py-3 font-medium">Title</th>
                   <th className="px-5 py-3 font-medium">Type</th>
                   <th className="px-5 py-3 font-medium">Status</th>
@@ -196,13 +192,13 @@ if (user.role === "STUDENT") {
               </thead>
               <tbody>
                 {recentOpportunities.map((opp) => (
-                  <tr key={opp.id} className="border-b border-white/10 dark:border-white/5 last:border-0">
-                    <td className="px-5 py-3 font-medium text-zinc-900 dark:text-white">
+                  <tr key={opp.id} className="border-b border-white/10 last:border-0">
+                    <td className="px-5 py-3 font-medium text-ink">
                       <Link href={`/company/opportunities/${opp.id}`} className="hover:underline">
                         {opp.title}
                       </Link>
                     </td>
-                    <td className="px-5 py-3 text-zinc-600 dark:text-zinc-400">{opp.type}</td>
+                    <td className="px-5 py-3 text-muted">{opp.type}</td>
                     <td className="px-5 py-3">
                       <span
                         className={`inline-block rounded-full px-2.5 py-0.5 text-xs font-semibold ${statusStyles[opp.status]}`}
@@ -210,8 +206,8 @@ if (user.role === "STUDENT") {
                         {opp.status}
                       </span>
                     </td>
-                    <td className="px-5 py-3 text-zinc-900 dark:text-white">{opp.applications.length}</td>
-                    <td className="px-5 py-3 text-zinc-600 dark:text-zinc-400">
+                    <td className="px-5 py-3 text-ink">{opp.applications.length}</td>
+                    <td className="px-5 py-3 text-muted">
                       {opp.applyDeadline.toLocaleDateString("en-IN", {
                         day: "numeric",
                         month: "short",
@@ -231,35 +227,35 @@ if (user.role === "STUDENT") {
 
   if (user.role === "ADMIN") {
     const adminLinks = [
-      { href: "/admin/opportunities", label: "Opportunity Approvals", desc: "Review pending tests", Icon: IconClipboardCheck, gradient: "from-emerald-400 to-cyan-400", glow: "shadow-[0_0_16px_rgba(52,211,153,0.5)]" },
-      { href: "/admin/companies", label: "Company Approvals", desc: "Review new company signups", Icon: IconBuildingSkyscraper, gradient: "from-cyan-400 to-blue-400", glow: "shadow-[0_0_16px_rgba(34,211,238,0.5)]" },
-      { href: "/admin/mcq", label: "MCQ Tests", desc: "Build chapter tests and manage the question bank", Icon: IconChecklist, gradient: "from-indigo-400 to-purple-400", glow: "shadow-[0_0_16px_rgba(129,140,248,0.5)]" },
-      { href: "/admin/categories", label: "Categories", desc: "Manage subjects and exams", Icon: IconCategory, gradient: "from-purple-400 to-pink-400", glow: "shadow-[0_0_16px_rgba(192,132,252,0.5)]" },
-      { href: "/admin/users", label: "Users", desc: "View and manage accounts", Icon: IconUsers, gradient: "from-pink-400 to-purple-400", glow: "shadow-[0_0_16px_rgba(244,114,182,0.5)]" },
-      { href: "/admin/access-codes", label: "Access Codes", desc: "Generate and manage test access codes", Icon: IconKey, gradient: "from-amber-400 to-pink-400", glow: "shadow-[0_0_16px_rgba(251,191,36,0.5)]" },
-      { href: "/admin/locked-tests", label: "Locked Tests", desc: "Review and unlock students locked out of tests", Icon: IconLockSquareRounded, gradient: "from-red-400 to-amber-400", glow: "shadow-[0_0_16px_rgba(248,113,113,0.5)]" },
-      { href: "/admin/stats", label: "Stats", desc: "Platform overview", Icon: IconChartBar, gradient: "from-lime-400 to-emerald-400", glow: "shadow-[0_0_16px_rgba(163,230,53,0.5)]" },
-      { href: "/admin/logs", label: "Activity Log", desc: "Recent admin actions", Icon: IconHistory, gradient: "from-emerald-400 to-purple-400", glow: "shadow-[0_0_16px_rgba(52,211,153,0.5)]" },
+      { href: "/admin/opportunities", label: "Opportunity Approvals", desc: "Review pending tests", Icon: IconClipboardCheck },
+      { href: "/admin/companies", label: "Company Approvals", desc: "Review new company signups", Icon: IconBuildingSkyscraper },
+      { href: "/admin/mcq", label: "MCQ Tests", desc: "Build chapter tests and manage the question bank", Icon: IconChecklist },
+      { href: "/admin/categories", label: "Categories", desc: "Manage subjects and exams", Icon: IconCategory },
+      { href: "/admin/users", label: "Users", desc: "View and manage accounts", Icon: IconUsers },
+      { href: "/admin/access-codes", label: "Access Codes", desc: "Generate and manage test access codes", Icon: IconKey },
+      { href: "/admin/locked-tests", label: "Locked Tests", desc: "Review and unlock students locked out of tests", Icon: IconLockSquareRounded },
+      { href: "/admin/stats", label: "Stats", desc: "Platform overview", Icon: IconChartBar },
+      { href: "/admin/logs", label: "Activity Log", desc: "Recent admin actions", Icon: IconHistory },
     ];
 
     return (
       <div className="flex-1 px-6 py-8 max-w-5xl mx-auto w-full">
-        <h1 className="text-3xl font-bold tracking-tight text-zinc-900 dark:text-white mb-1">Admin Dashboard</h1>
-        <p className="text-zinc-600 dark:text-zinc-400 mb-8">Manage approvals, users, and platform content.</p>
+        <h1 className="text-3xl font-bold tracking-tight text-ink mb-1">Admin Dashboard</h1>
+        <p className="text-muted mb-8">Manage approvals, users, and platform content.</p>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {adminLinks.map((link, i) => (
             <FadeIn key={link.href} delay={i * 60}>
               <Link
                 href={link.href}
-                className="glass glass-card block rounded-3xl p-5 flex items-start gap-4"
+                className="glass glass-card block rounded-[18px] p-5 flex items-start gap-4"
               >
-                <div className={`w-12 h-12 shrink-0 rounded-xl bg-gradient-to-br ${link.gradient} ${link.glow} flex items-center justify-center`}>
-                  <link.Icon size={22} color="white" stroke={2} />
+                <div className="w-12 h-12 shrink-0 rounded-xl bg-tint-teal text-teal-dark flex items-center justify-center">
+                  <link.Icon size={22} stroke={2} />
                 </div>
                 <div>
-                  <p className="font-semibold text-zinc-900 dark:text-white">{link.label}</p>
-                  <p className="text-sm text-zinc-600 dark:text-zinc-400 mt-1">{link.desc}</p>
+                  <p className="font-semibold text-ink">{link.label}</p>
+                  <p className="text-sm text-muted mt-1">{link.desc}</p>
                 </div>
               </Link>
             </FadeIn>

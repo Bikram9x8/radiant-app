@@ -50,40 +50,40 @@ export default async function AdminStatsPage() {
 
   return (
     <div className="flex-1 px-6 py-8 max-w-4xl mx-auto w-full">
-      <h1 className="text-2xl font-bold mb-8 text-zinc-900 dark:text-white">Stats</h1>
+      <h1 className="text-2xl font-bold mb-8 text-ink">Stats</h1>
 
       <div className="mb-10">
-        <h2 className="text-sm font-semibold text-zinc-600 dark:text-zinc-400 uppercase tracking-wide mb-3">
+        <h2 className="text-sm font-semibold text-muted uppercase tracking-wide mb-3">
           Users
         </h2>
         <FadeIn>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <StatCard label="Students" value={totalStudents} />
-          <StatCard label="Companies (Approved)" value={totalCompaniesApproved} accent="text-emerald-600 dark:text-emerald-400" />
-          <StatCard label="Companies (Pending)" value={totalCompaniesPending} accent="text-amber-600 dark:text-amber-400" />
+          <StatCard label="Companies (Approved)" value={totalCompaniesApproved} accent="text-emerald-600" />
+          <StatCard label="Companies (Pending)" value={totalCompaniesPending} accent="text-amber-600" />
           <StatCard label="Admins" value={totalAdmins} />
         </div>
         </FadeIn>
       </div>
 
       <div className="mb-10">
-        <h2 className="text-sm font-semibold text-zinc-600 dark:text-zinc-400 uppercase tracking-wide mb-3">
+        <h2 className="text-sm font-semibold text-muted uppercase tracking-wide mb-3">
           Opportunities ({totalOpportunities} total)
         </h2>
         <FadeIn delay={80}>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
-          <StatCard label="Pending" value={oppPending} accent="text-amber-600 dark:text-amber-400" />
-          <StatCard label="Approved" value={oppApproved} accent="text-emerald-600 dark:text-emerald-400" />
-          <StatCard label="Rejected" value={oppRejected} accent="text-red-600 dark:text-red-400" />
+          <StatCard label="Pending" value={oppPending} accent="text-amber-600" />
+          <StatCard label="Approved" value={oppApproved} accent="text-emerald-600" />
+          <StatCard label="Rejected" value={oppRejected} accent="text-red-600" />
           <StatCard label="Closed" value={oppClosed} />
         </div>
-        <div className="glass rounded-2xl p-4">
-          <p className="text-sm font-medium mb-2 text-zinc-900 dark:text-white">By type</p>
+        <div className="glass rounded-[18px] p-4">
+          <p className="text-sm font-medium mb-2 text-ink">By type</p>
           <div className="flex flex-wrap gap-3">
             {oppByType.map((t) => (
               <span
                 key={t.type}
-                className="text-sm px-3 py-1 rounded-full bg-purple-100/70 dark:bg-purple-900/40 text-purple-800 dark:text-purple-300"
+                className="text-sm px-3 py-1 rounded-full bg-tint-teal/70 text-teal-dark"
               >
                 {t.type}: {t._count}
               </span>
@@ -94,21 +94,21 @@ export default async function AdminStatsPage() {
       </div>
 
       <div className="mb-10">
-        <h2 className="text-sm font-semibold text-zinc-600 dark:text-zinc-400 uppercase tracking-wide mb-3">
+        <h2 className="text-sm font-semibold text-muted uppercase tracking-wide mb-3">
           Applications ({totalApplications} total)
         </h2>
         <FadeIn delay={160}>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <StatCard label="Applied" value={appApplied} />
-          <StatCard label="Shortlisted" value={appShortlisted} accent="text-blue-600 dark:text-blue-400" />
-          <StatCard label="Selected" value={appSelected} accent="text-emerald-600 dark:text-emerald-400" />
-          <StatCard label="Rejected" value={appRejected} accent="text-red-600 dark:text-red-400" />
+          <StatCard label="Shortlisted" value={appShortlisted} accent="text-blue-600" />
+          <StatCard label="Selected" value={appSelected} accent="text-emerald-600" />
+          <StatCard label="Rejected" value={appRejected} accent="text-red-600" />
         </div>
         </FadeIn>
       </div>
 
       <div>
-        <h2 className="text-sm font-semibold text-zinc-600 dark:text-zinc-400 uppercase tracking-wide mb-3">
+        <h2 className="text-sm font-semibold text-muted uppercase tracking-wide mb-3">
           Categories
         </h2>
         <FadeIn delay={240}>
@@ -130,8 +130,8 @@ function StatCard({
 }) {
   return (
     <div className="glass glass-card rounded-2xl p-4">
-      <p className={`text-2xl font-bold ${accent || "text-zinc-900 dark:text-white"}`}>{value}</p>
-      <p className="text-xs text-zinc-600 dark:text-zinc-400 mt-1">{label}</p>
+      <p className={`text-2xl font-bold ${accent || "text-ink"}`}>{value}</p>
+      <p className="text-xs text-muted mt-1">{label}</p>
     </div>
   );
 }

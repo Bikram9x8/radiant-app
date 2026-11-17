@@ -17,10 +17,10 @@ type Application = {
 };
 
 const statusStyles: Record<string, string> = {
-  APPLIED: "bg-zinc-100/80 dark:bg-zinc-800/60 text-zinc-700 dark:text-zinc-300",
-  SHORTLISTED: "bg-blue-100/80 dark:bg-blue-900/40 text-blue-800 dark:text-blue-300",
-  SELECTED: "bg-emerald-100/80 dark:bg-emerald-900/40 text-emerald-800 dark:text-emerald-300",
-  REJECTED: "bg-red-100/80 dark:bg-red-900/40 text-red-800 dark:text-red-300",
+  APPLIED: "bg-zinc-100/80 text-ink-2",
+  SHORTLISTED: "bg-blue-100/80 text-blue-800",
+  SELECTED: "bg-emerald-100/80 text-emerald-800",
+  REJECTED: "bg-red-100/80 text-red-800",
 };
 
 export default function ApplicantsTable({
@@ -73,7 +73,7 @@ export default function ApplicantsTable({
 
   if (applications.length === 0) {
     return (
-      <div className="glass rounded-2xl p-10 text-center text-zinc-600 dark:text-zinc-400">
+      <div className="glass rounded-[18px] p-10 text-center text-muted">
         No applicants yet.
       </div>
     );
@@ -84,32 +84,32 @@ export default function ApplicantsTable({
       <div className="flex justify-end mb-4">
         <button
           onClick={exportCsv}
-          className="rounded-xl px-4 py-2 glass font-semibold text-sm text-zinc-900 dark:text-white"
+          className="rounded-xl px-4 py-2 glass font-semibold text-sm text-ink"
         >
           Export CSV
         </button>
       </div>
 
-      <div className="glass rounded-2xl overflow-hidden">
+      <div className="glass rounded-[18px] overflow-hidden">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-white/20 dark:border-white/10">
-              <th className="text-left px-4 py-3 font-medium text-zinc-600 dark:text-zinc-400">Name</th>
-              <th className="text-left px-4 py-3 font-medium text-zinc-600 dark:text-zinc-400">Contact</th>
-              <th className="text-left px-4 py-3 font-medium text-zinc-600 dark:text-zinc-400">College</th>
-              <th className="text-left px-4 py-3 font-medium text-zinc-600 dark:text-zinc-400">Status</th>
-              <th className="text-left px-4 py-3 font-medium text-zinc-600 dark:text-zinc-400">Actions</th>
+            <tr className="border-b border-white/20">
+              <th className="text-left px-4 py-3 font-medium text-muted">Name</th>
+              <th className="text-left px-4 py-3 font-medium text-muted">Contact</th>
+              <th className="text-left px-4 py-3 font-medium text-muted">College</th>
+              <th className="text-left px-4 py-3 font-medium text-muted">Status</th>
+              <th className="text-left px-4 py-3 font-medium text-muted">Actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-white/10 dark:divide-white/5">
+          <tbody className="divide-y divide-white/10">
             {applications.map((a) => (
               <tr key={a.id}>
-                <td className="px-4 py-3 font-medium text-zinc-900 dark:text-white">{a.student.fullName}</td>
-                <td className="px-4 py-3 text-zinc-600 dark:text-zinc-400">
+                <td className="px-4 py-3 font-medium text-ink">{a.student.fullName}</td>
+                <td className="px-4 py-3 text-muted">
                   <div>{a.student.user.email}</div>
                   {a.student.phone && <div className="text-xs">{a.student.phone}</div>}
                 </td>
-                <td className="px-4 py-3 text-zinc-600 dark:text-zinc-400">
+                <td className="px-4 py-3 text-muted">
                   {a.student.college || "—"}
                 </td>
                 <td className="px-4 py-3">
@@ -122,21 +122,21 @@ export default function ApplicantsTable({
                     <button
                       disabled={updatingId === a.id}
                       onClick={() => updateStatus(a.id, "SHORTLISTED")}
-                      className="text-xs px-2 py-1 rounded-lg glass text-zinc-900 dark:text-white disabled:opacity-50"
+                      className="text-xs px-2 py-1 rounded-lg glass text-ink disabled:opacity-50"
                     >
                       Shortlist
                     </button>
                     <button
                       disabled={updatingId === a.id}
                       onClick={() => updateStatus(a.id, "SELECTED")}
-                      className="text-xs px-2 py-1 rounded-lg glass text-zinc-900 dark:text-white disabled:opacity-50"
+                      className="text-xs px-2 py-1 rounded-lg glass text-ink disabled:opacity-50"
                     >
                       Select
                     </button>
                     <button
                       disabled={updatingId === a.id}
                       onClick={() => updateStatus(a.id, "REJECTED")}
-                      className="text-xs px-2 py-1 rounded-lg glass text-zinc-900 dark:text-white disabled:opacity-50"
+                      className="text-xs px-2 py-1 rounded-lg glass text-ink disabled:opacity-50"
                     >
                       Reject
                     </button>

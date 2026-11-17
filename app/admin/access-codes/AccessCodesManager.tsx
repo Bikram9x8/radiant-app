@@ -42,19 +42,19 @@ export default function AccessCodesManager({ opportunities }: { opportunities: O
 
   return (
     <FadeIn>
-    <div className="glass rounded-2xl p-6 flex flex-col gap-5">
+    <div className="glass rounded-[18px] p-6 flex flex-col gap-5">
       {opportunities.length === 0 ? (
-        <p className="text-sm text-zinc-500">
+        <p className="text-sm text-muted">
           No tests currently require an access code. Mark a test as "Requires access code" when posting it.
         </p>
       ) : (
         <>
           <div>
-            <label className="block text-sm font-medium mb-1 text-zinc-900 dark:text-white">Select test</label>
+            <label className="block text-sm font-medium mb-1 text-ink">Select test</label>
             <select
               value={opportunityId}
               onChange={(e) => setOpportunityId(e.target.value)}
-              className="w-full rounded-xl bg-white/70 dark:bg-zinc-900/70 px-3 py-2 outline-none text-zinc-900 dark:text-white"
+              className="w-full rounded-xl bg-white/70 px-3 py-2 outline-none text-ink"
             >
               <option value="">Select a test</option>
               {opportunities.map((o) => (
@@ -66,7 +66,7 @@ export default function AccessCodesManager({ opportunities }: { opportunities: O
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1 text-zinc-900 dark:text-white">
+            <label className="block text-sm font-medium mb-1 text-ink">
               How many codes?
             </label>
             <input
@@ -75,11 +75,11 @@ export default function AccessCodesManager({ opportunities }: { opportunities: O
               max={500}
               value={count}
               onChange={(e) => setCount(Number(e.target.value))}
-              className="w-full rounded-xl bg-white/70 dark:bg-zinc-900/70 px-3 py-2 outline-none text-zinc-900 dark:text-white"
+              className="w-full rounded-xl bg-white/70 px-3 py-2 outline-none text-ink"
             />
           </div>
 
-          {error && <p className="text-sm text-red-600 dark:text-red-400">{error}</p>}
+          {error && <p className="text-sm text-red-600">{error}</p>}
 
           <button
             onClick={handleGenerate}
@@ -91,14 +91,14 @@ export default function AccessCodesManager({ opportunities }: { opportunities: O
 
           {codes.length > 0 && (
             <div className="mt-2">
-              <h2 className="font-semibold text-sm mb-2 text-zinc-900 dark:text-white">
+              <h2 className="font-semibold text-sm mb-2 text-ink">
                 {codes.length} codes generated:
               </h2>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 max-h-64 overflow-y-auto">
                 {codes.map((code) => (
                   <div
                     key={code}
-                    className="text-sm font-mono bg-white/70 dark:bg-zinc-900/70 rounded-lg px-3 py-2 text-zinc-900 dark:text-white"
+                    className="text-sm font-mono bg-white/70 rounded-lg px-3 py-2 text-ink"
                   >
                     {code}
                   </div>

@@ -66,7 +66,7 @@ export default function CompanyProfilePage() {
   if (loading) {
     return (
       <div className="flex flex-1 items-center justify-center">
-        <p className="text-zinc-500">Loading...</p>
+        <p className="text-muted">Loading...</p>
       </div>
     );
   }

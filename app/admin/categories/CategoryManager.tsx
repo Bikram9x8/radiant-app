@@ -99,23 +99,23 @@ export default function CategoryManager({
   return (
     <div className="flex flex-col gap-8">
       <FadeIn>
-      <form onSubmit={handleAdd} className="glass rounded-2xl p-5 flex flex-col gap-3">
-        <h2 className="font-semibold text-sm text-zinc-900 dark:text-white">Add category</h2>
+      <form onSubmit={handleAdd} className="glass rounded-[18px] p-5 flex flex-col gap-3">
+        <h2 className="font-semibold text-sm text-ink">Add category</h2>
         <input
           type="text"
           value={newName}
           onChange={(e) => setNewName(e.target.value)}
           placeholder="e.g. Class 11 - Physics"
-          className="w-full rounded-xl bg-white/70 dark:bg-zinc-900/70 px-3 py-2 outline-none text-sm text-zinc-900 dark:text-white placeholder:text-zinc-500"
+          className="w-full rounded-xl bg-white/70 px-3 py-2 outline-none text-sm text-ink placeholder:text-muted"
         />
         <input
           type="text"
           value={newDescription}
           onChange={(e) => setNewDescription(e.target.value)}
           placeholder="Description (optional)"
-          className="w-full rounded-xl bg-white/70 dark:bg-zinc-900/70 px-3 py-2 outline-none text-sm text-zinc-900 dark:text-white placeholder:text-zinc-500"
+          className="w-full rounded-xl bg-white/70 px-3 py-2 outline-none text-sm text-ink placeholder:text-muted"
         />
-        {error && <p className="text-sm text-red-600 dark:text-red-400">{error}</p>}
+        {error && <p className="text-sm text-red-600">{error}</p>}
         <button
           type="submit"
           disabled={adding}
@@ -127,21 +127,21 @@ export default function CategoryManager({
       </FadeIn>
 
       {deleteError && (
-        <p className="text-sm text-red-600 dark:text-red-400 -mt-4">{deleteError}</p>
+        <p className="text-sm text-red-600 -mt-4">{deleteError}</p>
       )}
 
-      <div className="glass rounded-2xl overflow-hidden">
+      <div className="glass rounded-[18px] overflow-hidden">
         <div className="overflow-x-auto">
         <table className="w-full text-sm min-w-[600px]">
           <thead>
-            <tr className="border-b border-white/20 dark:border-white/10">
-              <th className="text-left px-4 py-3 font-medium text-zinc-600 dark:text-zinc-400">Name</th>
-              <th className="text-left px-4 py-3 font-medium text-zinc-600 dark:text-zinc-400">Description</th>
-              <th className="text-left px-4 py-3 font-medium text-zinc-600 dark:text-zinc-400">Opportunities</th>
-              <th className="text-left px-4 py-3 font-medium text-zinc-600 dark:text-zinc-400">Actions</th>
+            <tr className="border-b border-white/20">
+              <th className="text-left px-4 py-3 font-medium text-muted">Name</th>
+              <th className="text-left px-4 py-3 font-medium text-muted">Description</th>
+              <th className="text-left px-4 py-3 font-medium text-muted">Opportunities</th>
+              <th className="text-left px-4 py-3 font-medium text-muted">Actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-white/10 dark:divide-white/5">
+          <tbody className="divide-y divide-white/10">
             {categories.map((c) => (
               <tr key={c.id}>
                 {editingId === c.id ? (
@@ -150,28 +150,28 @@ export default function CategoryManager({
                       <input
                         value={editName}
                         onChange={(e) => setEditName(e.target.value)}
-                        className="w-full rounded-lg bg-white/70 dark:bg-zinc-900/70 px-2 py-1 outline-none text-zinc-900 dark:text-white"
+                        className="w-full rounded-lg bg-white/70 px-2 py-1 outline-none text-ink"
                       />
                     </td>
                     <td className="px-4 py-2">
                       <input
                         value={editDescription}
                         onChange={(e) => setEditDescription(e.target.value)}
-                        className="w-full rounded-lg bg-white/70 dark:bg-zinc-900/70 px-2 py-1 outline-none text-zinc-900 dark:text-white"
+                        className="w-full rounded-lg bg-white/70 px-2 py-1 outline-none text-ink"
                       />
                     </td>
-                    <td className="px-4 py-2 text-zinc-600 dark:text-zinc-400">{c._count.opportunities}</td>
+                    <td className="px-4 py-2 text-muted">{c._count.opportunities}</td>
                     <td className="px-4 py-2">
                       <div className="flex gap-2">
                         <button
                           onClick={() => saveEdit(c.id)}
-                          className="text-xs px-2 py-1 rounded-lg bg-purple-600 text-white"
+                          className="text-xs px-2 py-1 rounded-lg bg-teal text-white"
                         >
                           Save
                         </button>
                         <button
                           onClick={() => setEditingId(null)}
-                          className="text-xs px-2 py-1 rounded-lg glass text-zinc-900 dark:text-white"
+                          className="text-xs px-2 py-1 rounded-lg glass text-ink"
                         >
                           Cancel
                         </button>
@@ -180,20 +180,20 @@ export default function CategoryManager({
                   </>
                 ) : (
                   <>
-                    <td className="px-4 py-3 font-medium text-zinc-900 dark:text-white">{c.name}</td>
-                    <td className="px-4 py-3 text-zinc-600 dark:text-zinc-400">{c.description || "—"}</td>
-                    <td className="px-4 py-3 text-zinc-600 dark:text-zinc-400">{c._count.opportunities}</td>
+                    <td className="px-4 py-3 font-medium text-ink">{c.name}</td>
+                    <td className="px-4 py-3 text-muted">{c.description || "—"}</td>
+                    <td className="px-4 py-3 text-muted">{c._count.opportunities}</td>
                     <td className="px-4 py-3">
                       <div className="flex gap-2">
                         <button
                           onClick={() => startEdit(c)}
-                          className="text-xs px-2 py-1 rounded-lg glass text-zinc-900 dark:text-white"
+                          className="text-xs px-2 py-1 rounded-lg glass text-ink"
                         >
                           Edit
                         </button>
                         <button
                           onClick={() => handleDelete(c.id)}
-                          className="text-xs px-2 py-1 rounded-lg glass text-red-600 dark:text-red-400"
+                          className="text-xs px-2 py-1 rounded-lg glass text-red-600"
                         >
                           Delete
                         </button>

@@ -53,23 +53,23 @@ export default function LockedTestsManager() {
   }
 
   if (loading) {
-    return <p className="text-sm text-zinc-500">Loading...</p>;
+    return <p className="text-sm text-muted">Loading...</p>;
   }
 
   if (lockedCodes.length === 0) {
     return (
-      <div className="glass rounded-2xl p-6">
-        <p className="text-sm text-zinc-500">No students are currently locked out of any test.</p>
+      <div className="glass rounded-[18px] p-6">
+        <p className="text-sm text-muted">No students are currently locked out of any test.</p>
       </div>
     );
   }
 
   return (
     <FadeIn>
-    <div className="glass rounded-2xl overflow-hidden">
+    <div className="glass rounded-[18px] overflow-hidden">
       <table className="w-full text-sm">
         <thead>
-          <tr className="text-left text-zinc-600 dark:text-zinc-400 border-b border-white/20 dark:border-white/10">
+          <tr className="text-left text-muted border-b border-white/20">
             <th className="px-5 py-3 font-medium">Student</th>
             <th className="px-5 py-3 font-medium">Test</th>
             <th className="px-5 py-3 font-medium">Code</th>
@@ -80,14 +80,14 @@ export default function LockedTestsManager() {
         </thead>
         <tbody>
           {lockedCodes.map((lc) => (
-            <tr key={lc.id} className="border-b border-white/10 dark:border-white/5 last:border-0">
-              <td className="px-5 py-3 text-zinc-900 dark:text-white">{lc.studentEmail}</td>
-              <td className="px-5 py-3 text-zinc-900 dark:text-white">{lc.testTitle}</td>
-              <td className="px-5 py-3 font-mono text-zinc-600 dark:text-zinc-400">{lc.code}</td>
-              <td className="px-5 py-3 text-zinc-600 dark:text-zinc-400">
+            <tr key={lc.id} className="border-b border-white/10 last:border-0">
+              <td className="px-5 py-3 text-ink">{lc.studentEmail}</td>
+              <td className="px-5 py-3 text-ink">{lc.testTitle}</td>
+              <td className="px-5 py-3 font-mono text-muted">{lc.code}</td>
+              <td className="px-5 py-3 text-muted">
                 {lc.lockedAt ? new Date(lc.lockedAt).toLocaleString() : "-"}
               </td>
-              <td className="px-5 py-3 text-zinc-600 dark:text-zinc-400">{lc.lockReason || "-"}</td>
+              <td className="px-5 py-3 text-muted">{lc.lockReason || "-"}</td>
               <td className="px-5 py-3">
                 <button
                   onClick={() => handleUnlock(lc.id)}
