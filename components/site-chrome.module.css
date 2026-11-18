@@ -249,6 +249,18 @@
   }
 }
 
+/* Five or more link columns: between 861 and 1180px the brand takes its own row and the link
+   columns go three per row, so headings like OPPORTUNITIES never touch their neighbour */
+@media (min-width: 861px) and (max-width: 1180px) {
+  .footGridMany {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .footGridMany > :first-child {
+    grid-column: 1 / -1;
+  }
+}
+
 .footTitle {
   margin: 0 0 6px;
   font-size: 20px;
