@@ -10,7 +10,7 @@ import ProfileMenu, { ProfileDisclosure } from "@/components/ProfileMenu";
 import s from "@/components/site-chrome.module.css";
 import RadiantLogo from "@/components/brand/RadiantLogo";
 import { useNavSection } from "@/components/nav-section";
-import { SHOW_SCHOOL } from "@/lib/features";
+import { SHOW_ABROAD, SHOW_SCHOOL } from "@/lib/features";
 
 // Fonts + colour tokens for the header and the drawer (the drawer renders outside <header>)
 const chrome = `${s.chrome}`;
@@ -19,7 +19,7 @@ const SCHOLARSHIPS = "/courses/higher-education/after-12th/scholarships";
 const INTERNSHIPS = "/courses/higher-education/after-12th/internships";
 
 // "key" says which item a page highlights (Colleges and Courses share /higher; only Colleges lights up)
-type NavKey = "school" | "colleges" | "courses" | "exams" | "scholarships" | "internships";
+type NavKey = "school" | "colleges" | "courses" | "exams" | "scholarships" | "internships" | "abroad";
 const ALL_LINKS: { key: NavKey; href: string; label: string }[] = [
   { key: "school", href: "/school", label: "School" },
   { key: "colleges", href: "/higher", label: "Colleges" },
@@ -27,9 +27,10 @@ const ALL_LINKS: { key: NavKey; href: string; label: string }[] = [
   { key: "exams", href: "/opportunities", label: "Exams" },
   { key: "scholarships", href: SCHOLARSHIPS, label: "Scholarships" },
   { key: "internships", href: INTERNSHIPS, label: "Internships" },
+  { key: "abroad", href: "/abroad", label: "Study abroad" },
 ];
-// School is hidden while the SHOW_SCHOOL switch is off (lib/features.ts)
-const LINKS = SHOW_SCHOOL ? ALL_LINKS : ALL_LINKS.filter((l) => l.key !== "school");
+// Switches (lib/features.ts): School is hidden while SHOW_SCHOOL is off, Study abroad while SHOW_ABROAD is off
+const LINKS = ALL_LINKS.filter((l) => (l.key !== "school" || SHOW_SCHOOL) && (l.key !== "abroad" || SHOW_ABROAD));
 
 export default function Navbar() {
   const { data: session, status } = useSession();
@@ -121,6 +122,7 @@ export default function Navbar() {
     if (pathname.startsWith("/courses/")) return SHOW_SCHOOL ? "school" : "exams";
     if (under("/school")) return "school";
     if (under("/opportunities")) return "exams";
+    if (under("/abroad")) return "abroad";
     return null;
   })();
   const homeHref = status === "authenticated" ? "/dashboard" : "/";
