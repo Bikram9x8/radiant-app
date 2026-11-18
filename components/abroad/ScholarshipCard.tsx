@@ -28,12 +28,13 @@ export default function ScholarshipCard({ item }: { item: Scholarship }) {
         <a className={s.scLink} href={item.officialUrl} target="_blank" rel="noopener noreferrer">
           Official page<span className="sr-only"> for {item.name} (opens in a new tab)</span> →
         </a>
-        <Sources facts={[item.covers, item.deadline]} />
       </div>
       <div className={s.scDeadline}>
         <b>Deadline</b>
         {item.deadline ? item.deadline.value : "See the official page"}
       </div>
+      {/* Last row, under the text and the deadline (it covers both) */}
+      <Sources className={s.scSources} facts={[item.covers, item.deadline]} />
     </article>
   );
 }
