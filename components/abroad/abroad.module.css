@@ -1,0 +1,200 @@
+/* Study Abroad (radiant-design/study-abroad.html), Phase 2 calm style. Colours from globals.css.
+   Scoped under local classes only. Layout lives here, not in Tailwind classes (this file is
+   unlayered, so its display rules would beat Tailwind's utilities anyway). */
+
+/* ================= Landmark scenes =================
+   <svg class=scene> with data-anim hooks on the moving parts.
+   On load: each effect plays ONCE (or a few short times) and finishes within 5 seconds.
+   While the visitor hovers the card or header (.sceneHost): the longer loops run, and they stop
+   when the pointer leaves. With prefers-reduced-motion nothing moves at all. */
+.scene {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .scene [data-anim="cloud"] {
+    animation: cloudIn 5s ease-out 1 both;
+  }
+
+  .scene [data-anim="spin"] {
+    animation: spinIn 5s ease-out 1;
+  }
+
+  .scene [data-anim="blink"] {
+    animation: blink 1.2s 4; /* 4.8s */
+  }
+
+  .scene [data-anim="flame"] {
+    transform-box: fill-box;
+    transform-origin: bottom;
+    animation: flame 0.5s ease-in-out 8 alternate; /* 4s */
+  }
+
+  .scene [data-anim="move"] {
+    animation: moveIn 5s ease-out 1 both;
+  }
+
+  .scene [data-anim="wave"] {
+    animation: wave 1.6s ease-in-out 3 alternate; /* 4.8s */
+  }
+
+  .scene [data-anim="plane"] {
+    animation: planeIn 4.5s ease-out 1 both;
+  }
+
+  /* Hover: started and stopped by the visitor */
+  .sceneHost:hover .scene [data-anim="cloud"] {
+    animation: cloudDrift 9s ease-in-out infinite alternate;
+  }
+
+  .sceneHost:hover .scene [data-anim="spin"] {
+    animation: spinLoop 18s linear infinite;
+  }
+
+  .sceneHost:hover .scene [data-anim="blink"] {
+    animation: blink 1.2s infinite;
+  }
+
+  .sceneHost:hover .scene [data-anim="move"] {
+    animation: moveLoop 6s ease-in-out infinite alternate;
+  }
+
+  .sceneHost:hover .scene [data-anim="wave"] {
+    animation: wave 1.6s ease-in-out infinite alternate;
+  }
+
+  /* Route map: the plane bobs twice, then rests */
+  .mapPlane {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: planeBob 2.4s ease-in-out 2; /* 4.8s */
+  }
+}
+
+@keyframes cloudIn {
+  from {
+    transform: translateX(-40px);
+    opacity: 0;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+
+@keyframes cloudDrift {
+  to {
+    transform: translateX(30px);
+  }
+}
+
+@keyframes spinIn {
+  from {
+    transform: rotate(-90deg);
+  }
+  to {
+    transform: none;
+  }
+}
+
+@keyframes spinLoop {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0.2;
+  }
+}
+
+@keyframes flame {
+  to {
+    transform: scale(0.8, 1.15);
+  }
+}
+
+@keyframes moveIn {
+  from {
+    transform: translateX(-90px);
+  }
+  to {
+    transform: none;
+  }
+}
+
+@keyframes moveLoop {
+  to {
+    transform: translateX(60px);
+  }
+}
+
+@keyframes wave {
+  to {
+    transform: translateX(6px);
+  }
+}
+
+@keyframes planeIn {
+  from {
+    transform: translate(-220px, 30px);
+    opacity: 0;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+
+@keyframes planeBob {
+  50% {
+    transform: translate(4px, -6px) rotate(-4deg);
+  }
+}
+
+/* ================= Flags ================= */
+.flag {
+  display: block;
+  flex: none;
+  width: 34px;
+  height: 23px;
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: 0 0 0 1px rgb(0 0 0 / 0.12);
+}
+
+/* ================= Route map (on the dark hub band) ================= */
+.map {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.map .route {
+  fill: none;
+  stroke: var(--tint-teal-strong);
+  stroke-width: 2;
+  stroke-dasharray: 6 8;
+  opacity: 0.8;
+}
+
+.map .pinDot {
+  fill: var(--coral);
+}
+
+.map .pinLabel {
+  fill: #ffffff;
+  font: 700 13px var(--font-figtree), sans-serif;
+}
+
+.map .home {
+  fill: var(--tint-peach-strong);
+}
+
+.map .homeLabel {
+  fill: #ffffff;
+  font: 800 13px var(--font-figtree), sans-serif;
+}
