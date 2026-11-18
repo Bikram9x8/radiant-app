@@ -42,16 +42,19 @@ export default function CostCalculator({ countries }: { countries: CalcCountry[]
   return (
     <div className={s.calc}>
       <div>
-        <div className={s.field}>
-          <label htmlFor={`${id}-c`}>Country</label>
-          <select id={`${id}-c`} value={country.slug} onChange={(e) => setSlug(e.target.value)}>
-            {countries.map((c) => (
-              <option key={c.slug} value={c.slug}>
-                {c.name}
-              </option>
-            ))}
-          </select>
-        </div>
+        {/* A choice only when there is more than one country (the hub); a country page shows its own */}
+        {countries.length > 1 && (
+          <div className={s.field}>
+            <label htmlFor={`${id}-c`}>Country</label>
+            <select id={`${id}-c`} value={country.slug} onChange={(e) => setSlug(e.target.value)}>
+              {countries.map((c) => (
+                <option key={c.slug} value={c.slug}>
+                  {c.name}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
         <div className={s.field}>
           <label htmlFor={`${id}-y`}>
             Course length: <b>{years === 1 ? "1 year" : `${years} years`}</b>
