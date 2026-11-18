@@ -68,6 +68,8 @@ export type ExamPart = { part: string; detail: string; time: string };
 export type Exam = {
   slug: string;
   name: string;
+  /** Shown after the name in the page title, e.g. "Academic" */
+  subtitle?: string;
   status: Status;
   /** e.g. "English test for study abroad" */
   purpose: string;
@@ -78,6 +80,8 @@ export type Exam = {
   validity?: Fact<string>;
   /** Official band/score descriptors, e.g. IELTS bands 1–9 */
   descriptors?: Fact<Record<string, string>>;
+  /** Study advice (our guidance, not facts): shown as numbered steps without sources */
+  prepPlan?: Step[];
   faqs: Faq[];
 };
 

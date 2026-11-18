@@ -1230,3 +1230,196 @@ a.exam:hover {
     padding: 18px;
   }
 }
+
+/* ================= Exam page ================= */
+.examBand {
+  position: relative;
+  padding-block: 34px;
+}
+
+.h1Exam {
+  font-size: clamp(38px, 5.4vw, 68px);
+}
+
+/* Four quick facts on the dark band */
+.qgrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin: 22px 0 0;
+}
+
+.qgrid div {
+  display: flex;
+  flex-direction: column-reverse;
+  justify-content: flex-end;
+  padding: 12px 14px;
+  border: 1px solid rgb(255 255 255 / 0.2);
+  border-radius: 14px;
+  background: rgb(255 255 255 / 0.1);
+}
+
+.qgrid dd {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.qgrid dd .soonInline {
+  color: #cfe7e5;
+}
+
+.qgrid dt {
+  color: #cfe7e5;
+  font-size: 13px;
+}
+
+/* Test format cards */
+.fmt {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.fmt li {
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: #ffffff;
+}
+
+.fmt b {
+  display: block;
+  font: 800 24px/1.1 var(--disp);
+  text-transform: uppercase;
+}
+
+.fmt span {
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.fmt em {
+  display: block;
+  margin-top: 6px;
+  color: var(--teal-dark);
+  font-style: normal;
+  font-weight: 800;
+}
+
+/* Band picker */
+.bandRow {
+  display: grid;
+  grid-template-columns: repeat(9, minmax(0, 1fr));
+  gap: 4px;
+  margin-top: 12px;
+}
+
+.bandBtn {
+  height: 46px;
+  border: 0;
+  border-radius: 8px;
+  background: #eef2f6;
+  color: var(--muted);
+  font: 800 18px var(--disp);
+  cursor: pointer;
+  transition: background-color 150ms ease;
+}
+
+.bandBtn.bandOn {
+  background: var(--teal);
+  color: #ffffff;
+}
+
+.bandBtn[aria-pressed="true"] {
+  outline: 3px solid var(--coral);
+  outline-offset: 1px;
+}
+
+.bandInfo {
+  margin: 12px 0 0;
+  padding: 14px;
+  border-radius: 12px;
+  background: var(--tint-teal);
+  color: var(--teal-dark);
+  font-weight: 600;
+}
+
+/* Table (stacks into label/value rows on phones) */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 15px;
+}
+
+.table th {
+  padding: 10px 8px;
+  border-bottom: 2px solid var(--line);
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 700;
+  text-align: left;
+}
+
+.table td {
+  padding: 12px 8px;
+  border-bottom: 1px solid var(--line);
+  vertical-align: top;
+}
+
+.table td a {
+  color: var(--teal-dark);
+  font-weight: 700;
+}
+
+@media (max-width: 980px) {
+  .qgrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .fmt {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 600px) {
+  .bandBtn {
+    height: 38px;
+    font-size: 15px;
+  }
+
+  .table thead {
+    display: none;
+  }
+
+  .table tr {
+    display: grid;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .table td {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 4px 0;
+    border: 0;
+    text-align: right;
+  }
+
+  .table td::before {
+    content: attr(data-label);
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 700;
+    text-align: left;
+  }
+}
+
+/* A short note above the steps */
+.mutedP + .steps {
+  margin-top: 16px;
+}
