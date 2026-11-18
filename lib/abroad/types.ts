@@ -49,8 +49,16 @@ export type Country = {
   summary?: string;
   currency: Currency;
   tuitionPerYear?: Fact<Range<Money>>;
+  /**
+   * Deliberate choice (not a missing fact): there is no official national tuition figure because
+   * each university sets its own fees. Shows "Set by each university" instead of "Coming soon".
+   * Cannot be combined with tuitionPerYear (the data check fails).
+   */
+  tuitionSetByUniversity?: boolean;
   livingPerYear?: Fact<Range<Money>>;
   visaFundsProof?: Fact<Money>;
+  /** Official monthly funds for the visa when no yearly total is published (e.g. UK: London / outside London) */
+  visaFundsMonthly?: Fact<{ amounts: { label: string; amount: Money }[]; maxMonths: number }>;
   visaFee?: Fact<Money>;
   workDuringStudy?: Fact<string>;
   postStudyWork?: Fact<string>;

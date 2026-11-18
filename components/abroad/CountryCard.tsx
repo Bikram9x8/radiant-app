@@ -5,6 +5,7 @@ import { getRate } from "@/lib/abroad";
 import LandmarkScene from "./scenes/LandmarkScene";
 import Flag from "./Flag";
 import Sources from "./Sources";
+import { TUITION_BY_UNI, TUITION_BY_UNI_HINT } from "./CountryParts";
 import s from "./abroad.module.css";
 
 const SOON = <span className={s.soonInline}>Coming soon</span>;
@@ -30,8 +31,15 @@ export function CountryCard({ country: c }: { country: Country }) {
           </span>
           <span className={s.row}>
             <span>Tuition / year</span>
-            <b>{c.tuitionPerYear ? formatMoneyRange(c.tuitionPerYear.value) + inr(c.tuitionPerYear) : SOON}</b>
+            <b>
+              {c.tuitionPerYear
+                ? formatMoneyRange(c.tuitionPerYear.value) + inr(c.tuitionPerYear)
+                : c.tuitionSetByUniversity
+                  ? TUITION_BY_UNI
+                  : SOON}
+            </b>
           </span>
+          {!c.tuitionPerYear && c.tuitionSetByUniversity && <span className={s.ccardHint}>{TUITION_BY_UNI_HINT}</span>}
           <span className={s.row}>
             <span>Living / year</span>
             <b>{c.livingPerYear ? formatMoneyRange(c.livingPerYear.value) + inr(c.livingPerYear) : SOON}</b>

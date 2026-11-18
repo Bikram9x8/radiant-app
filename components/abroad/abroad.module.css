@@ -951,6 +951,22 @@ a.exam:hover {
   font-size: 13px;
 }
 
+/* One-line explanation under a stat value (e.g. tuition set by each university) */
+.statHint {
+  display: block;
+  margin-top: 6px;
+  color: var(--muted);
+  font: 600 13px/1.35 var(--font-figtree), sans-serif;
+  text-transform: none;
+}
+
+.ccardHint {
+  margin-top: -4px;
+  color: var(--muted);
+  font-size: 13px;
+  text-align: right;
+}
+
 .statSources {
   border-top: 0;
 }

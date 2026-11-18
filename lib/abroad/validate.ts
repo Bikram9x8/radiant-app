@@ -2,7 +2,8 @@
 // Every fact (any object with a "value" key) must have an https sourceUrl, a sourceName and a
 // valid lastChecked date that is not in the future: otherwise it is an ERROR and the build fails.
 // Facts checked more than STALE_DAYS ago are a WARNING only.
-// Also checked: unique slugs and https officialUrl on scholarships.
+// Also checked: unique slugs, https officialUrl on scholarships, and a country cannot have both a
+// tuition figure and tuitionSetByUniversity.
 
 export const STALE_DAYS = 180;
 
@@ -77,6 +78,9 @@ export function validateAbroadData(
         if (["exams", "scholarships"].includes(item.slug) && name === "countries") {
           issues.push({ level: "error", where, message: "country slug clashes with a fixed /abroad route" });
         }
+      }
+      if (name === "countries" && isObject(item) && item.tuitionSetByUniversity && item.tuitionPerYear) {
+        issues.push({ level: "error", where, message: "tuitionSetByUniversity and tuitionPerYear cannot both be set" });
       }
       if (name === "scholarships" && isObject(item) && !isHttpsUrl(item.officialUrl)) {
         issues.push({ level: "error", where, message: "scholarship has no valid https officialUrl" });

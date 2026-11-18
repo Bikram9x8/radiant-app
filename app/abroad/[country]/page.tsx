@@ -13,6 +13,7 @@ import {
   Steps,
   money,
 } from "@/components/abroad/CountryParts";
+import { formatMoney } from "@/lib/abroad/format";
 import s from "@/components/abroad/abroad.module.css";
 
 // Only verified countries have a page; every other slug is a 404
@@ -32,7 +33,7 @@ export async function generateMetadata({ params }: { params: Promise<{ country: 
 }
 
 // Country guide (radiant-design/study-abroad.html, "country" view). Every value comes from a
-// verified fact with its source line; anything not verified yet says "Coming soon".
+// verified fact with its source line. A section with no verified data is left out entirely.
 export default async function CountryPage({ params }: { params: Promise<{ country: string }> }) {
   const { country } = await params;
   const c = getCountry(country);
@@ -54,77 +55,67 @@ export default async function CountryPage({ params }: { params: Promise<{ countr
 
       <div className={`${s.wrap} ${s.cgrid}`}>
         <div>
-          <Section id="c-costs" title="Costs" accent="in rupees" coral>
-            {calc.length > 0 ? (
+          {calc.length > 0 && (
+            <Section id="c-costs" title="Costs" accent="in rupees" coral>
               <CostCalculator countries={calc} />
-            ) : (
-              <p className={s.mutedP}>
-                The cost planner for {c.name} will appear when the official tuition, living-cost and exchange-rate
-                figures are checked. <span className={s.soonTag}>Coming soon</span>
-              </p>
-            )}
-          </Section>
+            </Section>
+          )}
 
-          <Section id="c-money" title="Money for the" accent="visa">
-            <FactRows
-              rows={[
-                { label: "Funds you must show", value: money(c.visaFundsProof) },
-                { label: "Student visa fee", value: money(c.visaFee) },
-              ]}
-            />
-            <Sources facts={[c.visaFundsProof, c.visaFee]} />
-          </Section>
+          {(c.visaFundsProof || c.visaFundsMonthly || c.visaFee) && (
+            <Section id="c-money" title="Money for the" accent="visa">
+              <FactRows
+                rows={[
+                  ...(c.visaFundsMonthly
+                    ? c.visaFundsMonthly.value.amounts.map((a) => ({
+                        label: `Funds a month, ${a.label}`,
+                        value: formatMoney(a.amount),
+                      }))
+                    : [{ label: "Funds you must show", value: money(c.visaFundsProof) }]),
+                  { label: "Student visa fee", value: money(c.visaFee) },
+                ]}
+              />
+              {c.visaFundsMonthly && (
+                <p className={s.note}>
+                  Living-cost funds for up to {c.visaFundsMonthly.value.maxMonths} months of your course.
+                </p>
+              )}
+              <Sources facts={[c.visaFundsMonthly ?? c.visaFundsProof, c.visaFee]} />
+            </Section>
+          )}
 
-          <Section id="c-work" title="Work" accent="rights" coral>
-            <FactRows
-              rows={[
-                { label: "While studying", value: c.workDuringStudy?.value ?? null },
-                { label: "After your degree", value: c.postStudyWork?.value ?? null },
-              ]}
-            />
-            <Sources facts={[c.workDuringStudy, c.postStudyWork]} />
-          </Section>
+          {(c.workDuringStudy || c.postStudyWork) && (
+            <Section id="c-work" title="Work" accent="rights" coral>
+              <FactRows
+                rows={[
+                  { label: "While studying", value: c.workDuringStudy?.value ?? null },
+                  { label: "After your degree", value: c.postStudyWork?.value ?? null },
+                ]}
+              />
+              <Sources facts={[c.workDuringStudy, c.postStudyWork]} />
+            </Section>
+          )}
 
-          <Section id="c-intakes" title="Intakes">
-            {c.intakes ? (
-              <>
-                <ul className={s.intakes}>
-                  {c.intakes.value.map((i) => (
-                    <li key={i} className={i === c.mainIntake ? s.intakeMain : undefined}>
-                      {i}
-                      {i === c.mainIntake ? " · main" : ""}
-                    </li>
-                  ))}
-                </ul>
-                <Sources facts={[c.intakes]} />
-              </>
-            ) : (
-              <p className={s.mutedP}>
-                <span className={s.soonTag}>Coming soon</span>
-              </p>
-            )}
-          </Section>
+          {c.intakes && (
+            <Section id="c-intakes" title="Intakes">
+              <ul className={s.intakes}>
+                {c.intakes.value.map((i) => (
+                  <li key={i} className={i === c.mainIntake ? s.intakeMain : undefined}>
+                    {i}
+                    {i === c.mainIntake ? " · main" : ""}
+                  </li>
+                ))}
+              </ul>
+              <Sources facts={[c.intakes]} />
+            </Section>
+          )}
 
-          <Section id="c-english" title="English test" accent="minimums" coral>
-            {c.englishMinimums ? (
-              <>
-                <FactRows rows={c.englishMinimums.value.map((m) => ({ label: m.label, value: m.minimum }))} />
-                <p className={s.note}>Official minimums only. Each university may ask for a higher score.</p>
-                <Sources facts={[c.englishMinimums]} />
-              </>
-            ) : (
-              <p className={s.mutedP}>
-                Official minimums will be listed here with their source. <span className={s.soonTag}>Coming soon</span>
-              </p>
-            )}
-          </Section>
-
-          <Section id="c-unis" title="Universities" accent={`in ${c.name}`}>
-            <p className={s.mutedP}>
-              University pages for {c.name} are coming with the college database.{" "}
-              <span className={s.soonTag}>Coming soon</span>
-            </p>
-          </Section>
+          {c.englishMinimums && (
+            <Section id="c-english" title="English test" accent="minimums" coral>
+              <FactRows rows={c.englishMinimums.value.map((m) => ({ label: m.label, value: m.minimum }))} />
+              <p className={s.note}>Official minimums only. Each university may ask for a higher score.</p>
+              <Sources facts={[c.englishMinimums]} />
+            </Section>
+          )}
 
           {c.visaSteps.length > 0 && (
             <Section id="c-visa" title="Student visa" accent="steps" coral>
@@ -140,16 +131,27 @@ export default async function CountryPage({ params }: { params: Promise<{ countr
         </div>
 
         <aside className={s.side} aria-label={`More about studying in ${c.name}`}>
-          <div className={s.sideCard}>
-            <h2 className={s.sideTitle}>Exams accepted</h2>
-            <p className={s.mutedP}>{c.examsAccepted ? c.examsAccepted.value.join(", ") : "Coming soon"}</p>
-            <Sources facts={[c.examsAccepted]} />
-            {ielts && (
-              <Link href="/abroad/exams/ielts" className={`${s.btn} ${s.pri} ${s.full}`}>
-                IELTS guide
+          {c.examsAccepted && (
+            <div className={s.sideCard}>
+              <h2 className={s.sideTitle}>Exams accepted</h2>
+              <p className={s.mutedP}>{c.examsAccepted.value.join(", ")}</p>
+              <Sources facts={[c.examsAccepted]} />
+              {ielts && (
+                <Link href="/abroad/exams/ielts" className={`${s.btn} ${s.pri} ${s.full}`}>
+                  IELTS guide
+                </Link>
+              )}
+            </div>
+          )}
+          {/* No official exam list for this country: just a link to the guide, no claim about requirements */}
+          {!c.examsAccepted && ielts && (
+            <div className={s.sideCard}>
+              <h2 className={s.sideTitle}>Exam prep</h2>
+              <Link href="/abroad/exams/ielts" className={s.textLink}>
+                IELTS guide →
               </Link>
-            )}
-          </div>
+            </div>
+          )}
           <div className={s.sideCard}>
             <h2 className={s.sideTitle}>Scholarships</h2>
             {scholarships.length > 0 ? (

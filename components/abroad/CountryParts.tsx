@@ -9,6 +9,15 @@ import s from "./abroad.module.css";
 
 const SOON = <span className={s.soonInline}>Coming soon</span>;
 
+/** Shown when a country deliberately has no national tuition figure (Country.tuitionSetByUniversity) */
+export const TUITION_BY_UNI = "Set by each university";
+export const TUITION_BY_UNI_HINT = "No official national figure. Check each university's fees page.";
+
+/** "A, B + 2 more" for long lists in small spaces (the full list is shown elsewhere) */
+export function shortList(items: string[], keep = 2) {
+  return items.length > keep ? `${items.slice(0, keep).join(", ")} + ${items.length - keep} more` : items.join(", ");
+}
+
 /** Dark header band: crumb, title, summary, links to the other guides, landmark scene */
 export function CountryHeader({ country: c, others }: { country: Country; others: Country[] }) {
   return (
@@ -48,12 +57,20 @@ export function StatStrip({ country: c }: { country: Country }) {
   const rate = getRate(c.currency);
   const fromInr = (f?: Fact<{ min: { amount: number } }>) =>
     f && rate ? ` · ≈ ${formatInrShort(toInr(f.value.min.amount, rate.value))}+` : "";
+  const tuition: React.ReactNode = c.tuitionPerYear ? (
+    formatMoney(c.tuitionPerYear.value.min) + fromInr(c.tuitionPerYear)
+  ) : c.tuitionSetByUniversity ? (
+    <>
+      {TUITION_BY_UNI}
+      <small className={s.statHint}>{TUITION_BY_UNI_HINT}</small>
+    </>
+  ) : null;
   const stats = [
-    { label: "Tuition per year from", value: c.tuitionPerYear ? formatMoney(c.tuitionPerYear.value.min) + fromInr(c.tuitionPerYear) : null },
+    { label: c.tuitionPerYear ? "Tuition per year from" : "Tuition per year", value: tuition },
     { label: "Living per year from", value: c.livingPerYear ? formatMoney(c.livingPerYear.value.min) + fromInr(c.livingPerYear) : null },
     { label: "Work after study", value: c.postStudyWork?.value ?? null },
     { label: "Intakes", value: c.intakes ? c.intakes.value.join(", ") : null },
-    { label: "Exams accepted", value: c.examsAccepted ? c.examsAccepted.value.join(", ") : null },
+    { label: "Exams accepted", value: c.examsAccepted ? shortList(c.examsAccepted.value) : null },
   ];
   return (
     <div className={s.wrap}>
