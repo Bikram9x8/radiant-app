@@ -41,7 +41,22 @@ const ICONS = {
       <circle cx="12" cy="12" r="3" />
     </g>
   ),
+  abroad: (
+    <g {...STROKE} strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="8" />
+      <path d="M4 12h16M12 4c2.6 2.4 2.6 13.6 0 16M12 4c-2.6 2.4-2.6 13.6 0 16" />
+    </g>
+  ),
 };
+
+// Added after the others when Study Abroad is switched on
+const ABROAD_PATH = {
+  title: "Study abroad",
+  text: "Country guides, IELTS and scholarships abroad",
+  tint: "var(--tint-mint)",
+  icon: "abroad",
+  href: "/abroad",
+} as const;
 
 // href: null = not built yet, shown with "Coming soon" and no link
 const PATHS: { title: string; text: string; tint: string; icon: keyof typeof ICONS; href: string | null }[] = [
@@ -53,7 +68,8 @@ const PATHS: { title: string; text: string; tint: string; icon: keyof typeof ICO
   { title: "Free career test", text: "Find the career and course that fits you.", tint: "var(--tint-peach)", icon: "test", href: null },
 ];
 
-export default function JourneyCards() {
+export default function JourneyCards({ abroad = false }: { abroad?: boolean }) {
+  const paths = abroad ? [...PATHS, ABROAD_PATH] : PATHS;
   return (
     <section className={`${s.wrap} ${s.section}`} aria-labelledby="home-journey">
       <h2 id="home-journey" className={s.h2}>
@@ -61,8 +77,8 @@ export default function JourneyCards() {
       </h2>
       <p className={s.lead}>Pick where you are in your journey.</p>
 
-      <ul className={`${s.paths} m-0 list-none p-0`}>
-        {PATHS.map((p) => {
+      <ul className={`${s.paths}${abroad ? ` ${s.pathsMany}` : ""} m-0 list-none p-0`}>
+        {paths.map((p) => {
           const inner = (
             <>
               <span className={s.ico} style={{ background: p.tint }} aria-hidden="true">
