@@ -16,7 +16,8 @@ import Guides from "@/components/landing/Guides";
 import JoinBanner from "@/components/landing/JoinBanner";
 import RevealOnScroll from "@/components/landing/RevealOnScroll";
 import AdSlot from "@/components/AdSlot";
-import { SHOW_SCHOOL } from "@/lib/features";
+import { SHOW_ABROAD, SHOW_SCHOOL } from "@/lib/features";
+import { getCountry, getExam, verifiedScholarships } from "@/lib/abroad";
 import { notSchoolWhere } from "@/lib/school-posts";
 
 // Homepage (Phase 2 "Teal + Coral", radiant-design/home-teal-coral.html).
@@ -37,18 +38,31 @@ export default async function Home() {
     include: { category: { select: { name: true } } },
   });
 
+  // Loaded only when Study Abroad is on, so its styles are not added to the homepage while it is off
+  const AbroadBand = SHOW_ABROAD ? (await import("@/components/landing/AbroadBand")).default : null;
+
+  // Study Abroad words for the ticker: only verified items, none while it is switched off
+  const abroadWords = SHOW_ABROAD
+    ? [
+        getCountry("uk") && "Study in UK",
+        getCountry("canada") && "Study in Canada",
+        getExam("ielts") && "IELTS",
+        verifiedScholarships().some((x) => x.slug === "chevening") && "Chevening",
+      ].filter((w): w is string => typeof w === "string")
+    : [];
+
   return (
     <div className={`${s.landing} flex-1`}>
       <Hero />
       <CampusScene />
-      <Ticker />
+      <Ticker extra={abroadWords} />
 
       {/* Ad slot 1, below the hero */}
       <div className={`${s.wrap} ${s.adRow}`}>
         <AdSlot label="728 × 90 banner space" className="h-[90px] max-w-[728px]" />
       </div>
 
-      <JourneyCards />
+      <JourneyCards abroad={SHOW_ABROAD} />
       <CourseChips />
       <CollegeCards />
 
@@ -58,6 +72,7 @@ export default async function Home() {
       </div>
 
       <ExamsBand />
+      {AbroadBand && <AbroadBand />}
       <RecentlyAdded items={latestOpportunities} />
       <CareerBlock />
       <Guides />

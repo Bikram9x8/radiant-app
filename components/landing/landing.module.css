@@ -293,6 +293,16 @@
   gap: 8px;
 }
 
+/* Four stats (Study Abroad on): a little tighter so the line fits on desktop; phones may wrap */
+.statsFour {
+  gap: 8px 12px;
+  font-size: 14px;
+}
+
+.statsFour li {
+  white-space: nowrap;
+}
+
 .stats li::before {
   content: "";
   width: 8px;
@@ -1794,5 +1804,75 @@ a.exam:hover {
   100% {
     opacity: 0;
     transform: translateY(-0.3em);
+  }
+}
+
+/* ---------- Study abroad (only when SHOW_ABROAD is on) ---------- */
+
+/* Seven journey cards: four columns, then two (the last card spans the row), then one */
+.pathsMany {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+@media (max-width: 1000px) {
+  .pathsMany {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 860px) {
+  .pathsMany {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .pathsMany > li:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 600px) {
+  .pathsMany {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* The country cards come from components/abroad (they use --soft) */
+.abroadHome {
+  --soft: var(--soft-shadow);
+}
+
+.abroadCards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 380px));
+  gap: 18px;
+  margin: 28px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.abroadLinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 26px;
+  margin-top: 22px;
+}
+
+.abroadLinks a {
+  color: var(--teal-dark);
+  font-size: 16px;
+  font-weight: 700;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+  text-decoration-color: rgb(15 118 110 / 0.35);
+}
+
+.abroadLinks a:hover {
+  text-decoration-color: currentColor;
+}
+
+@media (max-width: 600px) {
+  .abroadCards {
+    grid-template-columns: minmax(0, 1fr);
   }
 }

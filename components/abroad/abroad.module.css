@@ -960,6 +960,15 @@ a.exam:hover {
   text-transform: none;
 }
 
+/* Homepage mini card (MiniCountryCard): a shorter sky, the name is a heading */
+.ccardMini .ccardSky {
+  height: 130px;
+}
+
+.ccardTitleH {
+  margin: 0;
+}
+
 .ccardHint {
   margin-top: -4px;
   color: var(--muted);

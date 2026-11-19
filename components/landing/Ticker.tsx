@@ -12,10 +12,12 @@ const WORDS = [
 // Scrolling band of courses and exams. Decorative (hidden from screen readers), with a pause
 // button; it also stops while hovered or focused, and stands still with reduced motion
 // (the button is hidden then, see landing.module.css).
-export default function Ticker() {
+// `extra`: more words from the page, e.g. verified Study Abroad items (empty when it is switched off).
+export default function Ticker({ extra = [] }: { extra?: string[] }) {
   const [paused, setPaused] = useState(false);
+  const words = [...WORDS, ...extra];
   // Two copies side by side, so the loop (translateX -50%) is seamless
-  const items = [...WORDS, ...WORDS];
+  const items = [...words, ...words];
 
   return (
     <div className={`${s.ticker} ${paused ? s.paused : ""}`}>

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { IconSearch } from "@tabler/icons-react";
 import s from "./landing.module.css";
 import AdmissionPass from "./AdmissionPass";
+import { SHOW_ABROAD } from "@/lib/features";
 
 // Hand-drawn underline under an accent word
 function Underline() {
@@ -85,10 +86,11 @@ export default function Hero() {
           <button type="submit">Search</button>
         </form>
 
-        <ul className={`${s.stats} ${s.enter}`}>
+        <ul className={`${s.stats}${SHOW_ABROAD ? ` ${s.statsFour}` : ""} ${s.enter}`}>
           <li>JEE · NEET prep</li>
           <li>Scholarships &amp; internships</li>
           <li>Free to use</li>
+          {SHOW_ABROAD && <li>Study abroad</li>}
         </ul>
       </div>
 
