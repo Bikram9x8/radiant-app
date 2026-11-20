@@ -99,9 +99,20 @@ export function MiniCountryCard({ country: c }: { country: Country }) {
 }
 
 /** A planned country with no verified guide yet: drawing and name only, not a link */
-export function PlannedCountryCard({ name, flag, scene }: { name: string; flag: FlagCode; scene: SceneCode }) {
+export function PlannedCountryCard({
+  name,
+  flag,
+  scene,
+  small = false,
+}: {
+  name: string;
+  flag: FlagCode;
+  scene: SceneCode;
+  /** Compact version (homepage): shorter scene, smaller name */
+  small?: boolean;
+}) {
   return (
-    <li className={`${s.sceneHost} ${s.ccard} ${s.ccardPlanned}`}>
+    <li className={`${s.sceneHost} ${s.ccard} ${s.ccardPlanned}${small ? ` ${s.ccardSmall}` : ""}`}>
       <span className={s.ccardSky}>
         <LandmarkScene code={scene} />
       </span>

@@ -1841,38 +1841,215 @@ a.exam:hover {
   --soft: var(--soft-shadow);
 }
 
+/* Heading and lead, with the route globe beside them (below on phones) */
+.abroadHead {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 400px);
+  align-items: center;
+  gap: 24px;
+}
+
+.abroadGlobe {
+  justify-self: end;
+  width: 100%;
+}
+
 .abroadCards {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 380px));
   gap: 18px;
-  margin: 28px 0 0;
+  margin: 20px 0 0;
   padding: 0;
   list-style: none;
 }
 
-.abroadLinks {
+.abroadCards2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.abroadCards3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+@media (max-width: 860px) {
+  .abroadCards3 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Planned countries: small "Guide coming soon" cards, no links, no numbers */
+.abroadPlanned {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+  margin: 18px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.abroadSub {
+  margin-top: 48px;
+}
+
+.abroadH3 {
+  margin: 0 0 14px;
+  font: 800 34px/1 var(--disp);
+  text-transform: uppercase;
+}
+
+.abroadSubHead {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px 26px;
-  margin-top: 22px;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 6px 16px;
+  margin-bottom: 14px;
 }
 
-.abroadLinks a {
+.abroadSubHead .abroadH3 {
+  margin: 0;
+}
+
+.abroadMore {
   color: var(--teal-dark);
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 700;
-  text-decoration: underline;
-  text-decoration-thickness: 2px;
-  text-underline-offset: 4px;
-  text-decoration-color: rgb(15 118 110 / 0.35);
 }
 
-.abroadLinks a:hover {
-  text-decoration-color: currentColor;
+/* Compact "Your path abroad" stamps (PathStamps, styled in abroad.module.css) */
+.abroadPath {
+  line-height: 1.4;
+}
+
+.abroadPath ol > li {
+  padding: 10px 12px;
+  border-radius: 14px;
+}
+
+.abroadPath ol > li::before {
+  font-size: 24px;
+}
+
+.abroadPath ol > li b {
+  font-size: 15px;
+}
+
+.abroadPath ol > li span {
+  display: block;
+  margin-top: 2px;
+  font-size: 12.5px;
+}
+
+/* Scholarships preview */
+.abroadSch {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.abroadSch > li {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 18px;
+}
+
+.abroadSch h4 {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 800;
+  line-height: 1.25;
+}
+
+.abroadSch p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14.5px;
+  line-height: 1.45;
+}
+
+.abroadSch .abroadDeadline {
+  color: var(--ink-2);
+}
+
+.abroadOfficial {
+  margin-top: auto;
+  padding-top: 4px;
+  color: var(--teal-dark);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+/* Why Radiant */
+.abroadWhy {
+  display: grid;
+  /* 3 points today, 4 once the rupee point appears */
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.abroadWhy li {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.45;
+}
+
+.abroadWhy svg {
+  flex: none;
+  margin-top: 1px;
+}
+
+.abroadWhy b {
+  display: block;
+  color: var(--ink);
+  font-size: 16px;
+}
+
+.abroadCta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 36px;
+}
+
+@media (max-width: 980px) {
+  .abroadSch,
+  .abroadWhy {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 860px) {
+  .abroadHead {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+  }
+
+  .abroadGlobe {
+    justify-self: center;
+    max-width: 300px;
+  }
+
+  .abroadPlanned {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 600px) {
   .abroadCards {
     grid-template-columns: minmax(0, 1fr);
+  }
+
+  .abroadH3 {
+    font-size: 28px;
   }
 }

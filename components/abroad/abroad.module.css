@@ -199,6 +199,17 @@
   font: 800 13px var(--font-figtree), sans-serif;
 }
 
+/* Light tone (RouteMap tone="light"), for a paper background */
+.mapLight .route {
+  stroke: var(--teal);
+  opacity: 0.5;
+}
+
+.mapLight .pinLabel,
+.mapLight .homeLabel {
+  fill: var(--ink);
+}
+
 /* ================= Page frame and type ================= */
 .page {
   --disp: var(--font-big-shoulders), var(--font-figtree), sans-serif;
@@ -961,12 +972,28 @@ a.exam:hover {
 }
 
 /* Homepage mini card (MiniCountryCard): a shorter sky, the name is a heading */
+/* Height follows the card width, so wide cards don't crop the landmark tops */
 .ccardMini .ccardSky {
-  height: 130px;
+  height: auto;
+  aspect-ratio: 300 / 128;
 }
 
 .ccardTitleH {
   margin: 0;
+}
+
+/* Compact planned card (homepage) */
+.ccardSmall .ccardSky {
+  height: 96px;
+}
+
+.ccardSmall .ccardBody {
+  gap: 8px;
+  padding: 12px 14px 14px;
+}
+
+.ccardSmall .ccardTitle {
+  font-size: 20px;
 }
 
 .ccardHint {
