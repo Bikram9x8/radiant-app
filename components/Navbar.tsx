@@ -19,7 +19,7 @@ const SCHOLARSHIPS = "/courses/higher-education/after-12th/scholarships";
 const INTERNSHIPS = "/courses/higher-education/after-12th/internships";
 
 // "key" says which item a page highlights (Colleges and Courses share /higher; only Colleges lights up)
-type NavKey = "school" | "colleges" | "courses" | "exams" | "scholarships" | "internships" | "abroad";
+type NavKey = "school" | "colleges" | "courses" | "exams" | "scholarships" | "internships" | "abroad" | "blog";
 const ALL_LINKS: { key: NavKey; href: string; label: string }[] = [
   { key: "school", href: "/school", label: "School" },
   { key: "colleges", href: "/higher", label: "Colleges" },
@@ -28,6 +28,7 @@ const ALL_LINKS: { key: NavKey; href: string; label: string }[] = [
   { key: "scholarships", href: SCHOLARSHIPS, label: "Scholarships" },
   { key: "internships", href: INTERNSHIPS, label: "Internships" },
   { key: "abroad", href: "/abroad", label: "Study abroad" },
+  { key: "blog", href: "/blog", label: "Blog" },
 ];
 // Switches (lib/features.ts): School is hidden while SHOW_SCHOOL is off, Study abroad while SHOW_ABROAD is off
 const LINKS = ALL_LINKS.filter((l) => (l.key !== "school" || SHOW_SCHOOL) && (l.key !== "abroad" || SHOW_ABROAD));
@@ -123,6 +124,7 @@ export default function Navbar() {
     if (under("/school")) return "school";
     if (under("/opportunities")) return "exams";
     if (under("/abroad")) return "abroad";
+    if (under("/blog")) return "blog";
     return null;
   })();
   const homeHref = status === "authenticated" ? "/dashboard" : "/";

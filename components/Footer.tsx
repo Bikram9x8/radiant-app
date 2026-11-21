@@ -63,6 +63,7 @@ const SECTIONS: Section[] = [
   {
     title: "Radiant",
     links: [
+      { label: "Blog", href: "/blog" },
       { label: "Contact", href: "/contact" },
       { label: "Report a problem", href: "/report-problem" },
       { label: "Privacy", href: "/privacy" },
