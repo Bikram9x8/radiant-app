@@ -25,6 +25,29 @@ export function verifiedScholarships() {
   return SCHOLARSHIPS.filter((s) => s.status === "verified");
 }
 
+/**
+ * A short scholarship preview: one per country first (in data order, by each scholarship's first
+ * country), then filled up with the rest, up to `max`.
+ */
+export function scholarshipPreview(max = 3) {
+  const all = verifiedScholarships();
+  const picked: typeof all = [];
+  const seen = new Set<string>();
+  for (const sch of all) {
+    if (picked.length >= max) break;
+    const country = sch.countries[0] ?? sch.slug;
+    if (!seen.has(country)) {
+      seen.add(country);
+      picked.push(sch);
+    }
+  }
+  for (const sch of all) {
+    if (picked.length >= max) break;
+    if (!picked.includes(sch)) picked.push(sch);
+  }
+  return picked;
+}
+
 export function getRate(currency: Currency) {
   return RATES.find((r) => r.currency === currency) ?? null;
 }

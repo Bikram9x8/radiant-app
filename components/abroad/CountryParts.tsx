@@ -7,7 +7,6 @@ import Flag from "./Flag";
 import Sources from "./Sources";
 import s from "./abroad.module.css";
 
-const SOON = <span className={s.soonInline}>Coming soon</span>;
 
 /** Shown when a country deliberately has no national tuition figure (Country.tuitionSetByUniversity) */
 export const TUITION_BY_UNI = "Set by each university";
@@ -65,19 +64,21 @@ export function StatStrip({ country: c }: { country: Country }) {
       <small className={s.statHint}>{TUITION_BY_UNI_HINT}</small>
     </>
   ) : null;
+  // Only facts that exist are shown; empty stats are left out (no "Coming soon" cards)
   const stats = [
     { label: c.tuitionPerYear ? "Tuition per year from" : "Tuition per year", value: tuition },
     { label: "Living per year from", value: c.livingPerYear ? formatMoney(c.livingPerYear.value.min) + fromInr(c.livingPerYear) : null },
     { label: "Work after study", value: c.postStudyWork?.value ?? null },
     { label: "Intakes", value: c.intakes ? c.intakes.value.join(", ") : null },
     { label: "Exams accepted", value: c.examsAccepted ? shortList(c.examsAccepted.value) : null },
-  ];
+  ].filter((st) => st.value !== null);
+  if (stats.length === 0) return null;
   return (
     <div className={s.wrap}>
       <dl className={s.stats}>
         {stats.map((st) => (
           <div key={st.label}>
-            <dd>{st.value ?? SOON}</dd>
+            <dd>{st.value}</dd>
             <dt>{st.label}</dt>
           </div>
         ))}
@@ -116,12 +117,15 @@ export function Section({
 
 /** Label / value rows (money for the visa, work rights, English minimums) */
 export function FactRows({ rows }: { rows: { label: string; value: React.ReactNode | null }[] }) {
+  // Rows without a verified fact are left out (no "Coming soon" rows); nothing at all if none are left
+  const shown = rows.filter((r) => r.value !== null && r.value !== undefined);
+  if (shown.length === 0) return null;
   return (
     <dl className={s.qf}>
-      {rows.map((r) => (
+      {shown.map((r) => (
         <div key={r.label}>
           <dt>{r.label}</dt>
-          <dd>{r.value ?? SOON}</dd>
+          <dd>{r.value}</dd>
         </div>
       ))}
     </dl>
