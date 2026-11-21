@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getExam, getRate, verifiedCountries, verifiedScholarships } from "@/lib/abroad";
+import { getExam, getRate, scholarshipPreview, verifiedCountries } from "@/lib/abroad";
 import { PLANNED_COUNTRIES } from "@/lib/abroad/planned";
 import { MiniCountryCard, PlannedCountryCard } from "@/components/abroad/CountryCard";
 import RouteMap from "@/components/abroad/RouteMap";
@@ -24,12 +24,14 @@ export default function AbroadBand() {
   const countries = verifiedCountries();
   const verifiedSlugs = new Set(countries.map((c) => c.slug));
   const planned = PLANNED_COUNTRIES.filter((p) => !verifiedSlugs.has(p.slug));
-  const scholarships = verifiedScholarships().slice(0, 3);
+  // Same rule as the hub: one per country first, then filled up
+  const scholarships = scholarshipPreview(3);
   const ielts = getExam("ielts");
   const showsRupees = countries.some((c) => (c.tuitionPerYear || c.livingPerYear) && getRate(c.currency));
   const why = showsRupees ? [WHY_SOURCES, WHY_VISA, WHY_RUPEES, WHY_FREE] : [WHY_SOURCES, WHY_VISA, WHY_FREE];
-  // Full cards fill the row: two equal columns for 2 countries, three for 3 or more
-  const cardsCols = countries.length === 2 ? s.abroadCards2 : countries.length >= 3 ? s.abroadCards3 : "";
+  // Full cards fill the row: 2 columns for 2 or 4 countries, 3 columns for 3 or for 5 and more
+  const n = countries.length;
+  const cardsCols = n === 2 || n === 4 ? s.abroadCards2 : n >= 3 ? s.abroadCards3 : "";
 
   return (
     <section className={`${s.wrap} ${s.section} ${s.abroadHome}`} aria-labelledby="home-abroad">

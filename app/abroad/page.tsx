@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { getRate, verifiedCountries, verifiedScholarships } from "@/lib/abroad";
+import { getRate, scholarshipPreview, verifiedCountries, verifiedScholarships } from "@/lib/abroad";
 import { PLANNED_COUNTRIES } from "@/lib/abroad/planned";
 import RouteMap from "@/components/abroad/RouteMap";
 import Flag from "@/components/abroad/Flag";
@@ -76,7 +76,7 @@ export default function AbroadHubPage() {
           </h2>
           <p className={s.lead}>
             {countries.length > 0
-              ? "Yearly tuition and living costs, work rights after study and the main intake, each from the official source."
+              ? "Visa money and work rights for each country, each from the official source."
               : "Guides for these countries are being prepared from official sources."}
           </p>
           <ul className={s.cgrid3}>
@@ -136,7 +136,7 @@ export default function AbroadHubPage() {
           <p className={s.lead}>Fully funded and partial scholarships for Indian students, each linked to its official page.</p>
           {scholarships.length > 0 ? (
             <div className={s.slist}>
-              {scholarships.slice(0, 3).map((sch) => (
+              {scholarshipPreview(3).map((sch) => (
                 <ScholarshipCard key={sch.slug} item={sch} />
               ))}
             </div>

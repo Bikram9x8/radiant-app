@@ -934,9 +934,10 @@ a.exam:hover {
 }
 
 /* Five headline facts */
+/* Only existing facts are shown, so the cards share the row (up to 5 on desktop, 2 on phones) */
 .stats {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 160px), 1fr));
   gap: 12px;
   margin: 0;
   padding-top: 18px;
@@ -994,13 +995,6 @@ a.exam:hover {
 
 .ccardSmall .ccardTitle {
   font-size: 20px;
-}
-
-.ccardHint {
-  margin-top: -4px;
-  color: var(--muted);
-  font-size: 13px;
-  text-align: right;
 }
 
 .statSources {
@@ -1254,9 +1248,6 @@ a.exam:hover {
     position: static;
   }
 
-  .stats {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
 }
 
 @media (max-width: 860px) {
@@ -1270,9 +1261,6 @@ a.exam:hover {
 }
 
 @media (max-width: 600px) {
-  .stats {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
 
   .qf {
     grid-template-columns: minmax(0, 1fr);
