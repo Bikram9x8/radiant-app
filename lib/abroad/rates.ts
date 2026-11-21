@@ -39,4 +39,12 @@ export const RATES: ExchangeRate[] = [
     lastChecked: "2026-11-20",
     note: "RBA rate for 20 November 2026: A$1 = 61.98 Indian rupees (as published)",
   },
+  {
+    currency: "USD",
+    value: 92.9699,
+    sourceUrl: "https://www.rbi.org.in/home.aspx",
+    sourceName: "FBIL reference rate (RBI website)",
+    lastChecked: "2026-11-21",
+    note: "As at 1:00 pm on 20 November 2026 (rupees per US dollar, as published)",
+  },
 ];

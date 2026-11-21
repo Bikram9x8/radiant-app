@@ -44,6 +44,10 @@ const deStep = (text: string): Fact<string> => ({
   lastChecked: CHECKED_2,
 });
 
+// Batch 3 (USA, Ireland) was checked on a later day
+const CHECKED_3 = "2026-11-21";
+const STUDY_STATES = "Study in the States (U.S. Department of Homeland Security)";
+
 // ---- United Kingdom (gov.uk) ----
 const UKVI = "UK Visas and Immigration (GOV.UK)";
 const UK_APPLY = "https://www.gov.uk/student-visa/apply";
@@ -382,5 +386,62 @@ export const COUNTRIES: Country[] = [
         },
       },
     ],
+  },
+  {
+    slug: "usa",
+    name: "USA",
+    flag: "us",
+    scene: "us",
+    status: "draft",
+    currency: "USD",
+    workDuringStudy: {
+      value: "Up to 20 hours a week on campus while school is in session",
+      sourceUrl: "https://studyinthestates.dhs.gov/students/work/working-in-the-united-states",
+      sourceName: STUDY_STATES,
+      lastChecked: CHECKED_3,
+      note: "On-campus employment for F-1 students.",
+    },
+    postStudyWork: {
+      value: "Up to 12 months of OPT (plus a 24-month STEM extension)",
+      sourceUrl:
+        "https://www.uscis.gov/working-in-the-united-states/students-and-exchange-visitors/optional-practical-training-opt-for-f-1-students",
+      sourceName: "U.S. Citizenship and Immigration Services (USCIS)",
+      lastChecked: CHECKED_3,
+      note: "Optional Practical Training. The 24-month STEM OPT extension needs a degree on the STEM list, an employer using E-Verify and an initial OPT grant based on that STEM degree.",
+    },
+    visaSteps: [],
+    faqs: [
+      {
+        q: "Is there a fee besides the visa fee?",
+        a: "Yes. F-1 students pay the I-901 SEVIS fee of USD 350 before the visa is issued, and must show proof of payment at the visa interview. It is separate from the visa fee.",
+        source: {
+          value: "I-901 SEVIS Fee, F or M visa applicants (full payment): $350",
+          sourceUrl: "https://www.ice.gov/sevis/i901",
+          sourceName: "U.S. Immigration and Customs Enforcement (ICE)",
+          lastChecked: CHECKED_3,
+        },
+      },
+      {
+        q: "How much money do I need to show?",
+        a: "You must show you can pay for tuition, books, living expenses and travel. Your school checks the evidence before it issues your Form I-20, and you bring it to your visa interview.",
+        source: {
+          value: "Prospective F-1 or M-1 students must have the financial resources to live and study in the United States.",
+          sourceUrl: "https://studyinthestates.dhs.gov/students/prepare/financial-ability",
+          sourceName: STUDY_STATES,
+          lastChecked: CHECKED_3,
+        },
+      },
+    ],
+  },
+  {
+    // No facts yet: irishimmigration.ie pages could not be read automatically (see abroad-data3/SOURCES.md)
+    slug: "ireland",
+    name: "Ireland",
+    flag: "ie",
+    scene: "ie",
+    status: "draft",
+    currency: "EUR",
+    visaSteps: [],
+    faqs: [],
   },
 ];
