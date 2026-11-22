@@ -1,7 +1,7 @@
 import Link from "next/link";
 import s from "@/components/site-chrome.module.css";
 import RadiantLogo from "@/components/brand/RadiantLogo";
-import { SHOW_ABROAD, SHOW_SCHOOL } from "@/lib/features";
+import { SHOW_ABROAD, SHOW_COLLEGES, SHOW_SCHOOL } from "@/lib/features";
 import { getExam } from "@/lib/abroad";
 
 type FooterLink = { label: string; href?: string }; // no href = not built yet ("Coming soon")
@@ -36,7 +36,8 @@ const SECTIONS: Section[] = [
   {
     title: "Explore",
     links: [
-      { label: "Colleges", href: "/higher" },
+      // With SHOW_COLLEGES on, "Colleges" opens the college list; otherwise it stays on /higher
+      { label: "Colleges", href: SHOW_COLLEGES ? "/colleges" : "/higher" },
       { label: "Courses", href: "/higher" },
       { label: "Entrance exams", href: "/opportunities" },
     ],
@@ -74,7 +75,9 @@ const SECTIONS: Section[] = [
 
 const BLURB = SHOW_SCHOOL
   ? "Notes, solutions, tests and guidance for school and higher education, organised class by class and chapter by chapter."
-  : "Entrance exam prep, scholarships and internships for students after Class 12. Colleges and courses coming soon.";
+  : SHOW_COLLEGES
+    ? "Colleges, entrance exam prep, scholarships and internships for students after Class 12."
+    : "Entrance exam prep, scholarships and internships for students after Class 12. Colleges and courses coming soon.";
 
 export default function Footer() {
   return (

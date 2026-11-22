@@ -1,0 +1,674 @@
+/* Colleges (radiant-design/college-pages.html: finder and college views). Teal + Coral on paper,
+   Big Shoulders caps, Instrument Serif accents, Figtree text. Colours from globals.css.
+   Layout lives here, not in Tailwind classes (this file is unlayered, so its rules win anyway). */
+
+.page {
+  --disp: var(--font-big-shoulders), var(--font-figtree), sans-serif;
+  --ser: var(--font-instrument-serif), Georgia, serif;
+  --soft: 0 1px 2px rgb(15 46 51 / 0.04), 0 18px 40px -30px rgb(15 46 51 / 0.35);
+
+  font-family: var(--font-figtree), system-ui, sans-serif;
+  background: var(--paper);
+  color: var(--ink);
+  overflow-x: clip;
+}
+
+.page :where(a, button, select):focus-visible {
+  outline: 3px solid var(--coral);
+  outline-offset: 2px;
+}
+
+.wrap {
+  max-width: 1200px;
+  margin-inline: auto;
+  padding-inline: max(4vw, 16px);
+}
+
+.ser {
+  font-family: var(--ser);
+  font-style: italic;
+  font-weight: 400;
+  text-transform: none;
+  color: var(--teal);
+}
+
+.serC {
+  color: var(--coral-text);
+}
+
+.serLight {
+  font-family: var(--ser);
+  font-style: italic;
+  font-weight: 400;
+  text-transform: none;
+  color: var(--tint-teal-strong);
+}
+
+.card {
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: #ffffff;
+  box-shadow: var(--soft);
+}
+
+/* ---------- Buttons and chips ---------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 18px;
+  border: 1.5px solid transparent;
+  border-radius: 12px;
+  font: 700 15px var(--font-figtree), system-ui, sans-serif;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    translate 150ms ease,
+    background 200ms ease;
+}
+
+@media (hover: hover) {
+  .btn:hover:not(:disabled) {
+    translate: 0 -2px;
+  }
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.btnPri {
+  background: var(--coral);
+  color: #ffffff;
+}
+
+.btnPri:hover {
+  background: var(--coral-text);
+}
+
+.btnDark {
+  background: var(--ink);
+  color: #ffffff;
+}
+
+.btnOut {
+  border-color: var(--line);
+  background: #ffffff;
+  color: var(--ink);
+}
+
+.full {
+  width: 100%;
+  margin-top: 14px;
+  white-space: normal;
+  text-align: center;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 30px;
+  padding: 0 10px;
+  border-radius: 999px;
+  background: var(--tint-teal);
+  color: var(--teal-dark);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.chipC {
+  background: var(--tint-peach);
+  color: var(--coral-text);
+}
+
+.chipG {
+  background: #eef2f6;
+  color: var(--ink-2);
+}
+
+.chipBand {
+  background: rgb(255 255 255 / 0.12);
+  color: #ffffff;
+}
+
+.chipBandC {
+  background: var(--coral);
+  color: #ffffff;
+}
+
+/* ---------- Sources ---------- */
+.sources {
+  margin: 14px 0 0;
+  padding: 12px 0 0;
+  border-top: 1px dashed var(--line);
+  list-style: none;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.sources li + li {
+  margin-top: 4px;
+}
+
+.sources a {
+  color: var(--teal-dark);
+  font-weight: 700;
+  text-underline-offset: 3px;
+}
+
+.sourcesDark {
+  border-color: rgb(255 255 255 / 0.25);
+  color: #cfe7e5;
+}
+
+.sourcesDark a {
+  color: var(--tint-teal-strong);
+}
+
+.na {
+  color: var(--muted);
+  font-style: italic;
+  font-weight: 400 !important;
+}
+
+.note {
+  margin: 12px 0 0;
+  color: var(--muted);
+  font-size: 13.5px;
+}
+
+/* ---------- List (finder) ---------- */
+.phead {
+  padding-block: 40px 22px;
+}
+
+.h1 {
+  margin: 0;
+  font: 800 clamp(40px, 6vw, 76px) / 0.95 var(--disp);
+  text-transform: uppercase;
+}
+
+.lead {
+  max-width: 62ch;
+  margin: 12px 0 0;
+  color: var(--muted);
+  font-size: 17px;
+  line-height: 1.6;
+}
+
+.fgrid {
+  display: grid;
+  grid-template-columns: 270px minmax(0, 1fr);
+  gap: 24px;
+  align-items: start;
+  padding-bottom: 64px;
+}
+
+.filters {
+  position: sticky;
+  top: 84px;
+  padding: 20px;
+}
+
+.filtersTitle {
+  margin: 0 0 4px;
+  font: 800 22px / 1 var(--disp);
+  text-transform: uppercase;
+}
+
+.fl {
+  margin-top: 14px;
+}
+
+.fl label {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.fl select {
+  width: 100%;
+  min-height: 44px;
+  padding: 0 10px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #ffffff;
+  color: var(--ink);
+  font: 600 16px var(--font-figtree), system-ui, sans-serif;
+}
+
+.clear {
+  width: 100%;
+  margin-top: 18px;
+}
+
+.count {
+  margin: 0 0 14px;
+  font: 800 26px / 1 var(--disp);
+  text-transform: uppercase;
+}
+
+.results {
+  display: grid;
+  gap: 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.rc {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 260px;
+  gap: 16px 20px;
+  padding: 18px 20px;
+  transition:
+    translate 200ms ease,
+    box-shadow 200ms ease;
+}
+
+@media (hover: hover) {
+  .rc:hover {
+    translate: 0 -3px;
+    box-shadow: 0 26px 50px -30px rgb(15 46 51 / 0.5);
+  }
+}
+
+.rcTitle {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1.25;
+}
+
+.rcTitle a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.rcTitle a:hover {
+  color: var(--teal);
+}
+
+.meta {
+  margin: 4px 0 10px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.kf {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  align-content: start;
+  margin: 0;
+}
+
+.kf div {
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: #f6f8fa;
+}
+
+.kf .kfWide {
+  grid-column: 1 / -1;
+}
+
+.kf dt {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.kf dd {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.act {
+  display: flex;
+  grid-column: 1 / -1;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  align-items: center;
+}
+
+.rcSources {
+  flex: 1 1 260px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.empty {
+  padding: 40px 24px;
+  text-align: center;
+}
+
+.empty h3 {
+  margin: 0;
+}
+
+.empty p {
+  margin: 6px 0 16px;
+  color: var(--muted);
+}
+
+/* ---------- College page ---------- */
+.cband {
+  position: relative;
+  overflow: hidden;
+  background: var(--ink);
+  color: #ffffff;
+}
+
+.cband::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgb(153 246 228 / 0.14) 1.5px, transparent 1.5px);
+  background-size: 24px 24px;
+}
+
+.cbandIn {
+  position: relative;
+  padding-block: 34px 26px;
+}
+
+.crumb {
+  margin-bottom: 12px;
+  color: var(--tint-teal-strong);
+  font-size: 14px;
+}
+
+.crumb a {
+  color: var(--tint-teal-strong);
+  font-weight: 700;
+}
+
+.ch1 {
+  max-width: 22ch;
+  margin: 0;
+  font: 800 clamp(38px, 5.4vw, 68px) / 0.95 var(--disp);
+  text-transform: uppercase;
+}
+
+.cmeta {
+  margin: 12px 0;
+  color: #cfe7e5;
+  font-size: 16px;
+}
+
+.cact {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.cbandIn .sources {
+  max-width: 760px;
+  margin-top: 20px;
+}
+
+.cgrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: 28px;
+  align-items: start;
+  padding-block: 28px 64px;
+}
+
+.sec {
+  margin-bottom: 22px;
+  padding: 24px;
+}
+
+.h2 {
+  margin: 0 0 14px;
+  font: 800 clamp(30px, 3.6vw, 44px) / 0.95 var(--disp);
+  text-transform: uppercase;
+}
+
+.qf {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 24px;
+  margin: 0;
+}
+
+.qf div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--line);
+  font-size: 15px;
+}
+
+.qf dt {
+  color: var(--muted);
+}
+
+.qf dd {
+  margin: 0;
+  font-weight: 700;
+  text-align: right;
+}
+
+/* Courses table: rows become cards on phones */
+.ctab {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 15px;
+}
+
+.ctab thead th {
+  padding: 10px 8px;
+  border-bottom: 2px solid var(--line);
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 700;
+  text-align: left;
+}
+
+.ctab tbody th,
+.ctab td {
+  padding: 12px 8px;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+}
+
+.ctab tbody th {
+  min-width: 150px;
+  font-weight: 400;
+}
+
+.ctab tbody th b {
+  display: block;
+  font-size: 16px;
+}
+
+.ctab small {
+  display: block;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.ctab td:nth-child(3) {
+  min-width: 200px;
+}
+
+.fee {
+  min-width: 150px;
+}
+
+.feeLine {
+  display: block;
+}
+
+.feeLine + .feeLine {
+  margin-top: 6px;
+}
+
+.feeLine b {
+  font-size: 16px;
+  white-space: nowrap;
+}
+
+/* Side column */
+.side {
+  position: sticky;
+  top: 90px;
+  display: grid;
+  gap: 16px;
+}
+
+.sideCard {
+  padding: 20px;
+}
+
+.sideTitle {
+  margin: 0 0 8px;
+  font: 800 24px / 1 var(--disp);
+  text-transform: uppercase;
+}
+
+.contact {
+  margin: 0;
+}
+
+.contact div {
+  padding: 10px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.contact dt {
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.contact dd {
+  margin: 2px 0 0;
+  font-size: 15px;
+  overflow-wrap: anywhere;
+}
+
+.contact a {
+  color: var(--teal-dark);
+  font-weight: 700;
+}
+
+@media (max-width: 980px) {
+  .cgrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .side {
+    position: static;
+  }
+}
+
+@media (max-width: 860px) {
+  .fgrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .filters {
+    position: static;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0 12px;
+  }
+
+  .filtersTitle,
+  .clear {
+    grid-column: 1 / -1;
+  }
+
+  .rc {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .sec {
+    padding: 18px;
+  }
+
+  .qf {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .ctab thead {
+    display: none;
+  }
+
+  .ctab tr {
+    display: grid;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .ctab tbody th,
+  .ctab td {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    min-width: 0 !important;
+    padding: 4px 0;
+    border: 0;
+    text-align: right;
+  }
+
+  .ctab tbody th {
+    display: block;
+    padding-bottom: 6px;
+    text-align: left;
+  }
+
+  .ctab td::before {
+    content: attr(data-l);
+    flex: none;
+    color: var(--muted);
+    font-size: 13px;
+    font-style: normal;
+    font-weight: 700;
+    text-align: left;
+  }
+
+  .fee {
+    display: block !important;
+  }
+
+  .fee::before {
+    display: block;
+  }
+}
+
+@media (max-width: 360px) {
+  .filters {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn,
+  .rc {
+    transition: none;
+  }
+}
