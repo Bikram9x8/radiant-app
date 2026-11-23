@@ -47,8 +47,8 @@ async function main() {
     const issues = [
       ...(c.name ? [] : [`${c.slug}: name is empty`]),
       ...problems(c.slug, [
-        { label: "Basic info", values: [c.type, c.establishedYear, c.city, c.district, c.state, c.pincode, c.fullAddress, c.officialWebsite], src: c.basicInfoSourceUrl, date: c.basicInfoCheckedAt },
-        { label: "Approval", values: [c.approvedBy], src: c.approvalSourceUrl, date: c.approvalCheckedAt },
+        { label: "Basic info", values: [c.city, c.state, c.pincode, c.fullAddress, c.officialWebsite], src: c.basicInfoSourceUrl, date: c.basicInfoCheckedAt },
+        { label: "Approval", values: [c.type, c.establishedYear, c.district, c.approvedBy], src: c.approvalSourceUrl, date: c.approvalCheckedAt },
         { label: "NAAC", values: [c.naacGrade, c.naacValidUntil], src: c.naacSourceUrl, date: c.naacCheckedAt },
         { label: "NIRF", values: [c.nirfRank, c.nirfCategory, c.nirfYear], src: c.nirfSourceUrl, date: c.nirfCheckedAt },
         { label: "Facilities", values: [c.hostel, c.campusAreaAcres], src: c.facilitiesSourceUrl, date: c.facilitiesCheckedAt },
