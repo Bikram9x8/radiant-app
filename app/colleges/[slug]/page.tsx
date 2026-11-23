@@ -7,7 +7,8 @@ import { feeLines, NOT_AVAILABLE, place, years } from "@/lib/colleges/format";
 import type { CollegeView } from "@/lib/colleges/types";
 import { factSources } from "@/lib/colleges/fact-sources";
 import { formatDate } from "@/lib/abroad/format";
-import { absoluteUrl } from "@/lib/site";
+import { absoluteUrl, SITE_NAME } from "@/lib/site";
+import { breadcrumbJsonLd, collegeCrumbs, collegeJsonLd, collegePath, jsonLdHtml } from "@/lib/colleges/seo";
 import SourceList from "@/components/colleges/SourceList";
 import s from "@/components/colleges/colleges.module.css";
 
@@ -20,11 +21,17 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!SHOW_COLLEGES) return {};
   const { slug } = await params;
   const c = await getVerifiedCollege(slug);
-  if (!c) return { title: "College not found | Radiant Educations" };
+  // Draft or unknown slug: the page is a 404, so no canonical, Open Graph or indexing
+  if (!c) return { title: `College not found | ${SITE_NAME}`, robots: { index: false } };
+  const url = absoluteUrl(collegePath(c.slug));
+  const title = `${c.name}: courses, eligibility and fees | ${SITE_NAME}`;
+  const where = [c.city, c.state].filter(Boolean).join(", ");
+  const description = `${c.name}${where ? `, ${where}` : ""}: courses, eligibility, entrance exams and fees from official sources, with the date each was checked.`;
   return {
-    title: `${c.name}: courses, eligibility and fees | Radiant Educations`,
-    description: `${c.name}${c.city ? `, ${c.city}` : ""}: courses, eligibility, entrance exams and fees from official sources, with the date each was checked.`,
-    alternates: { canonical: absoluteUrl(`/colleges/${c.slug}`) },
+    title,
+    description,
+    alternates: { canonical: url },
+    openGraph: { type: "website", url, title, description, siteName: SITE_NAME, locale: "en_IN" },
   };
 }
 
@@ -73,16 +80,28 @@ export default async function CollegePage({ params }: Props) {
 
   const meta = [place(c), c.type, c.establishedYear ? `Established ${c.establishedYear}` : null].filter(Boolean);
   const location = [c.city, c.district && c.district !== c.city ? `${c.district} district` : null, c.state].filter(Boolean).join(", ");
+  const crumbs = collegeCrumbs(c);
 
   return (
     <div className={`${s.page} flex-1`}>
+      {/* JSON-LD for search engines: verified, sourced facts only (lib/colleges/seo.ts) */}
+      <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdHtml(collegeJsonLd(c))} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdHtml(breadcrumbJsonLd(crumbs))} />
       {/* Header */}
       <div className={s.cband}>
         <div className={`${s.wrap} ${s.cbandIn}`}>
           <nav aria-label="Breadcrumb" className={s.crumb}>
-            <Link href="/colleges">Colleges</Link>
-            {c.state && <> / {c.state}</>}
-            {c.city && <> / {c.city}</>}
+            {crumbs.map((x, i) =>
+              i < crumbs.length - 1 ? (
+                <span key={x.path}>
+                  <Link href={x.path}>{x.name}</Link> /{" "}
+                </span>
+              ) : (
+                <span key={x.path} aria-current="page">
+                  {x.name}
+                </span>
+              ),
+            )}
           </nav>
           <h1 className={s.ch1}>
             <Title name={c.name} />
