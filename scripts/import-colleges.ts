@@ -307,9 +307,11 @@ function parseCollege(row: Row, L: Record<string, string[]>): CollegeData | null
   if (c.hostel === "Not sure") warn(where, 'hostel "Not sure" will show as "Not available yet"');
 
   const raw = (h: string) => row.text(h);
-  group(where, "Basic info", [c.shortName, c.type, c.establishedYear, c.city, c.district, c.state, c.pincode, c.fullAddress, c.officialWebsite],
+  // Source rule: approval_source_url covers type, established_year, district and approved_by;
+  // basic_info_source_url covers city, state, pincode, full_address (and short_name, official_website).
+  group(where, "Basic info", [c.shortName, c.city, c.state, c.pincode, c.fullAddress, c.officialWebsite],
     c.basicInfoSourceUrl ?? null, "basic_info_source_url", (c.basicInfoCheckedAt as Date) ?? null, "basic_info_checked", raw("basic_info_checked"));
-  group(where, "Approval", [c.approvedBy], c.approvalSourceUrl ?? null, "approval_source_url", (c.approvalCheckedAt as Date) ?? null, "approval_checked", raw("approval_checked"));
+  group(where, "Approval", [c.type, c.establishedYear, c.district, c.approvedBy], c.approvalSourceUrl ?? null, "approval_source_url", (c.approvalCheckedAt as Date) ?? null, "approval_checked", raw("approval_checked"));
   group(where, "NAAC", [c.naacGrade, c.naacValidUntil], c.naacSourceUrl ?? null, "naac_source_url", (c.naacCheckedAt as Date) ?? null, "naac_checked", raw("naac_checked"));
   group(where, "NIRF", [c.nirfRank, c.nirfCategory, c.nirfYear], c.nirfSourceUrl ?? null, "nirf_source_url", (c.nirfCheckedAt as Date) ?? null, "nirf_checked", raw("nirf_checked"));
   group(where, "Facilities", [c.hostel, c.campusAreaAcres], c.facilitiesSourceUrl ?? null, "facilities_source_url", (c.facilitiesCheckedAt as Date) ?? null, "facilities_checked", raw("facilities_checked"));
@@ -318,10 +320,19 @@ function parseCollege(row: Row, L: Record<string, string[]>): CollegeData | null
   return c;
 }
 
+/** Course rows that hold only college_id/course_id (+ notes): placeholders not filled in yet */
+const skipped: string[] = [];
+
 function parseCourse(row: Row, L: Record<string, string[]>): CourseData | null {
   const collegeSlug = row.text("college_id");
   const courseId = row.text("course_id");
   const where = `Courses row ${row.rowNo} (${collegeSlug || "no college"} / ${courseId || "no course_id"})`;
+  // Only ids (notes are internal and do not count): a placeholder row, skipped instead of failing
+  if (COURSE_COLS.every((h) => ["college_id", "course_id", "notes"].includes(h) || !row.text(h))) {
+    const note = row.text("notes");
+    skipped.push(`${where}: skipped: not filled${note ? ` (notes: ${note})` : ""}`);
+    return null;
+  }
   if (!collegeSlug) return err(where, "college_id is empty"), null;
   if (!courseId) return err(where, "course_id is empty"), null;
   if (!SLUG.test(courseId)) err(where, `course_id "${courseId}" must be small letters, numbers and dashes`);
@@ -467,6 +478,7 @@ async function main() {
     lines.push("## Plan (all new rows as DRAFT)", "", "| Type | Key | Action | Changed fields |", "|---|---|---|---|");
     for (const p of plan)
       lines.push(`| ${p.kind} | ${p.key} | ${p.action}${p.backToDraft ? " → back to DRAFT (was VERIFIED)" : ""} | ${p.fields.join(", ") || "-"} |`);
+    if (skipped.length) lines.push("", "## Skipped course rows", "", ...skipped.map((x) => `- ${x}`));
     if (notInSheet.length) lines.push("", `In the database but not in the sheet (left unchanged, never deleted): ${notInSheet.join(", ")}`);
     lines.push("", "## Errors (block --write)", "", ...(errors.length ? errors.map((e) => `- **${e.where}**: ${e.msg}`) : ["- None"]));
     lines.push("", "## Warnings", "", ...(warnings.length ? warnings.map((e) => `- **${e.where}**: ${e.msg}`) : ["- None"]));

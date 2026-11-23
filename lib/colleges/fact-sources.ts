@@ -1,7 +1,8 @@
 // Which official source each shown fact comes from, so a source line only names the facts that page
-// really covers. By default each fact uses its template group's source (e.g. type and year use
-// basic_info_source_url). When a college's research notes record that a fact was taken from another
-// group's source, add an override here; it is used only if that source is filled in.
+// really covers. One fixed rule for every college (same as the template help text):
+// - approval_source_url covers type, established_year, district and approved_by
+// - basic_info_source_url covers city, state, pincode, full_address (and official_website)
+// - every other *_source_url covers the facts right before it in the template
 import type { CollegeView, SourceRef } from "./types";
 
 type Group = keyof CollegeView["src"];
@@ -37,10 +38,10 @@ const LABEL: Record<FactKey, string> = {
   email: "Email",
 };
 
-const DEFAULT_GROUP: Record<FactKey, Group> = {
-  type: "basic",
-  year: "basic",
-  district: "basic",
+const GROUP: Record<FactKey, Group> = {
+  type: "approval",
+  year: "approval",
+  district: "approval",
   location: "basic",
   address: "basic",
   website: "basic",
@@ -51,13 +52,6 @@ const DEFAULT_GROUP: Record<FactKey, Group> = {
   hostel: "facilities",
   phone: "contact",
   email: "contact",
-};
-
-const OVERRIDES: Record<string, Partial<Record<FactKey, Group>>> = {
-  // Notes (22 Nov 2026): established year and district are from the UGC list of State Private
-  // Universities (approval_source_url, entry #313), which also gives the type (Private).
-  // City, address and PIN are from the college's contact page (basic_info_source_url).
-  "amity-university-mohali": { type: "approval", year: "approval", district: "approval" },
 };
 
 function hasValue(c: CollegeView, f: FactKey) {
@@ -95,9 +89,5 @@ function hasValue(c: CollegeView, f: FactKey) {
 export function factSources(c: CollegeView, facts: FactKey[]): { label: string; src: SourceRef | null }[] {
   return facts
     .filter((f) => hasValue(c, f))
-    .map((f) => {
-      const override = OVERRIDES[c.slug]?.[f];
-      const src = (override && c.src[override]) || c.src[DEFAULT_GROUP[f]];
-      return { label: LABEL[f], src };
-    });
+    .map((f) => ({ label: LABEL[f], src: c.src[GROUP[f]] }));
 }
