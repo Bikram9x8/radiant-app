@@ -4,6 +4,14 @@ import { prisma } from "@/lib/prisma";
 import { sendEmail } from "@/lib/email";
 import { SHOW_SCHOOL } from "@/lib/features";
 
+// Only these roles can be chosen at sign-up. ADMIN (or anything else) is never accepted here.
+const SIGNUP_ROLES = ["STUDENT", "COMPANY"] as const;
+type SignupRole = (typeof SIGNUP_ROLES)[number];
+
+function isSignupRole(value: unknown): value is SignupRole {
+  return typeof value === "string" && (SIGNUP_ROLES as readonly string[]).includes(value);
+}
+
 export async function POST(req: Request) {
   try {
     const body = await req.json();
@@ -11,6 +19,10 @@ export async function POST(req: Request) {
 
     if (!email || !password || !role) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+    }
+
+    if (!isSignupRole(role)) {
+      return NextResponse.json({ error: "Invalid role" }, { status: 400 });
     }
 
     const existing = await prisma.user.findUnique({ where: { email } });
