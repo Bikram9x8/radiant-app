@@ -16,8 +16,8 @@ const options = (values: (string | null)[]) => [...new Set(values.filter((v): v 
 
 // Filters work on the verified data already on the page (no request per change).
 // Stream and level match when one course of the college has both.
-export default function CollegeFinder({ colleges }: { colleges: CollegeView[] }) {
-  const [f, setF] = useState<Filters>(EMPTY);
+export default function CollegeFinder({ colleges, initialState = ANY }: { colleges: CollegeView[]; initialState?: string }) {
+  const [f, setF] = useState<Filters>({ ...EMPTY, state: initialState });
 
   const opts = useMemo(
     () => ({

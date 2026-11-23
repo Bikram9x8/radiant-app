@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
 import { allPosts } from "@/lib/blog";
 import { verifiedCountries, verifiedExams } from "@/lib/abroad";
-import { SHOW_ABROAD, SHOW_SCHOOL } from "@/lib/features";
+import { SHOW_ABROAD, SHOW_COLLEGES, SHOW_SCHOOL } from "@/lib/features";
 import { absoluteUrl, SITE_URL } from "@/lib/site";
 
 type Entry = MetadataRoute.Sitemap[number];
@@ -28,14 +28,21 @@ function checkSitemap(entries: Entry[]): Entry[] {
 }
 
 // sitemap.xml: public pages only. Pages behind a switch are listed only while it is on
-// (Study Abroad while SHOW_ABROAD is on; School pages never while SHOW_SCHOOL is off).
-export default function sitemap(): MetadataRoute.Sitemap {
+// (Study Abroad while SHOW_ABROAD is on; School pages never while SHOW_SCHOOL is off;
+// Colleges and each VERIFIED college page only while SHOW_COLLEGES is on).
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const page = (path: string, lastModified?: string): Entry => ({
     url: absoluteUrl(path),
     ...(lastModified ? { lastModified } : {}),
   });
 
   const posts = allPosts();
+
+  // Colleges: the database is read only while the switch is on (imported here, so an "off" build never
+  // loads it). Read at build time like the rest of this file; draft colleges are never listed.
+  const colleges = SHOW_COLLEGES
+    ? [page("/colleges"), ...(await (await import("@/lib/colleges/data")).verifiedColleges()).map((c) => page(`/colleges/${c.slug}`))]
+    : [];
 
   return checkSitemap([
     page("/"),
@@ -50,6 +57,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
           page("/abroad/scholarships"),
         ]
       : []),
+    ...colleges,
     page("/blog", posts[0]?.updated),
     ...posts.map((p) => page(`/blog/${p.slug}`, p.updated)),
   ]);
