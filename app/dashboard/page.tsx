@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { IconChecklist, IconClipboardCheck, IconBuildingSkyscraper, IconCategory, IconUsers, IconKey, IconLockSquareRounded, IconChartBar, IconHistory, IconListDetails, IconCircleCheck, IconClockHour4, IconX, IconUsersGroup, IconStar } from "@tabler/icons-react";
+import { IconChecklist, IconClipboardCheck, IconBuildingSkyscraper, IconCategory, IconUsers, IconKey, IconLockSquareRounded, IconChartBar, IconReportAnalytics, IconHistory, IconListDetails, IconCircleCheck, IconClockHour4, IconX, IconUsersGroup, IconStar } from "@tabler/icons-react";
 import { getServerSession } from "next-auth/next";
 import { redirect } from "next/navigation";
 import { authOptions } from "@/lib/auth";
@@ -235,6 +235,7 @@ if (user.role === "STUDENT") {
       { href: "/admin/access-codes", label: "Access Codes", desc: "Generate and manage test access codes", Icon: IconKey },
       { href: "/admin/locked-tests", label: "Locked Tests", desc: "Review and unlock students locked out of tests", Icon: IconLockSquareRounded },
       { href: "/admin/stats", label: "Stats", desc: "Platform overview", Icon: IconChartBar },
+      { href: "/admin/insights", label: "Insights", desc: "Student activity, data health and site traffic", Icon: IconReportAnalytics },
       { href: "/admin/logs", label: "Activity Log", desc: "Recent admin actions", Icon: IconHistory },
     ];
 
