@@ -426,3 +426,95 @@ model McqAnswer {
 
   @@id([attemptId, questionId])
 }
+
+// ---------- College & Course data (imported from the xlsx template) ----------
+// Each fact group has its own official source URL and checked date. Only VERIFIED rows show on the site;
+// an empty fact in a verified row shows "Not available yet". internalNotes is never shown on the site.
+
+enum DataStatus {
+  DRAFT
+  VERIFIED
+}
+
+model College {
+  id                  String     @id @default(cuid())
+  slug                String     @unique // college_id
+  status              DataStatus @default(DRAFT)
+  name                String
+  shortName           String?
+  type                String?
+  establishedYear     Int?
+  city                String?
+  district            String?
+  state               String?
+  pincode             String?
+  fullAddress         String?
+  officialWebsite     String?
+  basicInfoSourceUrl  String?
+  basicInfoCheckedAt  DateTime?  @db.Date
+  approvedBy          String[]   @default([])
+  approvalSourceUrl   String?
+  approvalCheckedAt   DateTime?  @db.Date
+  naacGrade           String?
+  naacValidUntil      DateTime?  @db.Date
+  naacSourceUrl       String?
+  naacCheckedAt       DateTime?  @db.Date
+  nirfRank            String? // e.g. "101-150"
+  nirfCategory        String?
+  nirfYear            Int?
+  nirfSourceUrl       String?
+  nirfCheckedAt       DateTime?  @db.Date
+  hostel              String?
+  campusAreaAcres     Decimal?   @db.Decimal(8, 2)
+  facilitiesSourceUrl String?
+  facilitiesCheckedAt DateTime?  @db.Date
+  admissionPhone      String?
+  admissionEmail      String?
+  contactSourceUrl    String?
+  contactCheckedAt    DateTime?  @db.Date
+  imagePermission     String?
+  logoPermission      String?
+  internalNotes       String?
+  verifiedAt          DateTime?
+  createdAt           DateTime   @default(now())
+  updatedAt           DateTime   @updatedAt
+  courses             Course[]
+
+  @@index([status])
+  @@index([state])
+}
+
+model Course {
+  id                   String     @id @default(cuid())
+  collegeId            String
+  college              College    @relation(fields: [collegeId], references: [id], onDelete: Restrict)
+  courseId             String // course_id, unique within a college
+  status               DataStatus @default(DRAFT)
+  name                 String
+  level                String?
+  stream               String?
+  specialization       String?
+  durationYears        Decimal?   @db.Decimal(3, 1)
+  mode                 String?
+  seats                Int?
+  courseSourceUrl      String?
+  courseCheckedAt      DateTime?  @db.Date
+  feePerYearInr        Int?
+  feePerSemesterInr    Int?
+  totalFeeInr          Int?
+  feeYear              String? // e.g. "2026-27"
+  feeSourceUrl         String?
+  feeCheckedAt         DateTime?  @db.Date
+  eligibility          String?
+  eligibilitySourceUrl String?
+  entranceExams        String[]   @default([])
+  examSourceUrl        String?
+  internalNotes        String?
+  verifiedAt           DateTime?
+  createdAt            DateTime   @default(now())
+  updatedAt            DateTime   @updatedAt
+
+  @@unique([collegeId, courseId])
+  @@index([status])
+  @@index([stream, level])
+}

@@ -10,7 +10,7 @@ import ProfileMenu, { ProfileDisclosure } from "@/components/ProfileMenu";
 import s from "@/components/site-chrome.module.css";
 import RadiantLogo from "@/components/brand/RadiantLogo";
 import { useNavSection } from "@/components/nav-section";
-import { SHOW_ABROAD, SHOW_SCHOOL } from "@/lib/features";
+import { SHOW_ABROAD, SHOW_COLLEGES, SHOW_SCHOOL } from "@/lib/features";
 
 // Fonts + colour tokens for the header and the drawer (the drawer renders outside <header>)
 const chrome = `${s.chrome}`;
@@ -22,7 +22,8 @@ const INTERNSHIPS = "/courses/higher-education/after-12th/internships";
 type NavKey = "school" | "colleges" | "courses" | "exams" | "scholarships" | "internships" | "abroad" | "blog";
 const ALL_LINKS: { key: NavKey; href: string; label: string }[] = [
   { key: "school", href: "/school", label: "School" },
-  { key: "colleges", href: "/higher", label: "Colleges" },
+  // With SHOW_COLLEGES on, "Colleges" opens the college list; otherwise it stays on /higher
+  { key: "colleges", href: SHOW_COLLEGES ? "/colleges" : "/higher", label: "Colleges" },
   { key: "courses", href: "/higher", label: "Courses" },
   { key: "exams", href: "/opportunities", label: "Exams" },
   { key: "scholarships", href: SCHOLARSHIPS, label: "Scholarships" },
@@ -110,7 +111,7 @@ export default function Navbar() {
       if (navSection === "/opportunities") return "exams";
       return null;
     }
-    if (under("/higher")) return "colleges";
+    if (under("/higher") || (SHOW_COLLEGES && under("/colleges"))) return "colleges";
     if (under("/courses/higher-education")) {
       // Scholarships and internships pages of any level (after 12th, after graduation, ...)
       const stage = pathname.split("/")[4];
