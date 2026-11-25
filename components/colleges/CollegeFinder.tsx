@@ -2,8 +2,9 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
+import { COMPARE_MAX, COMPARE_MIN, comparePath } from "@/lib/colleges/compare";
 import type { CollegeView } from "@/lib/colleges/types";
-import { place } from "@/lib/colleges/format";
+import { COURSES_SOON, place } from "@/lib/colleges/format";
 import { factSources } from "@/lib/colleges/fact-sources";
 import SourceList from "./SourceList";
 import s from "./colleges.module.css";
@@ -16,8 +17,31 @@ const options = (values: (string | null)[]) => [...new Set(values.filter((v): v 
 
 // Filters work on the verified data already on the page (no request per change).
 // Stream and level match when one course of the college has both.
-export default function CollegeFinder({ colleges, initialState = ANY }: { colleges: CollegeView[]; initialState?: string }) {
+export default function CollegeFinder({
+  colleges,
+  initialState = ANY,
+  initialCompare = [],
+}: {
+  colleges: CollegeView[];
+  initialState?: string;
+  initialCompare?: string[];
+}) {
   const [f, setF] = useState<Filters>({ ...EMPTY, state: initialState });
+  // Colleges picked to compare: kept in the URL (?compare=a,b) only, so a reload or shared link keeps them
+  const [picked, setPicked] = useState<string[]>(initialCompare);
+  const savePicked = (next: string[]) => {
+    setPicked(next);
+    const url = new URL(window.location.href);
+    if (next.length) url.searchParams.set("compare", next.join(","));
+    else url.searchParams.delete("compare");
+    window.history.replaceState(null, "", url.pathname + url.search);
+  };
+  const togglePick = (slug: string) =>
+    savePicked(picked.includes(slug) ? picked.filter((x) => x !== slug) : [...picked, slug].slice(0, COMPARE_MAX));
+  const pickedNames = picked.map((slug) => {
+    const c = colleges.find((x) => x.slug === slug);
+    return c ? (c.shortName ?? c.name) : null;
+  });
 
   const opts = useMemo(
     () => ({
@@ -99,28 +123,42 @@ export default function CollegeFinder({ colleges, initialState = ANY }: { colleg
                       ))}
                     </div>
                   </div>
-                  <dl className={s.kf}>
-                    <div>
-                      <dt>Courses</dt>
-                      <dd>{c.courses.length}</dd>
-                    </div>
-                    {levels.length > 0 && (
+                  {/* No verified course yet: a muted line, never a "0" stat */}
+                  {c.courses.length === 0 ? (
+                    <p className={s.soon}>{COURSES_SOON}</p>
+                  ) : (
+                    <dl className={s.kf}>
                       <div>
-                        <dt>Levels</dt>
-                        <dd>{levels.join(", ")}</dd>
+                        <dt>Courses</dt>
+                        <dd>{c.courses.length}</dd>
                       </div>
-                    )}
-                    {streams.length > 0 && (
-                      <div className={s.kfWide}>
-                        <dt>Streams</dt>
-                        <dd>{streams.join(", ")}</dd>
-                      </div>
-                    )}
-                  </dl>
+                      {levels.length > 0 && (
+                        <div>
+                          <dt>Levels</dt>
+                          <dd>{levels.join(", ")}</dd>
+                        </div>
+                      )}
+                      {streams.length > 0 && (
+                        <div className={s.kfWide}>
+                          <dt>Streams</dt>
+                          <dd>{streams.join(", ")}</dd>
+                        </div>
+                      )}
+                    </dl>
+                  )}
                   <div className={s.act}>
                     <Link className={`${s.btn} ${s.btnDark}`} href={`/colleges/${c.slug}`}>
                       View college<span className="sr-only">: {c.name}</span>
                     </Link>
+                    <label className={s.pick}>
+                      <input
+                        type="checkbox"
+                        checked={picked.includes(c.slug)}
+                        disabled={!picked.includes(c.slug) && picked.length >= COMPARE_MAX}
+                        onChange={() => togglePick(c.slug)}
+                      />
+                      Compare<span className="sr-only"> {c.name}</span>
+                    </label>
                     <SourceList
                       className={s.rcSources}
                       college={c}
@@ -133,6 +171,29 @@ export default function CollegeFinder({ colleges, initialState = ANY }: { colleg
           </ul>
         )}
       </div>
+
+      {picked.length > 0 && (
+        <div className={s.cmpBar} role="region" aria-label="Compare">
+          <p aria-live="polite">
+            <b>
+              Compare {picked.length}/{COMPARE_MAX}
+            </b>
+            <span>{pickedNames.filter(Boolean).join(", ")}</span>
+          </p>
+          <div className={s.cmpBarAct}>
+            <button type="button" className={`${s.btn} ${s.btnOutDark}`} onClick={() => savePicked([])}>
+              Clear
+            </button>
+            {picked.length >= COMPARE_MIN ? (
+              <Link className={`${s.btn} ${s.btnPri}`} href={comparePath(picked)}>
+                Compare now
+              </Link>
+            ) : (
+              <span className={s.cmpHint}>Pick {COMPARE_MIN - picked.length} more</span>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

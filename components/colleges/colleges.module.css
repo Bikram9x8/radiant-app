@@ -176,6 +176,13 @@
   color: var(--tint-teal-strong);
 }
 
+.soon {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+  font-style: italic;
+}
+
 .na {
   color: var(--muted);
   font-style: italic;
@@ -573,6 +580,264 @@
   font-weight: 700;
 }
 
+/* ---------- Links to exam pages, outline button on dark ---------- */
+.examLink {
+  color: var(--teal-dark);
+  font-weight: 700;
+  text-underline-offset: 3px;
+}
+
+.btnOutDark {
+  border-color: rgb(255 255 255 / 0.4);
+  background: transparent;
+  color: #ffffff;
+}
+
+.chipLink {
+  text-decoration: none;
+}
+
+.chipLink:hover {
+  background: var(--tint-teal-strong);
+}
+
+.examRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin-top: 18px;
+}
+
+.examRow > span {
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.crumbLight {
+  margin-bottom: 12px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.crumbLight a {
+  color: var(--teal-dark);
+  font-weight: 700;
+}
+
+/* ---------- Compare: pick on the list ---------- */
+.pick {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  min-height: 44px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.pick input {
+  width: 20px;
+  height: 20px;
+  accent-color: var(--coral);
+}
+
+.pick:has(input:disabled) {
+  color: var(--muted);
+  cursor: default;
+}
+
+.cmpBar {
+  position: sticky;
+  bottom: 12px;
+  z-index: 5;
+  display: flex;
+  grid-column: 1 / -1;
+  flex-wrap: wrap;
+  gap: 10px 16px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-radius: 16px;
+  background: var(--ink);
+  color: #ffffff;
+  box-shadow: 0 18px 40px -20px rgb(15 46 51 / 0.6);
+}
+
+.cmpBar p {
+  display: grid;
+  margin: 0;
+  min-width: 0;
+}
+
+.cmpBar p span {
+  overflow: hidden;
+  color: #cfe7e5;
+  font-size: 14px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cmpBarAct {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.cmpHint {
+  color: #cfe7e5;
+  font-size: 14px;
+}
+
+/* ---------- Compare page ---------- */
+.cmpWrap {
+  padding-bottom: 64px;
+}
+
+.pickList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 12px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Only the table scrolls sideways; the page never does */
+.cmpScroll {
+  /* relative: keeps the absolutely placed sr-only link texts inside this box, so they can't widen the page */
+  position: relative;
+  max-width: 100%;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+}
+
+.cmpTab {
+  --label: 150px;
+  --col: 250px;
+
+  width: 100%;
+  min-width: calc(var(--label) + var(--cols, 3) * var(--col));
+  border-collapse: separate;
+  border-spacing: 0;
+  table-layout: fixed;
+  font-size: 15px;
+}
+
+.cmpTab th,
+.cmpTab td {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+  overflow-wrap: anywhere;
+}
+
+.cmpCorner,
+.cmpTab tbody th[scope="row"] {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  width: var(--label);
+  background: #ffffff;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 700;
+  box-shadow: inset -1px 0 0 var(--line);
+}
+
+.cmpTab thead th {
+  border-bottom: 2px solid var(--line);
+  font-size: 17px;
+  font-weight: 800;
+  line-height: 1.25;
+}
+
+.cmpTab thead th a:first-child {
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.cmpTab thead th a:first-child:hover {
+  color: var(--teal);
+}
+
+.cmpRemove {
+  display: inline-block;
+  margin-top: 6px;
+  color: var(--coral-text);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.cmpGroup th {
+  padding-block: 14px 10px;
+  background: var(--tint-teal);
+  color: var(--teal-dark);
+  font: 800 22px / 1 var(--disp);
+  text-transform: uppercase;
+}
+
+/* The course name stays in view while the columns scroll sideways on phones */
+.cmpGroup th span {
+  position: sticky;
+  left: 14px;
+  display: inline-block;
+  max-width: calc(100vw - 2 * max(4vw, 16px) - 28px);
+}
+
+.cellSub {
+  display: block;
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 400;
+}
+
+.cellSrc {
+  display: block;
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: 12.5px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 1.4;
+}
+
+.cellSrc a {
+  color: var(--teal-dark);
+  font-weight: 700;
+  text-underline-offset: 3px;
+}
+
+.cmpTab .feeLine small {
+  display: block;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.cmpAdd {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin-top: 18px;
+}
+
+.cmpAdd > span {
+  color: var(--muted);
+  font-weight: 700;
+}
+
+/* ---------- Exam page ---------- */
+.examList {
+  padding-bottom: 64px;
+}
+
+.examList .sec {
+  margin-bottom: 0;
+}
+
 @media (max-width: 980px) {
   .cgrid {
     grid-template-columns: minmax(0, 1fr);
@@ -606,6 +871,22 @@
 }
 
 @media (max-width: 600px) {
+  .cmpTab {
+    --label: 104px;
+    --col: 210px;
+
+    font-size: 14px;
+  }
+
+  .cmpTab th,
+  .cmpTab td {
+    padding: 10px;
+  }
+
+  .cmpBar {
+    bottom: 8px;
+  }
+
   .sec {
     padding: 18px;
   }

@@ -3,6 +3,9 @@ import { notFound } from "next/navigation";
 import { SHOW_COLLEGES } from "@/lib/features";
 import { verifiedColleges } from "@/lib/colleges/data";
 import { absoluteUrl, SITE_NAME } from "@/lib/site";
+import { examPath, examsInUse } from "@/lib/colleges/exams";
+import { parseCompare } from "@/lib/colleges/compare";
+import Link from "next/link";
 import CollegeFinder from "@/components/colleges/CollegeFinder";
 import s from "@/components/colleges/colleges.module.css";
 
@@ -23,7 +26,7 @@ export const metadata: Metadata = SHOW_COLLEGES
     }
   : {};
 
-type Props = { searchParams: Promise<{ state?: string | string[] }> };
+type Props = { searchParams: Promise<{ state?: string | string[]; compare?: string | string[] }> };
 
 // College list (radiant-design/college-pages.html, "finder" view): VERIFIED colleges only,
 // filtered by state, type, stream and level in the browser.
@@ -31,8 +34,12 @@ export default async function CollegesPage({ searchParams }: Props) {
   if (!SHOW_COLLEGES) notFound(); // also checked in the layout; this keeps the database untouched
   const colleges = await verifiedColleges();
   // ?state= (from the college page breadcrumb) preselects that state, if a verified college has it
-  const q = (await searchParams).state;
+  const sp = await searchParams;
+  const q = sp.state;
   const state = typeof q === "string" && colleges.some((c) => c.state === q) ? q : "";
+  // ?compare= (picked on this page, or "Add to compare" on a college page): verified colleges only
+  const compare = parseCompare(sp.compare).filter((slug) => colleges.some((c) => c.slug === slug));
+  const exams = examsInUse(colleges);
 
   return (
     <div className={`${s.page} flex-1`}>
@@ -45,8 +52,18 @@ export default async function CollegesPage({ searchParams }: Props) {
           shows where it comes from and when we checked it. Anything we could not confirm says &ldquo;Not available
           yet&rdquo;.
         </p>
+        {exams.length > 0 && (
+          <nav aria-label="By entrance exam" className={s.examRow}>
+            <span>By entrance exam:</span>
+            {exams.map((e) => (
+              <Link key={e.slug} className={`${s.chip} ${s.chipLink}`} href={examPath(e.slug)}>
+                {e.name}
+              </Link>
+            ))}
+          </nav>
+        )}
       </div>
-      <CollegeFinder colleges={colleges} initialState={state} />
+      <CollegeFinder colleges={colleges} initialState={state} initialCompare={compare} />
     </div>
   );
 }

@@ -3,13 +3,14 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { SHOW_COLLEGES } from "@/lib/features";
 import { getVerifiedCollege } from "@/lib/colleges/data";
-import { feeLines, NOT_AVAILABLE, place, years } from "@/lib/colleges/format";
+import { COURSES_SOON, feeLines, NOT_AVAILABLE, place, years } from "@/lib/colleges/format";
 import type { CollegeView } from "@/lib/colleges/types";
 import { factSources } from "@/lib/colleges/fact-sources";
 import { formatDate } from "@/lib/abroad/format";
 import { absoluteUrl, SITE_NAME } from "@/lib/site";
 import { breadcrumbJsonLd, collegeCrumbs, collegeJsonLd, collegePath, jsonLdHtml } from "@/lib/colleges/seo";
 import SourceList from "@/components/colleges/SourceList";
+import ExamNames from "@/components/colleges/ExamNames";
 import s from "@/components/colleges/colleges.module.css";
 
 // Read from the database on each request; only VERIFIED colleges have a page, every other slug is a 404
@@ -25,7 +26,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!c) return { title: `College not found | ${SITE_NAME}`, robots: { index: false } };
   const url = absoluteUrl(collegePath(c.slug));
   const title = `${c.name}: courses, eligibility and fees | ${SITE_NAME}`;
-  const where = [c.city, c.state].filter(Boolean).join(", ");
+  const where = place(c); // "Chandigarh" once when the city is also the state
   const description = `${c.name}${where ? `, ${where}` : ""}: courses, eligibility, entrance exams and fees from official sources, with the date each was checked.`;
   return {
     title,
@@ -79,7 +80,14 @@ export default async function CollegePage({ params }: Props) {
   if (!c) notFound();
 
   const meta = [place(c), c.type, c.establishedYear ? `Established ${c.establishedYear}` : null].filter(Boolean);
-  const location = [c.city, c.district && c.district !== c.city ? `${c.district} district` : null, c.state].filter(Boolean).join(", ");
+  // District logic unchanged; the state is left out when it is the city itself (Chandigarh)
+  const location = [
+    c.city,
+    c.district && c.district !== c.city ? `${c.district} district` : null,
+    c.state && c.state !== c.city ? c.state : null,
+  ]
+    .filter(Boolean)
+    .join(", ");
   const crumbs = collegeCrumbs(c);
 
   return (
@@ -117,13 +125,17 @@ export default async function CollegePage({ params }: Props) {
               ))}
             </div>
           )}
-          {c.officialWebsite && (
-            <div className={s.cact}>
+          <div className={s.cact}>
+            {c.officialWebsite && (
               <a className={`${s.btn} ${s.btnPri}`} href={c.officialWebsite} target="_blank" rel="noopener noreferrer">
                 Official website<span className="sr-only"> (opens in a new tab)</span>
               </a>
-            </div>
-          )}
+            )}
+            {/* Opens the college list with this college already picked to compare */}
+            <Link className={`${s.btn} ${s.btnOutDark}`} href={`/colleges?compare=${c.slug}`}>
+              Add to compare
+            </Link>
+          </div>
           <SourceList
             dark
             college={c}
@@ -164,7 +176,15 @@ export default async function CollegePage({ params }: Props) {
             />
           </section>
 
-          {/* Courses and fees */}
+          {/* Courses and fees (no verified course yet: one muted line instead of an empty section) */}
+          {c.courses.length === 0 && (
+            <section className={`${s.card} ${s.sec}`} aria-labelledby="cf">
+              <div id="cf">
+                <Heading title="Courses" accent="and fees" coral />
+              </div>
+              <p className={s.soon}>{COURSES_SOON}</p>
+            </section>
+          )}
           {c.courses.length > 0 && (
             <section className={`${s.card} ${s.sec}`} aria-labelledby="cf">
               <div id="cf">
@@ -197,7 +217,7 @@ export default async function CollegePage({ params }: Props) {
                           {k.eligibility ?? NOT_AVAILABLE}
                         </td>
                         <td data-l="Entrance exams" className={k.entranceExams.length ? undefined : s.na}>
-                          {k.entranceExams.length ? k.entranceExams.join(", ") : NOT_AVAILABLE}
+                          {k.entranceExams.length ? <ExamNames exams={k.entranceExams} /> : NOT_AVAILABLE}
                         </td>
                         <td data-l="Fee" className={fees.length ? s.fee : s.na}>
                           {fees.length
