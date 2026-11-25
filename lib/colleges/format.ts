@@ -60,6 +60,10 @@ export function mergeSources(items: { label: string; src: SourceRef | null }[]) 
   return [...map.values()];
 }
 
+/** "Mohali, Punjab"; a city that is also the state (Chandigarh) is named once */
 export function place(c: Pick<CollegeView, "city" | "state">) {
-  return [c.city, c.state].filter(Boolean).join(", ");
+  return [c.city, c.state && c.state !== c.city ? c.state : null].filter(Boolean).join(", ");
 }
+
+/** Shown where a verified college has no verified courses yet (instead of "0" or an empty section) */
+export const COURSES_SOON = "Course details coming soon";

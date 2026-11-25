@@ -27,9 +27,22 @@ function checkSitemap(entries: Entry[]): Entry[] {
   return entries;
 }
 
+// Colleges, college pages and exam pages (only called while SHOW_COLLEGES is on). Compare pages are
+// combinations (noindex), so they are never listed.
+async function collegeEntries(page: (path: string) => Entry): Promise<Entry[]> {
+  const { verifiedColleges } = await import("@/lib/colleges/data");
+  const { examPath, examsInUse } = await import("@/lib/colleges/exams");
+  const list = await verifiedColleges();
+  return [
+    page("/colleges"),
+    ...list.map((c) => page(`/colleges/${c.slug}`)),
+    ...examsInUse(list).map((e) => page(examPath(e.slug))),
+  ];
+}
+
 // sitemap.xml: public pages only. Pages behind a switch are listed only while it is on
 // (Study Abroad while SHOW_ABROAD is on; School pages never while SHOW_SCHOOL is off;
-// Colleges and each VERIFIED college page only while SHOW_COLLEGES is on).
+// Colleges, each VERIFIED college page and the exam pages only while SHOW_COLLEGES is on).
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const page = (path: string, lastModified?: string): Entry => ({
     url: absoluteUrl(path),
@@ -40,9 +53,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   // Colleges: the database is read only while the switch is on (imported here, so an "off" build never
   // loads it). Read at build time like the rest of this file; draft colleges are never listed.
-  const colleges = SHOW_COLLEGES
-    ? [page("/colleges"), ...(await (await import("@/lib/colleges/data")).verifiedColleges()).map((c) => page(`/colleges/${c.slug}`))]
-    : [];
+  // Exam pages (/colleges/exam/...) are listed for each exam a verified course accepts.
+  const colleges = SHOW_COLLEGES ? await collegeEntries(page) : [];
 
   return checkSitemap([
     page("/"),
