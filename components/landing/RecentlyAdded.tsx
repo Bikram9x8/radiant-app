@@ -20,11 +20,14 @@ function subLine(o: RecentItem) {
   return o.category?.name ?? "";
 }
 
-// Real data: the newest approved posts (app/page.tsx), with the 300 x 250 ad box beside them
-export default function RecentlyAdded({ items }: { items: RecentItem[] }) {
+// Real data: the newest approved posts (app/page.tsx), with the 300 x 250 ad box beside them.
+// hideAd (while Colleges is live, until a real ad exists): no empty ad box, the list takes the full width
+// (inline style, so landing.module.css and the page while the switch is off stay unchanged).
+export default function RecentlyAdded({ items, hideAd = false }: { items: RecentItem[]; hideAd?: boolean }) {
   return (
     <section className={`${s.wrap} ${s.section}`} aria-labelledby="home-recent">
-      <div className={s.recentGrid}>
+      {/* style only when needed: an explicit undefined would still change the page while the switch is off */}
+      <div className={s.recentGrid} {...(hideAd ? { style: { gridTemplateColumns: "minmax(0, 1fr)" } } : {})}>
         <div>
           <div className={s.recentHead}>
             <h2 id="home-recent" className={s.h2}>
@@ -57,7 +60,7 @@ export default function RecentlyAdded({ items }: { items: RecentItem[] }) {
           )}
         </div>
 
-        <AdSlot label="300 × 250 box space" className="h-[250px] max-w-full" />
+        {!hideAd && <AdSlot label="300 × 250 box space" className="h-[250px] max-w-full" />}
       </div>
     </section>
   );

@@ -6,27 +6,36 @@ import { COMPARE_MAX, COMPARE_MIN, comparePath } from "@/lib/colleges/compare";
 import type { CollegeView } from "@/lib/colleges/types";
 import { COURSES_SOON, place } from "@/lib/colleges/format";
 import { factSources } from "@/lib/colleges/fact-sources";
+import { courseGroups } from "@/lib/colleges/courses";
+import { examSlug, examsInUse } from "@/lib/colleges/exams";
 import SourceList from "./SourceList";
 import s from "./colleges.module.css";
 
-type Filters = { state: string; type: string; stream: string; level: string };
+type Filters = { state: string; type: string; stream: string; level: string; course: string; exam: string };
 const ANY = "";
-const EMPTY: Filters = { state: ANY, type: ANY, stream: ANY, level: ANY };
+const EMPTY: Filters = { state: ANY, type: ANY, stream: ANY, level: ANY, course: ANY, exam: ANY };
+type Opt = { value: string; label: string };
+const plain = (values: string[]): Opt[] => values.map((v) => ({ value: v, label: v }));
 
 const options = (values: (string | null)[]) => [...new Set(values.filter((v): v is string => !!v))].sort();
 
 // Filters work on the verified data already on the page (no request per change).
-// Stream and level match when one course of the college has both.
+// Stream, level, course and entrance exam match when one course of the college has all the chosen ones.
+// Course (course_id) and exam (exam page slug) can be preset from the URL (?course=bca&exam=jee-main).
 export default function CollegeFinder({
   colleges,
   initialState = ANY,
   initialCompare = [],
+  initialCourse = ANY,
+  initialExam = ANY,
 }: {
   colleges: CollegeView[];
   initialState?: string;
   initialCompare?: string[];
+  initialCourse?: string;
+  initialExam?: string;
 }) {
-  const [f, setF] = useState<Filters>({ ...EMPTY, state: initialState });
+  const [f, setF] = useState<Filters>({ ...EMPTY, state: initialState, course: initialCourse, exam: initialExam });
   // Colleges picked to compare: kept in the URL (?compare=a,b) only, so a reload or shared link keeps them
   const [picked, setPicked] = useState<string[]>(initialCompare);
   const savePicked = (next: string[]) => {
@@ -44,21 +53,30 @@ export default function CollegeFinder({
   });
 
   const opts = useMemo(
-    () => ({
-      state: options(colleges.map((c) => c.state)),
-      type: options(colleges.map((c) => c.type)),
-      stream: options(colleges.flatMap((c) => c.courses.map((k) => k.stream))),
-      level: options(colleges.flatMap((c) => c.courses.map((k) => k.level))),
+    (): Record<keyof Filters, Opt[]> => ({
+      state: plain(options(colleges.map((c) => c.state))),
+      type: plain(options(colleges.map((c) => c.type))),
+      stream: plain(options(colleges.flatMap((c) => c.courses.map((k) => k.stream)))),
+      level: plain(options(colleges.flatMap((c) => c.courses.map((k) => k.level)))),
+      course: courseGroups(colleges).map((g) => ({ value: g.id, label: g.label })),
+      exam: examsInUse(colleges).map((e) => ({ value: e.slug, label: e.name })),
     }),
     [colleges],
   );
 
+  const courseFilters = f.stream || f.level || f.course || f.exam;
   const shown = colleges.filter(
     (c) =>
       (!f.state || c.state === f.state) &&
       (!f.type || c.type === f.type) &&
-      (!(f.stream || f.level) ||
-        c.courses.some((k) => (!f.stream || k.stream === f.stream) && (!f.level || k.level === f.level))),
+      (!courseFilters ||
+        c.courses.some(
+          (k) =>
+            (!f.stream || k.stream === f.stream) &&
+            (!f.level || k.level === f.level) &&
+            (!f.course || k.courseId === f.course) &&
+            (!f.exam || k.entranceExams.some((e) => examSlug(e) === f.exam)),
+        )),
   );
   const active = Object.values(f).some(Boolean);
 
@@ -68,8 +86,8 @@ export default function CollegeFinder({
       <select id={`f-${key}`} value={f[key]} onChange={(e) => setF({ ...f, [key]: e.target.value })}>
         <option value={ANY}>{all}</option>
         {opts[key].map((o) => (
-          <option key={o} value={o}>
-            {o}
+          <option key={o.value} value={o.value}>
+            {o.label}
           </option>
         ))}
       </select>
@@ -84,6 +102,8 @@ export default function CollegeFinder({
         {select("type", "College type", "All types")}
         {select("stream", "Stream", "All streams")}
         {select("level", "Level", "All levels")}
+        {select("course", "Course", "All courses")}
+        {select("exam", "Entrance exam", "Any exam")}
         <button type="button" className={`${s.btn} ${s.btnOut} ${s.clear}`} onClick={() => setF(EMPTY)} disabled={!active}>
           Clear filters
         </button>

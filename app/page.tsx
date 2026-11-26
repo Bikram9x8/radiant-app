@@ -49,6 +49,13 @@ export default async function Home() {
   const updates =
     process.env.NEXT_PUBLIC_SHOW_UPDATES === "true" ? await (await import("@/lib/updates/data")).latestUpdates(6) : [];
 
+  // Colleges are live (SHOW_COLLEGES on): the hero finder and the college cards use the real VERIFIED
+  // colleges, and the empty ad boxes are hidden until a real ad exists. Written on process.env itself so
+  // the bundler drops the finder's client code while the switch is off (the homepage is then unchanged).
+  const collegesLive = process.env.NEXT_PUBLIC_SHOW_COLLEGES === "true";
+  const colleges = collegesLive ? await (await import("@/lib/colleges/data")).verifiedColleges() : null;
+  const CollegeFinderPass = collegesLive ? (await import("@/components/landing/CollegeFinderPass")).default : null;
+
   // Study Abroad words for the ticker: only verified items, none while it is switched off
   const abroadWords = SHOW_ABROAD
     ? [
@@ -61,14 +68,16 @@ export default async function Home() {
 
   return (
     <div className={`${s.landing} flex-1`}>
-      <Hero />
+      <Hero finder={CollegeFinderPass && colleges ? <CollegeFinderPass colleges={colleges} /> : undefined} />
       <CampusScene />
       <Ticker extra={abroadWords} />
 
-      {/* Ad slot 1, below the hero */}
-      <div className={`${s.wrap} ${s.adRow}`}>
-        <AdSlot label="728 × 90 banner space" className="h-[90px] max-w-[728px]" />
-      </div>
+      {/* Ad slot 1, below the hero (hidden while Colleges is live, until a real ad exists) */}
+      {!collegesLive && (
+        <div className={`${s.wrap} ${s.adRow}`}>
+          <AdSlot label="728 × 90 banner space" className="h-[90px] max-w-[728px]" />
+        </div>
+      )}
 
       {HomeWithUpdates ? (
         <HomeWithUpdates items={updates}>
@@ -78,16 +87,18 @@ export default async function Home() {
         <JourneyCards abroad={SHOW_ABROAD} />
       )}
       <CourseChips />
-      <CollegeCards />
+      {colleges ? <CollegeCards live={colleges} /> : <CollegeCards />}
 
-      {/* Ad slot 2, between the cards and the exams band */}
-      <div className={`${s.wrap} ${s.adRow}`}>
-        <AdSlot label="970 × 120 banner space" className="h-[120px] max-w-[970px]" />
-      </div>
+      {/* Ad slot 2, between the cards and the exams band (hidden while Colleges is live) */}
+      {!collegesLive && (
+        <div className={`${s.wrap} ${s.adRow}`}>
+          <AdSlot label="970 × 120 banner space" className="h-[120px] max-w-[970px]" />
+        </div>
+      )}
 
       <ExamsBand />
       {AbroadBand && <AbroadBand />}
-      <RecentlyAdded items={latestOpportunities} />
+      {collegesLive ? <RecentlyAdded items={latestOpportunities} hideAd /> : <RecentlyAdded items={latestOpportunities} />}
       <CareerBlock />
       <Guides />
       <JoinBanner />
