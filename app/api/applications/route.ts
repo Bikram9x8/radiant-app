@@ -6,10 +6,10 @@ import { isDeadlinePassed } from "@/lib/internships";
 
 export async function POST(req: Request) {
   const session = await getServerSession(authOptions);
-  if (!session?.user || (session.user as any).role !== "STUDENT") {
+  if (!session?.user || session.user.role !== "STUDENT") {
     return NextResponse.json({ error: "Only students can apply" }, { status: 403 });
   }
-  const userId = (session.user as any).id;
+  const userId = session.user.id;
 
   const studentProfile = await prisma.studentProfile.findUnique({ where: { userId } });
   if (!studentProfile) {
@@ -47,8 +47,9 @@ export async function POST(req: Request) {
       },
     });
     return NextResponse.json({ success: true, application });
-  } catch (err: any) {
-    if (err.code === "P2002") {
+  } catch (err: unknown) {
+    // Prisma's unique-constraint error (same check as before, now typed)
+    if ((err as { code?: unknown }).code === "P2002") {
       return NextResponse.json({ error: "You already applied to this opportunity" }, { status: 409 });
     }
     return NextResponse.json({ error: "Something went wrong" }, { status: 500 });

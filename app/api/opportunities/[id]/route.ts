@@ -38,8 +38,8 @@ const session = await getServerSession(authOptions);
   let codeUnlocked = false;
   let isLocked = false;
   
-  if (session?.user && (session.user as any).role === "STUDENT") {
-    const userId = (session.user as any).id;
+  if (session?.user && session.user.role === "STUDENT") {
+    const userId = session.user.id;
     const studentProfile = await prisma.studentProfile.findUnique({ where: { userId } });
     if (studentProfile) {
       const existing = await prisma.application.findUnique({
@@ -128,7 +128,7 @@ async function getCoursePlace(
 export async function PUT(req: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const session = await getServerSession(authOptions);
-  const user = session?.user as any;
+  const user = session?.user;
 
   if (!user || user.role !== "COMPANY") {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -220,7 +220,7 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
 export async function DELETE(req: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const session = await getServerSession(authOptions);
-  const user = session?.user as any;
+  const user = session?.user;
 
   if (!user || user.role !== "COMPANY") {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });

@@ -4,11 +4,12 @@ import SecureTestViewer from "./SecureTestViewer";
 import dynamic from "next/dynamic";
 const PlainTestViewer = dynamic(() => import("./PlainTestViewer"), { ssr: false });
 import { IconLock, IconLockOpen, IconFileText, IconTool, IconTargetArrow, IconPackage, IconClipboardList, IconSchool, IconBook, IconBook2 } from "@tabler/icons-react";
+import type { TablerIcon } from "@tabler/icons-react";
 import { getShortLabel } from "@/lib/categoryLabel";
 import s from "@/components/school/school.module.css";
 
 // Icon and tile colour per division (Option B pastels, ink outline)
-const DIVISION_ICONS: Record<string, { Icon: any; bg: string }> = {
+const DIVISION_ICONS: Record<string, { Icon: TablerIcon; bg: string }> = {
   NCERT_SOLUTION: { Icon: IconBook2, bg: "bg-(--hp-lavender)" },
   TEST_SERIES: { Icon: IconFileText, bg: "bg-(--hp-mint)" },
   SKILL_BUILDING: { Icon: IconTool, bg: "bg-(--hp-pink)" },
@@ -54,6 +55,8 @@ export default function OpportunityDetailPage() {
   const [justUnlocked, setJustUnlocked] = useState(false);
   const [alreadyLocked, setAlreadyLocked] = useState(false);
 
+  // Still `any` (a known lint error): the render below assumes the data is loaded once `loading` and
+  // `notFound` are false; a proper type needs a null check there, which would be a behaviour change.
   const [opportunity, setOpportunity] = useState<any>(null);
   const [alreadyApplied, setAlreadyApplied] = useState(false);
   const [loading, setLoading] = useState(true);

@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function PrivacyPage() {
   return (
     <div className="max-w-3xl mx-auto px-6 py-16">
@@ -68,9 +70,9 @@ export default function PrivacyPage() {
             <h2 className="mb-2 font-display text-[22px] leading-tight font-extrabold uppercase tracking-[0.01em] text-ink">8. Contact</h2>
             <p>
               For privacy-related questions or data deletion requests, please reach out via our{" "}
-              <a href="/contact" className="text-teal-dark hover:underline">
+              <Link href="/contact" className="text-teal-dark hover:underline">
                 Contact page
-              </a>
+              </Link>
               .
             </p>
           </section>

@@ -4,7 +4,7 @@ import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
 import { cleanDuration, getInternshipsCategoryId, isInternshipSubcategory } from "@/lib/internships";
 import { EXPLICIT_TEST_DIVISIONS, TEST_CLASSES, isTestDivision, parseClassSubject } from "@/lib/test-posts";
-import type { Division } from "@prisma/client";
+import type { Division, OpportunityType } from "@prisma/client";
 import { SHOW_SCHOOL } from "@/lib/features";
 import { SCHOOL_TEST_DIVISION, notSchoolWhere } from "@/lib/school-posts";
 
@@ -54,9 +54,9 @@ export async function GET(req: Request) {
       ...classWhere,
       ...schoolWhere,
       ...(search ? { title: { contains: search, mode: "insensitive" } } : {}),
-      ...(type ? { type: type as any } : {}),
+      ...(type ? { type: type as OpportunityType } : {}),
       ...(categoryId ? { categoryId } : {}),
-      ...(divisionFilter ? { division: divisionFilter as any } : {}),
+      ...(divisionFilter ? { division: divisionFilter as Division } : {}),
       ...(chapter ? { chapter: parseInt(chapter, 10) } : {}),
     },
     include: {
@@ -105,7 +105,7 @@ export async function GET(req: Request) {
 }
 export async function POST(req: Request) {
   const session = await getServerSession(authOptions);
-  const user = session?.user as any;
+  const user = session?.user;
 
   if (!user || user.role !== "COMPANY") {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });

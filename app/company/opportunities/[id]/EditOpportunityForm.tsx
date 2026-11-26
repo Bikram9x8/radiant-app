@@ -58,7 +58,7 @@ export default function EditOpportunityForm({
 
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
-  const [success, setSuccess] = useState(false);
+  const [, setSuccess] = useState(false); // the value is not shown anywhere yet
   const [confirmingDelete, setConfirmingDelete] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [deleteError, setDeleteError] = useState("");

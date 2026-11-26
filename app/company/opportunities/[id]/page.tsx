@@ -12,7 +12,7 @@ export default async function EditOpportunityPage({
 }) {
   const { id } = await params;
   const session = await getServerSession(authOptions);
-  const user = session?.user as any;
+  const user = session?.user;
 
   if (!user || user.role !== "COMPANY") {
     redirect("/login");

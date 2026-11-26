@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { v2 as cloudinary } from "cloudinary";
+import { v2 as cloudinary, type UploadApiResponse } from "cloudinary";
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -15,7 +15,7 @@ export async function POST(req: Request) {
   if (!session?.user) {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }
-  const userId = (session.user as any).id;
+  const userId = session.user.id;
 
   const studentProfile = await prisma.studentProfile.findUnique({
     where: { userId },
@@ -43,12 +43,12 @@ export async function POST(req: Request) {
   const bytes = await file.arrayBuffer();
   const buffer = Buffer.from(bytes);
 
-  const uploadResult: any = await new Promise((resolve, reject) => {
+  const uploadResult = await new Promise<UploadApiResponse>((resolve, reject) => {
     const stream = cloudinary.uploader.upload_stream(
       { resource_type: "raw", folder: "resumes" },
       (error, result) => {
         if (error) reject(error);
-        else resolve(result);
+        else resolve(result as UploadApiResponse);
       }
     );
     stream.end(buffer);

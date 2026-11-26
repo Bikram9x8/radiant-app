@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import { SHOW_SCHOOL } from "@/lib/features";
 
@@ -48,7 +49,7 @@ export default function ReportProblemPage() {
           <div className="mx-auto w-14 h-14 rounded-full bg-tint-teal text-teal-dark flex items-center justify-center text-2xl font-bold">✓</div>
           <h1 className="mt-5 font-display text-[40px] leading-[0.95] font-extrabold uppercase text-ink sm:text-5xl">Thank <span className="font-serif font-normal normal-case italic text-teal">you</span></h1>
           <p className="mt-3 text-muted">Your report has been sent. We will look into it.</p>
-          <a href="/" className="mt-6 inline-flex min-h-12 items-center justify-center rounded-full bg-teal px-6 font-bold text-white shadow-[0_8px_20px_-10px_rgb(15_118_110/0.6)] transition-colors hover:bg-teal-dark">Back to home</a>
+          <Link href="/" className="mt-6 inline-flex min-h-12 items-center justify-center rounded-full bg-teal px-6 font-bold text-white shadow-[0_8px_20px_-10px_rgb(15_118_110/0.6)] transition-colors hover:bg-teal-dark">Back to home</Link>
         </div>
       </div>
     );

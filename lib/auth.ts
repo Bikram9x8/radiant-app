@@ -25,24 +25,25 @@ export const authOptions: NextAuthOptions = {
 
         if (user.status === "BLOCKED" || user.status === "REJECTED") return null;
 
-        return { id: user.id, email: user.email, role: user.role, status: user.status } as any;
+        return { id: user.id, email: user.email, role: user.role, status: user.status };
       },
     }),
   ],
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.role = (user as any).role;
-        token.status = (user as any).status;
-        token.id = (user as any).id;
+        token.role = user.role;
+        token.status = user.status;
+        token.id = user.id;
       }
       return token;
     },
     async session({ session, token }) {
       if (session.user) {
-        (session.user as any).role = token.role;
-        (session.user as any).status = token.status;
-        (session.user as any).id = token.id;
+        // Same values as before; the casts only tell TypeScript they are set (types/next-auth.d.ts)
+        session.user.role = token.role as string;
+        session.user.status = token.status as string;
+        session.user.id = token.id as string;
       }
       return session;
     },

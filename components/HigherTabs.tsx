@@ -11,12 +11,13 @@ import {
   IconClipboardCheck,
   IconSchool,
 } from "@tabler/icons-react";
+import type { TablerIcon } from "@tabler/icons-react";
 import s from "@/components/school/school.module.css";
 
 type Card = { id: string; name: string; slug: string };
 type Stage = { id: string; name: string; slug: string; cards: Card[] };
 
-const ICONS: Record<string, any> = {
+const ICONS: Record<string, TablerIcon> = {
   "colleges-courses": IconBuildingSkyscraper,
   scholarships: IconAward,
   internships: IconBriefcase,

@@ -10,8 +10,16 @@ const STATUS_COLORS: Record<string, string> = {
   SELECTED: "bg-(--tint-teal) text-(--teal-dark)",
 };
 
+// The fields this page reads from /api/my-applications (JSON: dates arrive as strings)
+type MyApplication = {
+  id: string;
+  status: string;
+  appliedAt: string;
+  opportunity: { id: string; title: string; company?: { companyName: string } | null };
+};
+
 export default function MyApplicationsPage() {
-  const [applications, setApplications] = useState<any[]>([]);
+  const [applications, setApplications] = useState<MyApplication[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -36,7 +44,7 @@ export default function MyApplicationsPage() {
 
       {!loading && applications.length === 0 && (
         <p className="text-(--muted)">
-          You haven't applied to anything yet.{" "}
+          You haven&apos;t applied to anything yet.{" "}
           <Link href="/opportunities" className="font-bold text-(--teal-dark) underline-offset-4 hover:underline">
             Browse opportunities
           </Link>

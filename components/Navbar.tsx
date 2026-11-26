@@ -36,7 +36,7 @@ const LINKS = ALL_LINKS.filter((l) => (l.key !== "school" || SHOW_SCHOOL) && (l.
 
 export default function Navbar() {
   const { data: session, status } = useSession();
-  const user = session?.user as any;
+  const user = session?.user;
   const pathname = usePathname();
   const navSection = useNavSection();
   const reduceMotion = useReducedMotion();
