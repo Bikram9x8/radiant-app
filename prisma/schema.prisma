@@ -518,3 +518,32 @@ model Course {
   @@index([status])
   @@index([stream, level])
 }
+
+// ---------- Latest updates (time-limited opportunities, imported from Radiant-Latest-Updates.xlsx) ----------
+// One line each with a link. Only VERIFIED items whose deadline has not passed are shown (behind
+// SHOW_UPDATES). The link is the official page when there is one; a supervisor's or organisation's own
+// post is allowed only when sourceType says so. internalNotes is never shown on the site.
+model LatestUpdate {
+  id            String     @id @default(cuid())
+  slug          String     @unique // from title + organisation
+  status        DataStatus @default(DRAFT)
+  title         String
+  organisation  String
+  type          String // Internship, PhD, MS, Workshop, Fellowship, Scholarship, Exam date
+  forWho        String?
+  location      String?
+  mode          String?
+  dates         String? // as written, e.g. "7–18 Dec 2026"
+  deadline      DateTime?  @db.Date // empty = no deadline given
+  oneLine       String
+  linkUrl       String
+  sourceType    String // "Official page" | "Official vacancy" | "Supervisor post" | "Organisation post"
+  checkedAt     DateTime?  @db.Date // required before verifying
+  internalNotes String?
+  verifiedAt    DateTime?
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+
+  @@index([status])
+  @@index([deadline])
+}

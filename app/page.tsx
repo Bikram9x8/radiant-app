@@ -41,6 +41,14 @@ export default async function Home() {
   // Loaded only when Study Abroad is on, so its styles are not added to the homepage while it is off
   const AbroadBand = SHOW_ABROAD ? (await import("@/components/landing/AbroadBand")).default : null;
 
+  // Latest updates panel: loaded only while the switch is on, so the homepage is exactly the same as
+  // before while it is off. The condition is written on process.env itself (not SHOW_UPDATES): that
+  // value is fixed at build time, so the bundler drops these imports, and their stylesheet, when off.
+  const HomeWithUpdates =
+    process.env.NEXT_PUBLIC_SHOW_UPDATES === "true" ? (await import("@/components/updates/HomeWithUpdates")).default : null;
+  const updates =
+    process.env.NEXT_PUBLIC_SHOW_UPDATES === "true" ? await (await import("@/lib/updates/data")).latestUpdates(6) : [];
+
   // Study Abroad words for the ticker: only verified items, none while it is switched off
   const abroadWords = SHOW_ABROAD
     ? [
@@ -62,7 +70,13 @@ export default async function Home() {
         <AdSlot label="728 × 90 banner space" className="h-[90px] max-w-[728px]" />
       </div>
 
-      <JourneyCards abroad={SHOW_ABROAD} />
+      {HomeWithUpdates ? (
+        <HomeWithUpdates items={updates}>
+          <JourneyCards abroad={SHOW_ABROAD} />
+        </HomeWithUpdates>
+      ) : (
+        <JourneyCards abroad={SHOW_ABROAD} />
+      )}
       <CourseChips />
       <CollegeCards />
 
