@@ -17,7 +17,7 @@ export async function POST(req: Request) {
     }
 
     const session = await getServerSession(authOptions);
-    const userId = (session?.user as any)?.id ?? null;
+    const userId = session?.user?.id ?? null;
 
     await prisma.pageView.create({
       data: { path, courseNodeId, opportunityId, userId },

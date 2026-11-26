@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function TermsPage() {
   return (
     <div className="max-w-3xl mx-auto px-6 py-16">
@@ -9,7 +11,7 @@ export default function TermsPage() {
           <section>
             <h2 className="mb-2 font-display text-[22px] leading-tight font-extrabold uppercase tracking-[0.01em] text-ink">1. Acceptance of Terms</h2>
             <p>
-              By accessing or using Radiant Educations ("the Platform"), you agree to be bound by these Terms of
+              By accessing or using Radiant Educations (&quot;the Platform&quot;), you agree to be bound by these Terms of
               Service. If you do not agree, please do not use the Platform.
             </p>
           </section>
@@ -44,7 +46,7 @@ export default function TermsPage() {
             <p>
               You agree not to misuse the Platform, including but not limited to: submitting false information,
               attempting to access accounts that are not yours, posting misleading or fraudulent opportunities, or
-              interfering with the Platform's normal operation.
+              interfering with the Platform&apos;s normal operation.
             </p>
           </section>
 
@@ -68,9 +70,9 @@ export default function TermsPage() {
             <h2 className="mb-2 font-display text-[22px] leading-tight font-extrabold uppercase tracking-[0.01em] text-ink">8. Contact</h2>
             <p>
               Questions about these Terms can be sent via our{" "}
-              <a href="/contact" className="text-teal-dark hover:underline">
+              <Link href="/contact" className="text-teal-dark hover:underline">
                 Contact page
-              </a>
+              </Link>
               .
             </p>
           </section>

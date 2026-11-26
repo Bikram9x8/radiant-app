@@ -16,6 +16,8 @@ export default function SecureTestViewer({
   const inlinePdfUrl = pdfUrl;
   const [locked, setLocked] = useState(false);
   const hasLocked = useRef(false);
+  // Every hook runs before the early "locked" return, so the hook order never changes between renders
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
   useEffect(() => {
     async function lockTest() {
@@ -59,8 +61,6 @@ export default function SecureTestViewer({
       </div>
     );
   }
-
-  const [isFullscreen, setIsFullscreen] = useState(false);
 
   return (
     <div

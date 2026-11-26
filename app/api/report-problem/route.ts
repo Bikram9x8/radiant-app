@@ -24,7 +24,7 @@ export async function POST(req: Request) {
     }
 
     const session = await getServerSession(authOptions);
-    const userId = session?.user ? ((session.user as any).id as string | undefined) ?? null : null;
+    const userId = session?.user ? (session.user.id as string | undefined) ?? null : null;
 
     await prisma.problemReport.create({
       data: { category, message, pageUrl, email, userId },

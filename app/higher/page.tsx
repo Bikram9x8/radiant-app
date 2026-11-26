@@ -2,7 +2,7 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import HigherTabs from "@/components/HigherTabs";
 import { HigherArt } from "@/components/Illustrations";
-import AdSlot from "@/components/AdSlot";
+import AdSlot, { ADS_ENABLED } from "@/components/AdSlot";
 import s from "@/components/school/school.module.css";
 import ComingSoon from "@/components/ComingSoon";
 export const dynamic = "force-dynamic";
@@ -32,9 +32,12 @@ export default async function HigherPage() {
 
   return (
     <div className={`${s.page} flex-1`}>
-      <div className="mx-auto max-w-[1200px] px-4 pt-4 sm:px-8">
-        <AdSlot label="728 × 90 banner space" className="h-[90px] max-w-[728px]" />
-      </div>
+      {/* Ad banner: only once a real ad exists (components/AdSlot.tsx) */}
+      {ADS_ENABLED && (
+        <div className="mx-auto max-w-[1200px] px-4 pt-4 sm:px-8">
+          <AdSlot label="728 × 90 banner space" className="h-[90px] max-w-[728px]" />
+        </div>
+      )}
 
       <div className="mx-auto max-w-[1200px] px-4 pt-6 pb-14 sm:px-8 md:pt-8">
         <nav

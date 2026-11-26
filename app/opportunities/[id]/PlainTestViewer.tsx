@@ -5,6 +5,7 @@ import { createPortal } from "react-dom";
 import { Document, Page, pdfjs } from "react-pdf";
 import "react-pdf/dist/Page/AnnotationLayer.css";
 import "react-pdf/dist/Page/TextLayer.css";
+import type { PDFDocumentProxy, PDFPageProxy } from "pdfjs-dist";
 import s from "@/components/school/school.module.css";
 
 pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
@@ -56,6 +57,19 @@ function PageSlot({
   );
 }
 
+type ViewerBodyProps = {
+  isFullscreen: boolean;
+  setIsFullscreen: (v: boolean) => void;
+  numPages: number;
+  aspect: number;
+  pageNumber: number;
+  setPageNumber: (n: number) => void;
+  pageWidth: number;
+  setPageWidth: (n: number) => void;
+  pdfUrl: string;
+  onDocumentLoadSuccess: (pdf: PDFDocumentProxy) => void;
+};
+
 function ViewerBody({
   isFullscreen,
   setIsFullscreen,
@@ -67,7 +81,7 @@ function ViewerBody({
   setPageWidth,
   pdfUrl,
   onDocumentLoadSuccess,
-}: any) {
+}: ViewerBodyProps) {
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const slotRefs = useRef<(HTMLDivElement | null)[]>([]);
   const rafRef = useRef<number | null>(null);
@@ -202,7 +216,7 @@ function ViewerBody({
       >
         <Document
           file={pdfUrl}
-          onLoadSuccess={(pdf: any) => {
+          onLoadSuccess={(pdf: PDFDocumentProxy) => {
             onDocumentLoadSuccess(pdf);
             setReady(true);
           }}
@@ -240,11 +254,11 @@ export default function PlainTestViewer({ pdfUrl }: { pdfUrl: string }) {
   const [pageNumber, setPageNumber] = useState(1);
   const [pageWidth, setPageWidth] = useState(600);
 
-  function onDocumentLoadSuccess(pdf: any) {
+  function onDocumentLoadSuccess(pdf: PDFDocumentProxy) {
     setNumPages(pdf.numPages);
     pdf
       .getPage(1)
-      .then((p: any) => {
+      .then((p: PDFPageProxy) => {
         const v = p.getViewport({ scale: 1 });
         if (v.width > 0) setAspect(v.height / v.width);
       })

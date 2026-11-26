@@ -6,7 +6,7 @@ import AccessCodesManager from "./AccessCodesManager";
 
 export default async function AccessCodesPage() {
   const session = await getServerSession(authOptions);
-  const user = session?.user as any;
+  const user = session?.user;
 
   if (!user || user.role !== "ADMIN") {
     redirect("/login");

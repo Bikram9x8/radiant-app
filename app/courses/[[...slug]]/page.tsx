@@ -19,7 +19,7 @@ import {
 } from "@/lib/internships";
 import ViewTracker from "@/components/ViewTracker";
 import { SubjectArt } from "@/components/Illustrations";
-import AdSlot from "@/components/AdSlot";
+import AdSlot, { ADS_ENABLED } from "@/components/AdSlot";
 import s from "@/components/school/school.module.css";
 import ComingSoon from "@/components/ComingSoon";
 import { SHOW_SCHOOL } from "@/lib/features";
@@ -162,9 +162,12 @@ export default async function CoursePage({
     <div className={`${s.page} flex-1`}>
       {current && <ViewTracker courseNodeId={current.id} />}
 
-      <div className="mx-auto max-w-[1200px] px-4 pt-4 sm:px-8">
-        <AdSlot label="728 × 90 banner space" className="h-[90px] max-w-[728px]" />
-      </div>
+      {/* Ad banner: only once a real ad exists (components/AdSlot.tsx) */}
+      {ADS_ENABLED && (
+        <div className="mx-auto max-w-[1200px] px-4 pt-4 sm:px-8">
+          <AdSlot label="728 × 90 banner space" className="h-[90px] max-w-[728px]" />
+        </div>
+      )}
 
       <div className="mx-auto max-w-[1200px] px-4 pt-6 pb-14 sm:px-8 md:pt-8">
         {/* Breadcrumb */}
@@ -408,9 +411,12 @@ export default async function CoursePage({
             )}
           </div>
 
-          <div className="w-full shrink-0 sm:w-[300px]">
-            <AdSlot label="300 × 250 box space" className="h-[250px] max-w-full" />
-          </div>
+          {/* Side ad box: only once a real ad exists; without it the content takes the full width */}
+          {ADS_ENABLED && (
+            <div className="w-full shrink-0 sm:w-[300px]">
+              <AdSlot label="300 × 250 box space" className="h-[250px] max-w-full" />
+            </div>
+          )}
         </div>
       </div>
     </div>

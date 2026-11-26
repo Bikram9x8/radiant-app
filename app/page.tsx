@@ -15,7 +15,7 @@ import CareerBlock from "@/components/landing/CareerBlock";
 import Guides from "@/components/landing/Guides";
 import JoinBanner from "@/components/landing/JoinBanner";
 import RevealOnScroll from "@/components/landing/RevealOnScroll";
-import AdSlot from "@/components/AdSlot";
+import AdSlot, { ADS_ENABLED } from "@/components/AdSlot";
 import { SHOW_ABROAD, SHOW_SCHOOL } from "@/lib/features";
 import { getCountry, getExam, verifiedScholarships } from "@/lib/abroad";
 import { notSchoolWhere } from "@/lib/school-posts";
@@ -72,8 +72,8 @@ export default async function Home() {
       <CampusScene />
       <Ticker extra={abroadWords} />
 
-      {/* Ad slot 1, below the hero (hidden while Colleges is live, until a real ad exists) */}
-      {!collegesLive && (
+      {/* Ad slot 1, below the hero (only once a real ad exists, and not while Colleges is live) */}
+      {ADS_ENABLED && !collegesLive && (
         <div className={`${s.wrap} ${s.adRow}`}>
           <AdSlot label="728 × 90 banner space" className="h-[90px] max-w-[728px]" />
         </div>
@@ -89,8 +89,8 @@ export default async function Home() {
       <CourseChips />
       {colleges ? <CollegeCards live={colleges} /> : <CollegeCards />}
 
-      {/* Ad slot 2, between the cards and the exams band (hidden while Colleges is live) */}
-      {!collegesLive && (
+      {/* Ad slot 2, between the cards and the exams band (same rule) */}
+      {ADS_ENABLED && !collegesLive && (
         <div className={`${s.wrap} ${s.adRow}`}>
           <AdSlot label="970 × 120 banner space" className="h-[120px] max-w-[970px]" />
         </div>

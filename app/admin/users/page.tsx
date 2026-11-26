@@ -6,7 +6,7 @@ import UserManager from "./UserManager";
 
 export default async function AdminUsersPage() {
   const session = await getServerSession(authOptions);
-  const currentUser = session?.user as any;
+  const currentUser = session?.user;
 
   if (!currentUser || currentUser.role !== "ADMIN") {
     redirect("/login");

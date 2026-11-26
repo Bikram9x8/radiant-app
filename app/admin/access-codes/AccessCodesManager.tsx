@@ -36,7 +36,7 @@ export default function AccessCodesManager({ opportunities }: { opportunities: O
     }
 
     const data = await res.json();
-    setCodes(data.codes.map((c: any) => c.code));
+    setCodes(data.codes.map((c: { code: string }) => c.code));
     showToast(`${data.codes.length} codes generated!`);
   }
 
@@ -45,7 +45,7 @@ export default function AccessCodesManager({ opportunities }: { opportunities: O
     <div className="glass rounded-[18px] p-6 flex flex-col gap-5">
       {opportunities.length === 0 ? (
         <p className="text-sm text-muted">
-          No tests currently require an access code. Mark a test as "Requires access code" when posting it.
+          No tests currently require an access code. Mark a test as &quot;Requires access code&quot; when posting it.
         </p>
       ) : (
         <>

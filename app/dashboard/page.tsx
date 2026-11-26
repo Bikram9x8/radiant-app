@@ -16,7 +16,7 @@ function StatCard({
   label: string;
   value: number;
   accent?: string;
-  Icon?: any;
+  Icon?: React.ComponentType<{ size?: number; stroke?: number }>;
 }) {
   return (
     <div className="glass glass-card rounded-[18px] px-5 py-6 text-center flex flex-col items-center gap-2">
@@ -38,7 +38,7 @@ export default async function DashboardPage() {
     redirect("/login");
   }
 
-  const user = session.user as any;
+  const user = session.user;
 
   if (user.status === "BLOCKED" || user.status === "REJECTED") {
     redirect("/login");
@@ -50,7 +50,7 @@ export default async function DashboardPage() {
         <div className="glass rounded-[18px] px-8 py-10 max-w-md">
           <h1 className="text-2xl font-bold text-ink">Account pending approval</h1>
           <p className="text-muted mt-2">
-            Your company account is awaiting admin approval. You'll be notified once it's approved.
+            Your company account is awaiting admin approval. You&apos;ll be notified once it&apos;s approved.
           </p>
         </div>
       </div>
@@ -133,7 +133,7 @@ if (user.role === "STUDENT") {
             <h1 className="text-4xl font-bold tracking-tight text-ink">
               {companyProfile.companyName}
             </h1>
-            <p className="text-muted mt-2">Here's how your opportunities are performing.</p>
+            <p className="text-muted mt-2">Here&apos;s how your opportunities are performing.</p>
           </div>
           <div className="flex gap-3">
             <Link
@@ -176,7 +176,7 @@ if (user.role === "STUDENT") {
 
           {recentOpportunities.length === 0 ? (
             <div className="px-5 py-10 text-center text-muted">
-              You haven't posted any opportunities yet.
+              You haven&apos;t posted any opportunities yet.
             </div>
           ) : (
             <div className="overflow-x-auto">

@@ -6,7 +6,7 @@ import ApprovalTable from "./ApprovalTable";
 
 export default async function AdminOpportunitiesPage() {
   const session = await getServerSession(authOptions);
-  const user = session?.user as any;
+  const user = session?.user;
 
   if (!user || user.role !== "ADMIN") {
     redirect("/login");

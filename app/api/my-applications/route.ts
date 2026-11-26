@@ -5,10 +5,10 @@ import { prisma } from "@/lib/prisma";
 
 export async function GET() {
   const session = await getServerSession(authOptions);
-  if (!session?.user || (session.user as any).role !== "STUDENT") {
+  if (!session?.user || session.user.role !== "STUDENT") {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }
-  const userId = (session.user as any).id;
+  const userId = session.user.id;
 
   const studentProfile = await prisma.studentProfile.findUnique({ where: { userId } });
   if (!studentProfile) {

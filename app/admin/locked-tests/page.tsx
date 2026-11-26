@@ -5,7 +5,7 @@ import LockedTestsManager from "./LockedTestsManager";
 
 export default async function LockedTestsPage() {
   const session = await getServerSession(authOptions);
-  const user = session?.user as any;
+  const user = session?.user;
 
   if (!user || user.role !== "ADMIN") {
     redirect("/login");

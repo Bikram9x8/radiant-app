@@ -38,17 +38,8 @@ export default function LockedTestsManager() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ accessCodeId }),
     });
-    setUnlockingId(null);async function handleUnlock(accessCodeId: string) {
-    setUnlockingId(accessCodeId);
-    await fetch("/api/admin/locked-tests", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ accessCodeId }),
-    });
     setUnlockingId(null);
     showToast("Student unlocked!");
-    loadData();
-  }
     loadData();
   }
 
