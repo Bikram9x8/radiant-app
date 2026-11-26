@@ -2,7 +2,7 @@ import Link from "next/link";
 import { IconSearch } from "@tabler/icons-react";
 import s from "./landing.module.css";
 import AdmissionPass from "./AdmissionPass";
-import { SHOW_ABROAD } from "@/lib/features";
+import { SHOW_ABROAD, SHOW_COLLEGES } from "@/lib/features";
 
 // Hand-drawn underline under an accent word
 function Underline() {
@@ -44,7 +44,9 @@ function RotatingAccent() {
   );
 }
 
-export default function Hero() {
+// finder: the real college finder while SHOW_COLLEGES is on (passed in by app/page.tsx); without it the
+// hero shows the sample AdmissionPass exactly as before.
+export default function Hero({ finder }: { finder?: React.ReactNode } = {}) {
   return (
     <div className={`${s.wrap} ${s.hero}`}>
       <span className={`${s.blob} ${s.blobA}`} aria-hidden="true" />
@@ -62,10 +64,17 @@ export default function Hero() {
             Build your <Accent>career.</Accent>
           </span>
         </h1>
-        <p className={`${s.lead} ${s.enter}`}>
-          Entrance exam prep for JEE and NEET, scholarships and internships after Class 12. A college finder
-          for all of India is coming soon.
-        </p>
+        {SHOW_COLLEGES ? (
+          <p className={`${s.lead} ${s.enter}`}>
+            Colleges with fees, eligibility and entrance exams checked on official pages, entrance exam prep for
+            JEE and NEET, scholarships and internships after Class 12.
+          </p>
+        ) : (
+          <p className={`${s.lead} ${s.enter}`}>
+            Entrance exam prep for JEE and NEET, scholarships and internships after Class 12. A college finder
+            for all of India is coming soon.
+          </p>
+        )}
 
         <div className={`${s.cta} ${s.enter}`}>
           <Link href="/higher" className={`${s.btn} ${s.pri}`}>
@@ -94,7 +103,7 @@ export default function Hero() {
         </ul>
       </div>
 
-      <AdmissionPass />
+      {finder ?? <AdmissionPass />}
     </div>
   );
 }

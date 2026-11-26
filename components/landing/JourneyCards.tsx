@@ -1,5 +1,6 @@
 import Link from "next/link";
 import s from "./landing.module.css";
+import { SHOW_COLLEGES } from "@/lib/features";
 
 const HE = "/courses/higher-education/after-12th";
 const STROKE = { fill: "none", stroke: "#115e59", strokeWidth: 2 } as const;
@@ -68,8 +69,16 @@ const PATHS: { title: string; text: string; tint: string; icon: keyof typeof ICO
   { title: "Free career test", text: "Find the career and course that fits you.", tint: "var(--tint-peach)", icon: "test", href: null },
 ];
 
+// With SHOW_COLLEGES on, the first card opens the college list instead of saying search is coming soon
+const COLLEGES_PATH = {
+  ...PATHS[0],
+  text: "College pages with courses, fees, eligibility and entrance exams from official sources.",
+  href: "/colleges",
+};
+
 export default function JourneyCards({ abroad = false }: { abroad?: boolean }) {
-  const paths = abroad ? [...PATHS, ABROAD_PATH] : PATHS;
+  const base = SHOW_COLLEGES ? [COLLEGES_PATH, ...PATHS.slice(1)] : PATHS;
+  const paths = abroad ? [...base, ABROAD_PATH] : base;
   return (
     <section className={`${s.wrap} ${s.section}`} aria-labelledby="home-journey">
       <h2 id="home-journey" className={s.h2}>

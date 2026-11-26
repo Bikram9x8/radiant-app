@@ -5,6 +5,7 @@ import { verifiedColleges } from "@/lib/colleges/data";
 import { absoluteUrl, SITE_NAME } from "@/lib/site";
 import { examPath, examsInUse } from "@/lib/colleges/exams";
 import { parseCompare } from "@/lib/colleges/compare";
+import { courseGroups } from "@/lib/colleges/courses";
 import Link from "next/link";
 import CollegeFinder from "@/components/colleges/CollegeFinder";
 import s from "@/components/colleges/colleges.module.css";
@@ -26,7 +27,9 @@ export const metadata: Metadata = SHOW_COLLEGES
     }
   : {};
 
-type Props = { searchParams: Promise<{ state?: string | string[]; compare?: string | string[] }> };
+type Props = {
+  searchParams: Promise<{ state?: string | string[]; compare?: string | string[]; course?: string | string[]; exam?: string | string[] }>;
+};
 
 // College list (radiant-design/college-pages.html, "finder" view): VERIFIED colleges only,
 // filtered by state, type, stream and level in the browser.
@@ -40,6 +43,9 @@ export default async function CollegesPage({ searchParams }: Props) {
   // ?compare= (picked on this page, or "Add to compare" on a college page): verified colleges only
   const compare = parseCompare(sp.compare).filter((slug) => colleges.some((c) => c.slug === slug));
   const exams = examsInUse(colleges);
+  // ?course= (course_id) and ?exam= (exam slug), e.g. from the homepage college finder: only real options
+  const course = typeof sp.course === "string" && courseGroups(colleges).some((g) => g.id === sp.course) ? sp.course : "";
+  const exam = typeof sp.exam === "string" && exams.some((e) => e.slug === sp.exam) ? sp.exam : "";
 
   return (
     <div className={`${s.page} flex-1`}>
@@ -63,7 +69,7 @@ export default async function CollegesPage({ searchParams }: Props) {
           </nav>
         )}
       </div>
-      <CollegeFinder colleges={colleges} initialState={state} initialCompare={compare} />
+      <CollegeFinder colleges={colleges} initialState={state} initialCompare={compare} initialCourse={course} initialExam={exam} />
     </div>
   );
 }

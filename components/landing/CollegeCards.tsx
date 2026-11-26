@@ -1,4 +1,8 @@
+import Link from "next/link";
 import s from "./landing.module.css";
+import type { CollegeView } from "@/lib/colleges/types";
+import { place } from "@/lib/colleges/format";
+import { courseGroups } from "@/lib/colleges/courses";
 
 // SAMPLE colleges for the design only (no college database yet). Each card carries a "Sample" tag,
 // the section ends with a footnote, and there are no "View college" links.
@@ -64,7 +68,94 @@ const COLLEGES = [
   { ini: "RM", name: "Riverside Medical College", place: "Patiala, Punjab", kind: "Government · Est. 1953", courses: ["MBBS", "Nursing"], fee: "₹1.0L", by: "NEET UG", Art: MedicalBlock, tone: "#dff7f4", block: "#c2410c" },
 ];
 
-export default function CollegeCards() {
+// Neutral buildings only for real colleges (the medical one, with a red cross, would suggest a medical college)
+const ARTS = [
+  { Art: ModernBlock, tone: "#ccfbf1", block: "#0f2e33" },
+  { Art: ClassicBlock, tone: "#fff4ec", block: "#0f766e" },
+  { Art: ModernBlock, tone: "#fdf2e9", block: "#c2410c" },
+];
+
+const initials = (c: CollegeView) =>
+  c.shortName && c.shortName.length <= 4
+    ? c.shortName.toUpperCase()
+    : c.name
+        .replace(/\(.*?\)/g, "")
+        .split(/[\s,]+/)
+        .filter((w) => /^[A-Za-z]/.test(w) && !/^(of|and|the|for|university|college|institute)$/i.test(w))
+        .slice(0, 2)
+        .map((w) => w[0].toUpperCase())
+        .join("");
+
+// While SHOW_COLLEGES is on (app/page.tsx passes the colleges): three real VERIFIED colleges, those with the
+// most verified courses first, each linking to its page. No sample tag, no "coming soon", no fees worked out.
+function LiveCollegeCards({ colleges }: { colleges: CollegeView[] }) {
+  const pick = [...colleges].sort((a, b) => b.courses.length - a.courses.length || a.name.localeCompare(b.name)).slice(0, 3);
+  return (
+    <section className={`${s.wrap} ${s.section}`} aria-labelledby="home-colleges">
+      <div className={s.headRow}>
+        <h2 id="home-colleges" className={s.h2}>
+          Colleges <span className={s.ser}>checked at the source</span>
+        </h2>
+        <Link href="/colleges" className={s.go}>
+          See all colleges →
+        </Link>
+      </div>
+      <p className={s.lead}>
+        Each college page shows courses, fees, eligibility and entrance exams, every fact from an official page with
+        the date we checked it.
+      </p>
+
+      <ul className={`${s.cgrid} m-0 list-none p-0`}>
+        {pick.map((c, i) => {
+          const { Art, tone, block } = ARTS[i % ARTS.length];
+          const exams = [...new Set(c.courses.flatMap((k) => k.entranceExams))];
+          return (
+            <li key={c.slug} className={`${s.sticker} ${s.college}`}>
+              <div className={s.collegeTop}>
+                <svg viewBox="0 0 300 150" preserveAspectRatio="xMidYMax slice" aria-hidden="true" focusable="false">
+                  <Art tone={tone} block={block} />
+                </svg>
+                <span className={s.collegeIni} aria-hidden="true">
+                  {initials(c)}
+                </span>
+              </div>
+              <div className={s.collegeBody}>
+                <h3 className={s.h3}>
+                  <Link href={`/colleges/${c.slug}`} style={{ color: "inherit", textDecoration: "none" }}>
+                    {c.name}
+                  </Link>
+                </h3>
+                <div className={s.meta}>
+                  {[place(c), c.type, c.establishedYear ? `Est. ${c.establishedYear}` : null].filter(Boolean).join(" · ")}
+                </div>
+                {c.courses.length > 0 && (
+                  <ul className={s.tags} aria-label="Courses">
+                    {courseGroups([c]).map((g) => (
+                      <li key={g.id}>{g.label}</li>
+                    ))}
+                  </ul>
+                )}
+                <dl className={s.facts}>
+                  <div>
+                    <dt>Courses checked</dt>
+                    <dd>{c.courses.length || "Coming soon"}</dd>
+                  </div>
+                  <div>
+                    <dt>Admission by</dt>
+                    <dd>{exams.length ? exams.join(", ") : "See college page"}</dd>
+                  </div>
+                </dl>
+              </div>
+            </li>
+          );
+        })}
+      </ul>
+    </section>
+  );
+}
+
+export default function CollegeCards({ live }: { live?: CollegeView[] } = {}) {
+  if (live) return <LiveCollegeCards colleges={live} />;
   return (
     <section className={`${s.wrap} ${s.section}`} aria-labelledby="home-colleges">
       <div className={s.headRow}>
