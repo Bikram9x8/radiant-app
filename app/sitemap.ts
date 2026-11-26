@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
 import { allPosts } from "@/lib/blog";
 import { verifiedCountries, verifiedExams } from "@/lib/abroad";
-import { SHOW_ABROAD, SHOW_COLLEGES, SHOW_SCHOOL } from "@/lib/features";
+import { SHOW_ABROAD, SHOW_COLLEGES, SHOW_SCHOOL, SHOW_UPDATES } from "@/lib/features";
 import { absoluteUrl, SITE_URL } from "@/lib/site";
 
 type Entry = MetadataRoute.Sitemap[number];
@@ -42,7 +42,8 @@ async function collegeEntries(page: (path: string) => Entry): Promise<Entry[]> {
 
 // sitemap.xml: public pages only. Pages behind a switch are listed only while it is on
 // (Study Abroad while SHOW_ABROAD is on; School pages never while SHOW_SCHOOL is off;
-// Colleges, each VERIFIED college page and the exam pages only while SHOW_COLLEGES is on).
+// Colleges, each VERIFIED college page and the exam pages only while SHOW_COLLEGES is on;
+// /updates only while SHOW_UPDATES is on).
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const page = (path: string, lastModified?: string): Entry => ({
     url: absoluteUrl(path),
@@ -70,6 +71,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         ]
       : []),
     ...colleges,
+    ...(SHOW_UPDATES ? [page("/updates")] : []),
     page("/blog", posts[0]?.updated),
     ...posts.map((p) => page(`/blog/${p.slug}`, p.updated)),
   ]);

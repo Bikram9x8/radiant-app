@@ -15,3 +15,9 @@ export const SHOW_ABROAD = process.env.NEXT_PUBLIC_SHOW_ABROAD === "true";
 // OFF unless explicitly "true": while off, every /colleges route returns 404 and the menu and footer
 // "Colleges" links keep pointing to /higher. Only VERIFIED colleges and courses are ever shown.
 export const SHOW_COLLEGES = process.env.NEXT_PUBLIC_SHOW_COLLEGES === "true";
+
+// Latest updates (/updates and the homepage panel: internships, PhD/MS positions, workshops, fellowships,
+// scholarships, exam dates, from the Update table). OFF unless explicitly "true": while off, /updates
+// returns 404 and the homepage has no panel. Only VERIFIED items whose deadline has not passed are shown.
+// Never set it in env files; turn it on in the hosting environment and redeploy.
+export const SHOW_UPDATES = process.env.NEXT_PUBLIC_SHOW_UPDATES === "true";
