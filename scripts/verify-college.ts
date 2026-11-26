@@ -6,6 +6,8 @@
 //     npx tsx scripts/verify-college.ts --db .env.neon-test amity-university-mohali --write
 //   Options:
 //     --college-only   verify the college but leave every course as it is (e.g. DRAFT until a fee is confirmed)
+//     --course <id>    verify the college (if not already) and ONLY this course; repeat for more courses
+//                      (e.g. --course btech-cse --course bca). Every other course stays as it is.
 //     --main           required, with approval, to write to the live database (same host as .env)
 //
 // Before verifying, every filled-in fact group is checked again for its source URL and checked date.
@@ -19,9 +21,14 @@ const ALLOW_MAIN = args.includes("--main");
 const COLLEGE_ONLY = args.includes("--college-only");
 const dbIdx = args.indexOf("--db");
 const dbFile = dbIdx >= 0 ? args[dbIdx + 1] : undefined;
-const slug = args.find((a, i) => !a.startsWith("--") && i !== dbIdx + 1);
-if (!dbFile || !slug) {
-  console.error("Usage: npx tsx scripts/verify-college.ts --db <env file> <college_id> [--college-only] [--write [--main]]");
+// Every value after --course is a course_id (the option can be given more than once)
+const courseIdx = args.flatMap((a, i) => (a === "--course" ? [i + 1] : []));
+const ONLY_COURSES = courseIdx.map((i) => args[i]);
+const slug = args.find((a, i) => !a.startsWith("--") && i !== dbIdx + 1 && !courseIdx.includes(i));
+if (!dbFile || !slug || ONLY_COURSES.some((k) => !k || k.startsWith("--")) || (COLLEGE_ONLY && ONLY_COURSES.length)) {
+  console.error(
+    "Usage: npx tsx scripts/verify-college.ts --db <env file> <college_id> [--college-only | --course <course_id> ...] [--write [--main]]",
+  );
   process.exit(1);
 }
 
@@ -55,7 +62,12 @@ async function main() {
         { label: "Contact", values: [c.admissionPhone, c.admissionEmail], src: c.contactSourceUrl, date: c.contactCheckedAt },
       ]),
     ];
-    const courses = COLLEGE_ONLY ? [] : c.courses;
+    const unknown = ONLY_COURSES.filter((id) => !c.courses.some((k) => k.courseId === id));
+    if (unknown.length) throw new Error(`${c.slug} has no course ${unknown.map((id) => `"${id}"`).join(", ")} in this database`);
+    const chosen = (k: { courseId: string }) => (ONLY_COURSES.length ? ONLY_COURSES.includes(k.courseId) : !COLLEGE_ONLY);
+    const courses = c.courses.filter(chosen);
+    // With --course, an already VERIFIED college is left as it is (its verified date is kept)
+    const updateCollege = !(ONLY_COURSES.length && c.status === "VERIFIED");
     for (const k of courses) {
       const where = `${c.slug}/${k.courseId}`;
       issues.push(
@@ -69,8 +81,8 @@ async function main() {
     }
 
     console.log(`\n# Verify ${c.slug}: ${WRITE ? "WRITE" : "DRY RUN"}\n`);
-    console.log(`- College: ${c.name} (now ${c.status}) → VERIFIED`);
-    for (const k of c.courses) console.log(`- Course ${k.courseId}: ${k.name} (now ${k.status})${COLLEGE_ONLY ? " → unchanged" : " → VERIFIED"}`);
+    console.log(`- College: ${c.name} (now ${c.status}) → ${updateCollege ? "VERIFIED" : "unchanged"}`);
+    for (const k of c.courses) console.log(`- Course ${k.courseId}: ${k.name} (now ${k.status}) → ${chosen(k) ? "VERIFIED" : "unchanged"}`);
     console.log(`\nProblems: ${issues.length ? "\n- " + issues.join("\n- ") : "none"}`);
 
     if (!WRITE) return console.log("\nDRY RUN: nothing was written. Re-run with --write to verify.");
@@ -80,10 +92,12 @@ async function main() {
     }
     const now = new Date();
     await prisma.$transaction([
-      prisma.college.update({ where: { id: c.id }, data: { status: "VERIFIED", verifiedAt: now } }),
+      ...(updateCollege ? [prisma.college.update({ where: { id: c.id }, data: { status: "VERIFIED", verifiedAt: now } })] : []),
       ...courses.map((k) => prisma.course.update({ where: { id: k.id }, data: { status: "VERIFIED", verifiedAt: now } })),
     ]);
-    console.log(`\nWritten: ${c.slug} and ${courses.length} course(s) are VERIFIED.`);
+    console.log(
+      `\nWritten: ${updateCollege ? `${c.slug} and ` : `${c.slug} was already VERIFIED; `}${courses.length} course(s) are VERIFIED.`,
+    );
   } finally {
     await prisma.$disconnect();
   }
