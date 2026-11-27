@@ -32,8 +32,11 @@
     align-items: start;
   }
 
-  /* The journey section sits in the left column: no own width or side padding, two cards per row */
+  /* The journey section sits in the left column: no own width or side padding, two cards per row.
+     The panel comes first in the page, so both are placed on row 1 explicitly. */
   .homeGrid > section {
+    grid-row: 1;
+    grid-column: 1;
     max-width: none;
     margin-inline: 0;
     padding-inline: 0;
@@ -44,6 +47,8 @@
   }
 
   .panel {
+    grid-row: 1;
+    grid-column: 2;
     position: sticky;
     top: 96px;
     margin-top: 80px;
@@ -51,13 +56,13 @@
 }
 
 @media (max-width: 1000px) {
-  /* Stacked: the journey section keeps its own layout; the panel follows it */
+  /* Stacked: the panel first, then the journey section with its own layout */
   .homeGrid {
     padding-inline: 0;
   }
 
   .panel {
-    margin: 40px max(5vw, 16px) 0;
+    margin: 32px max(5vw, 16px) 0;
   }
 }
 
