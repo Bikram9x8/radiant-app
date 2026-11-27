@@ -44,6 +44,15 @@ function RotatingAccent() {
   );
 }
 
+// The hero's small tags while Colleges is on: only true things (Latest openings and Study abroad only
+// while their switches are on)
+const LIVE_TAGS = [
+  "Checked colleges",
+  ...(SHOW_UPDATES ? ["Latest openings"] : []),
+  "Free to use",
+  ...(SHOW_ABROAD ? ["Study abroad"] : []),
+];
+
 // finder: the real college finder while SHOW_COLLEGES is on (passed in by app/page.tsx); without it the
 // hero shows the sample AdmissionPass exactly as before.
 export default function Hero({ finder }: { finder?: React.ReactNode } = {}) {
@@ -107,12 +116,21 @@ export default function Hero({ finder }: { finder?: React.ReactNode } = {}) {
           <button type="submit">Search</button>
         </form>
 
-        <ul className={`${s.stats}${SHOW_ABROAD ? ` ${s.statsFour}` : ""} ${s.enter}`}>
-          <li>JEE · NEET prep</li>
-          <li>Scholarships &amp; internships</li>
-          <li>Free to use</li>
-          {SHOW_ABROAD && <li>Study abroad</li>}
-        </ul>
+        {/* With Colleges on, the tags name only sections that have real content (each switched one) */}
+        {SHOW_COLLEGES ? (
+          <ul className={`${s.stats}${LIVE_TAGS.length >= 4 ? ` ${s.statsFour}` : ""} ${s.enter}`}>
+            {LIVE_TAGS.map((t) => (
+              <li key={t}>{t}</li>
+            ))}
+          </ul>
+        ) : (
+          <ul className={`${s.stats}${SHOW_ABROAD ? ` ${s.statsFour}` : ""} ${s.enter}`}>
+            <li>JEE · NEET prep</li>
+            <li>Scholarships &amp; internships</li>
+            <li>Free to use</li>
+            {SHOW_ABROAD && <li>Study abroad</li>}
+          </ul>
+        )}
       </div>
 
       {finder ?? <AdmissionPass />}
