@@ -1,0 +1,372 @@
+/* Exams hub (/exams). Teal + Coral on paper like /colleges and /updates: Big Shoulders caps,
+   Instrument Serif accents, Figtree text. Colours from globals.css. */
+
+.page {
+  --disp: var(--font-big-shoulders), var(--font-figtree), sans-serif;
+  --ser: var(--font-instrument-serif), Georgia, serif;
+  --soft: 0 1px 2px rgb(15 46 51 / 0.04), 0 18px 40px -30px rgb(15 46 51 / 0.35);
+
+  font-family: var(--font-figtree), system-ui, sans-serif;
+  background: var(--paper);
+  color: var(--ink);
+  overflow-x: clip;
+}
+
+.page :where(a, button):focus-visible {
+  outline: 3px solid var(--coral);
+  outline-offset: 2px;
+}
+
+.wrap {
+  max-width: 1100px;
+  margin-inline: auto;
+  padding-inline: max(4vw, 16px);
+}
+
+.phead {
+  padding-block: 40px 8px;
+}
+
+.h1 {
+  margin: 0;
+  font: 800 clamp(40px, 6vw, 76px) / 0.95 var(--disp);
+  text-transform: uppercase;
+}
+
+.ser {
+  font-family: var(--ser);
+  font-style: italic;
+  font-weight: 400;
+  text-transform: none;
+  color: var(--teal);
+}
+
+.serCoral {
+  color: var(--coral-text);
+}
+
+.lead {
+  max-width: 62ch;
+  margin: 12px 0 0;
+  color: var(--muted);
+  font-size: 17px;
+  line-height: 1.6;
+}
+
+/* ---------- Sections ---------- */
+.sec {
+  padding-block: 32px 8px;
+}
+
+.secHead {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.h2 {
+  margin: 0;
+  font: 800 clamp(28px, 3.4vw, 40px) / 1 var(--disp);
+  text-transform: uppercase;
+}
+
+.more {
+  color: var(--teal-dark);
+  font-size: 15px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.note {
+  margin: -6px 0 14px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+/* ---------- Entrance exam cards ---------- */
+.exams {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 230px), 1fr));
+  gap: 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.exam {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  height: 100%;
+  padding: 18px 20px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: #ffffff;
+  box-shadow: var(--soft);
+  color: inherit;
+  text-decoration: none;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+@media (hover: hover) {
+  .exam:hover {
+    transform: translateY(-2px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .exam {
+    transition: none;
+  }
+
+  .exam:hover {
+    transform: none;
+  }
+}
+
+.examName {
+  margin: 0;
+  font: 800 26px / 1.05 var(--disp);
+  text-transform: uppercase;
+}
+
+.examCount {
+  margin: 0;
+  color: var(--muted);
+  font-size: 15px;
+}
+
+.examGo {
+  margin-top: auto;
+  padding-top: 6px;
+  color: var(--teal-dark);
+  font-size: 15px;
+  font-weight: 700;
+}
+
+/* ---------- Exam dates (same look as the Latest updates cards; own styles, so the hub's CSS never
+   rides along with the homepage or /updates) ---------- */
+.dates {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (max-width: 760px) {
+  .dates {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.dates > li {
+  padding: 4px 20px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: #ffffff;
+  box-shadow: var(--soft);
+}
+
+.item {
+  display: grid;
+  gap: 4px;
+  padding: 16px 0;
+}
+
+.top {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 10px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 26px;
+  padding: 0 10px;
+  border-radius: 999px;
+  background: var(--tint-coral);
+  color: var(--teal-dark);
+  font-size: 12.5px;
+  font-weight: 800;
+}
+
+.deadline {
+  color: var(--ink);
+  font-size: 13.5px;
+  font-weight: 700;
+}
+
+.deadlineSoon {
+  color: var(--coral-text);
+}
+
+.title {
+  margin: 4px 0 0;
+  font-size: 17px;
+  font-weight: 800;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+
+.org {
+  margin: 0;
+  color: var(--teal-dark);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.line {
+  margin: 2px 0 0;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.meta,
+.src {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13.5px;
+}
+
+.src {
+  margin-top: 4px;
+  font-size: 12.5px;
+}
+
+.foot {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  align-items: center;
+  margin-top: 6px;
+}
+
+.link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 0 14px;
+  border-radius: 10px;
+  background: var(--ink);
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.link:hover {
+  background: var(--teal-dark);
+}
+
+.by {
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: var(--tint-peach);
+  color: var(--coral-text);
+  font-size: 12.5px;
+  font-weight: 700;
+}
+
+/* ---------- Practice tests ---------- */
+.tests {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: #ffffff;
+  box-shadow: var(--soft);
+  overflow: hidden;
+}
+
+.tests > li + li {
+  border-top: 1px solid var(--line);
+}
+
+.test {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 64px;
+  padding: 14px 20px;
+  color: inherit;
+  text-decoration: none;
+}
+
+@media (hover: hover) {
+  .test:hover {
+    background: var(--paper);
+  }
+}
+
+.testMain {
+  min-width: 0;
+  flex: 1 1 260px;
+}
+
+.testTop {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.kind,
+.code {
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.kind {
+  background: var(--tint-mint);
+}
+
+.code {
+  border: 1px solid var(--line);
+  background: #ffffff;
+}
+
+.testTitle {
+  display: block;
+  font-size: 17px;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.testMeta {
+  display: block;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.testEnd {
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.testGo {
+  color: var(--teal-dark);
+  font-size: 15px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.bottom {
+  height: 56px;
+}

@@ -10,29 +10,30 @@ import ProfileMenu, { ProfileDisclosure } from "@/components/ProfileMenu";
 import s from "@/components/site-chrome.module.css";
 import RadiantLogo from "@/components/brand/RadiantLogo";
 import { useNavSection } from "@/components/nav-section";
-import { SHOW_ABROAD, SHOW_COLLEGES, SHOW_SCHOOL } from "@/lib/features";
+import { SHOW_ABROAD, SHOW_COLLEGES, SHOW_SCHOOL, SHOW_UPDATES } from "@/lib/features";
 
 // Fonts + colour tokens for the header and the drawer (the drawer renders outside <header>)
 const chrome = `${s.chrome}`;
 
-const SCHOLARSHIPS = "/courses/higher-education/after-12th/scholarships";
-const INTERNSHIPS = "/courses/higher-education/after-12th/internships";
-
-// "key" says which item a page highlights (Colleges and Courses share /higher; only Colleges lights up)
-type NavKey = "school" | "colleges" | "courses" | "exams" | "scholarships" | "internships" | "abroad" | "blog";
+// The menu links only to sections with real content. Courses, Scholarships and Internships are left
+// out until they have posts (their pages still exist; they are just not in the menu).
+// "key" says which item a page highlights.
+type NavKey = "school" | "colleges" | "exams" | "updates" | "abroad" | "blog";
 const ALL_LINKS: { key: NavKey; href: string; label: string }[] = [
   { key: "school", href: "/school", label: "School" },
-  // With SHOW_COLLEGES on, "Colleges" opens the college list; otherwise it stays on /higher
+  // With SHOW_COLLEGES on, "Colleges" opens the college list and "Exams" the Exams hub (built from the
+  // colleges' entrance exams); otherwise they stay on /higher and the Tests page
   { key: "colleges", href: SHOW_COLLEGES ? "/colleges" : "/higher", label: "Colleges" },
-  { key: "courses", href: "/higher", label: "Courses" },
-  { key: "exams", href: "/opportunities", label: "Exams" },
-  { key: "scholarships", href: SCHOLARSHIPS, label: "Scholarships" },
-  { key: "internships", href: INTERNSHIPS, label: "Internships" },
+  { key: "exams", href: SHOW_COLLEGES ? "/exams" : "/opportunities", label: "Exams" },
+  { key: "updates", href: "/updates", label: "Latest updates" },
   { key: "abroad", href: "/abroad", label: "Study abroad" },
   { key: "blog", href: "/blog", label: "Blog" },
 ];
-// Switches (lib/features.ts): School is hidden while SHOW_SCHOOL is off, Study abroad while SHOW_ABROAD is off
-const LINKS = ALL_LINKS.filter((l) => (l.key !== "school" || SHOW_SCHOOL) && (l.key !== "abroad" || SHOW_ABROAD));
+// Switches (lib/features.ts): each item behind a switch is shown only while that switch is on
+const LINKS = ALL_LINKS.filter(
+  (l) =>
+    (l.key !== "school" || SHOW_SCHOOL) && (l.key !== "abroad" || SHOW_ABROAD) && (l.key !== "updates" || SHOW_UPDATES),
+);
 
 export default function Navbar() {
   const { data: session, status } = useSession();
@@ -111,19 +112,20 @@ export default function Navbar() {
       if (navSection === "/opportunities") return "exams";
       return null;
     }
+    // Exams hub, the Tests page and the colleges-by-exam pages
+    if (under("/exams") || under("/opportunities") || under("/colleges/exam")) return "exams";
     if (under("/higher") || (SHOW_COLLEGES && under("/colleges"))) return "colleges";
     if (under("/courses/higher-education")) {
-      // Scholarships and internships pages of any level (after 12th, after graduation, ...)
+      // Scholarships, internships and jobs pages (not in the menu for now): no item lights up
       const stage = pathname.split("/")[4];
-      if (stage === "scholarships") return "scholarships";
-      if (stage === "internships") return "internships";
+      if (stage === "scholarships" || stage === "internships" || stage === "jobs-careers") return null;
       return "colleges";
     }
     // Other course pages (CBSE, ICSE, competitive, vocational): School when it's switched on,
     // otherwise the remaining competitive (exam prep) pages belong to Exams
     if (pathname.startsWith("/courses/")) return SHOW_SCHOOL ? "school" : "exams";
     if (under("/school")) return "school";
-    if (under("/opportunities")) return "exams";
+    if (under("/updates")) return "updates";
     if (under("/abroad")) return "abroad";
     if (under("/blog")) return "blog";
     return null;

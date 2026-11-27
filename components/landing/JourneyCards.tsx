@@ -1,6 +1,6 @@
 import Link from "next/link";
 import s from "./landing.module.css";
-import { SHOW_COLLEGES } from "@/lib/features";
+import { SHOW_ABROAD, SHOW_COLLEGES, SHOW_UPDATES } from "@/lib/features";
 
 const HE = "/courses/higher-education/after-12th";
 const STROKE = { fill: "none", stroke: "#115e59", strokeWidth: 2 } as const;
@@ -69,15 +69,28 @@ const PATHS: { title: string; text: string; tint: string; icon: keyof typeof ICO
   { title: "Free career test", text: "Find the career and course that fits you.", tint: "var(--tint-peach)", icon: "test", href: null },
 ];
 
-// With SHOW_COLLEGES on, the first card opens the college list instead of saying search is coming soon
-const COLLEGES_PATH = {
-  ...PATHS[0],
-  text: "College pages with courses, fees, eligibility and entrance exams from official sources.",
-  href: "/colleges",
-};
+// With SHOW_COLLEGES on, every card opens a page with real content, or says "Coming soon" without a link:
+// - Colleges & courses: the college list (instead of saying search is coming soon)
+// - Entrance exams: the Exams hub
+// - Scholarships: scholarships abroad (while Study abroad is on); the scholarship pages are still empty
+// - Internships: internships in Latest updates (while it is on); the internship pages are still empty
+// - Jobs & careers: still empty, so "Coming soon" with no link
+// With SHOW_COLLEGES off the cards stay exactly as they were.
+const LIVE_PATHS: typeof PATHS = [
+  { ...PATHS[0], text: "College pages with courses, fees, eligibility and entrance exams from official sources.", href: "/colleges" },
+  { ...PATHS[1], text: "Which colleges accept each exam, exam dates and practice tests.", href: "/exams" },
+  SHOW_ABROAD
+    ? { ...PATHS[2], text: "Scholarships to study abroad, each with its official page.", href: "/abroad/scholarships" }
+    : { ...PATHS[2], href: null },
+  SHOW_UPDATES
+    ? { ...PATHS[3], text: "Research internships and openings, each checked on its official page.", href: "/updates?type=Internship" }
+    : { ...PATHS[3], href: null },
+  { ...PATHS[4], href: null },
+  PATHS[5],
+];
 
 export default function JourneyCards({ abroad = false }: { abroad?: boolean }) {
-  const base = SHOW_COLLEGES ? [COLLEGES_PATH, ...PATHS.slice(1)] : PATHS;
+  const base = SHOW_COLLEGES ? LIVE_PATHS : PATHS;
   const paths = abroad ? [...base, ABROAD_PATH] : base;
   return (
     <section className={`${s.wrap} ${s.section}`} aria-labelledby="home-journey">

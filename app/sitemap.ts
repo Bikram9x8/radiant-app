@@ -35,6 +35,8 @@ async function collegeEntries(page: (path: string) => Entry): Promise<Entry[]> {
   const list = await verifiedColleges();
   return [
     page("/colleges"),
+    // The Exams hub is built from the colleges' entrance exams, so it is listed with them
+    page("/exams"),
     ...list.map((c) => page(`/colleges/${c.slug}`)),
     ...examsInUse(list).map((e) => page(examPath(e.slug))),
   ];
@@ -42,7 +44,7 @@ async function collegeEntries(page: (path: string) => Entry): Promise<Entry[]> {
 
 // sitemap.xml: public pages only. Pages behind a switch are listed only while it is on
 // (Study Abroad while SHOW_ABROAD is on; School pages never while SHOW_SCHOOL is off;
-// Colleges, each VERIFIED college page and the exam pages only while SHOW_COLLEGES is on;
+// Colleges, the Exams hub, each VERIFIED college page and the exam pages only while SHOW_COLLEGES is on;
 // /updates only while SHOW_UPDATES is on).
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const page = (path: string, lastModified?: string): Entry => ({
