@@ -19,6 +19,7 @@ import AdSlot, { ADS_ENABLED } from "@/components/AdSlot";
 import { SHOW_ABROAD, SHOW_SCHOOL } from "@/lib/features";
 import { getCountry, getExam, verifiedScholarships } from "@/lib/abroad";
 import { notSchoolWhere } from "@/lib/school-posts";
+import { endedTestWhere } from "@/lib/test-posts";
 
 // Homepage (Phase 2 "Teal + Coral", radiant-design/home-teal-coral.html).
 // Logged-in visitors go to their dashboard. Colleges, course chips, guides and the career test are
@@ -32,7 +33,8 @@ export default async function Home() {
 
   const latestOpportunities = await prisma.opportunity.findMany({
     // School posts are left out while School Education is switched off
-    where: { status: "APPROVED", ...(SHOW_SCHOOL ? {} : notSchoolWhere) },
+    // Ended tests are left out too (lib/test-posts.ts); AND keeps notSchoolWhere's own NOT intact
+    where: { status: "APPROVED", ...(SHOW_SCHOOL ? {} : notSchoolWhere), AND: [{ NOT: endedTestWhere() }] },
     orderBy: { createdAt: "desc" },
     take: 5,
     include: { category: { select: { name: true } } },

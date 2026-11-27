@@ -6,6 +6,8 @@
 // it is the schema's default division, so it is set on posts nobody categorised, including
 // 3 NCERT-style solutions (type SOLUTION). All real tests today are type QUIZ.
 
+import type { Division, Prisma } from "@prisma/client";
+
 // Divisions that mark a post as a test even when its type isn't QUIZ
 export const EXPLICIT_TEST_DIVISIONS = ["CHAPTER_WISE_TEST", "BOARD_LEVEL_TEST", "DPP"];
 
@@ -50,6 +52,19 @@ export function isEndedTest(
   now: number = Date.now(),
 ) {
   return isTestPost(p) && !READING_CONTENT_TYPES.includes(p.contentType ?? "") && new Date(p.applyDeadline).getTime() < now;
+}
+
+// The same rule as isEndedTest(), as a database filter: matches the ended tests, so a list can leave
+// them out with { NOT: endedTestWhere() } (put it inside AND: [...] when the query has its own NOT).
+// contentType null is checked on its own because "notIn" never matches an empty value.
+export function endedTestWhere(now: Date = new Date()): Prisma.OpportunityWhereInput {
+  return {
+    AND: [
+      { OR: [{ type: "QUIZ" }, { division: { in: EXPLICIT_TEST_DIVISIONS as Division[] } }] },
+      { applyDeadline: { lt: now } },
+      { OR: [{ contentType: null }, { contentType: { notIn: READING_CONTENT_TYPES } }] },
+    ],
+  };
 }
 
 // "29 Nov 2036": the date format of the Tests page, in India time
