@@ -1,0 +1,83 @@
+/* /search result groups (colleges, exams, latest updates, tests & posts). Used only by the search page, so
+   new styles here never change the site-wide stylesheet. Colours: the School page tokens (--hp-*). */
+
+.group {
+  margin-top: 32px;
+}
+
+.groupTitle {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin: 0 0 12px;
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.groupCount {
+  color: var(--hp-muted);
+  font-family: var(--font-figtree), system-ui, sans-serif;
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.rows {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 640px) {
+  .rows {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.row {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2px;
+  height: 100%;
+  min-height: 64px;
+  padding: 16px 20px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: #ffffff;
+  color: var(--hp-ink);
+  text-decoration: none;
+  box-shadow: 0 1px 2px rgb(15 46 51 / 0.04), 0 18px 40px -30px rgb(15 46 51 / 0.35);
+}
+
+@media (hover: hover) {
+  .row:hover {
+    background: var(--hp-butter);
+  }
+}
+
+.name {
+  font-size: 17px;
+  font-weight: 800;
+  overflow-wrap: anywhere;
+}
+
+.sub {
+  color: var(--hp-muted);
+  font-size: 14px;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.courses {
+  font-size: 14px;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.kicker {
+  color: var(--hp-muted);
+  font-size: 12px;
+  font-weight: 800;
+}
