@@ -1,8 +1,7 @@
 import Link from "next/link";
 import { IconLock } from "@tabler/icons-react";
 import s from "@/components/school/school.module.css";
-import { entranceMeta, formatTestDate, isTestPost, parseClassSubject, postKindLabel } from "@/lib/test-posts";
-import { SHOW_SCHOOL } from "@/lib/features";
+import { formatTestDate, isTestPost, postKindLabel, postMetaParts } from "@/lib/test-posts";
 
 // Result card for the Tests page (/opportunities) and Search (/search).
 // Must be rendered inside a School-style wrapper (s.page), which provides the colour tokens.
@@ -44,16 +43,8 @@ const formatDate = formatTestDate;
 export default function PostCard({ post, now }: { post: PostCardData; now: number }) {
   const kind = kindOf(post);
   const isTest = isTestPost(post);
-  const { classNo, subject } = parseClassSubject(post.category?.name);
   // School Education switched off: tests read as entrance prep ("JEE / NEET prep · Physics"), no class
-  const meta =
-    !SHOW_SCHOOL && isTest
-      ? [entranceMeta(post.category?.name), post.chapter ? `Chapter ${post.chapter}` : null].filter(Boolean)
-      : [
-          classNo ? `Class ${classNo}` : null,
-          subject ?? (classNo ? null : post.category?.name ?? null),
-          post.chapter ? `Chapter ${post.chapter}` : null,
-        ].filter(Boolean);
+  const meta = postMetaParts(post);
   const ended = new Date(post.applyDeadline).getTime() < now;
 
   return (

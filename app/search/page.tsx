@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma";
 import PostCard from "@/components/tests/PostCard";
 import s from "@/components/school/school.module.css";
 import g from "@/components/search/search.module.css";
-import { DIVISION_LABELS, endedTestWhere } from "@/lib/test-posts";
+import { DIVISION_LABELS, endedTestWhere, postSearchText } from "@/lib/test-posts";
 import type { Division } from "@prisma/client";
 import { SHOW_COLLEGES, SHOW_SCHOOL } from "@/lib/features";
 import { notSchoolWhere } from "@/lib/school-posts";
@@ -26,12 +26,14 @@ export const metadata: Metadata = {
 // How many results are shown at most (62 approved posts today, so "View all" shows everything)
 const LIMIT = 100;
 
-// Loads the results, and the time they were loaded (for "Open till" / "Ended" on tests)
+// Loads the results, and the time they were loaded (for "Open till" / "Ended" on tests).
+// With a search word, a post matches when every word appears in its title or in what its card shows
+// about it ("Test series", "JEE prep · Mathematics"...; see postSearchText). Those labels are worked out
+// from the type, division and category, so this filter runs on the approved, visible posts (a few dozen).
 async function loadPosts(q: string, division: string) {
-  const posts = await prisma.opportunity.findMany({
+  const rows = await prisma.opportunity.findMany({
     where: {
       status: "APPROVED",
-      ...(q ? { title: { contains: q, mode: "insensitive" as const } } : {}),
       ...(division ? { division: division as Division } : {}),
       // School posts are left out while School Education is switched off
       ...(SHOW_SCHOOL ? {} : notSchoolWhere),
@@ -50,8 +52,12 @@ async function loadPosts(q: string, division: string) {
       category: { select: { name: true } },
     },
     orderBy: { createdAt: "desc" },
-    take: LIMIT,
+    ...(q ? {} : { take: LIMIT }),
   });
+  const words = q.toLowerCase().split(/\s+/).filter(Boolean);
+  const posts = (
+    words.length ? rows.filter((p) => words.every((w) => postSearchText(p).toLowerCase().includes(w))) : rows
+  ).slice(0, LIMIT);
   return { posts, now: Date.now() };
 }
 
