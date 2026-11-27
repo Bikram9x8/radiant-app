@@ -4,11 +4,12 @@ import s from "./landing.module.css";
 import AdmissionPass from "./AdmissionPass";
 import { SHOW_ABROAD, SHOW_COLLEGES, SHOW_UPDATES } from "@/lib/features";
 
-// Hand-drawn underline under an accent word
-function Underline() {
+// Hand-drawn underline under an accent word (drawDelay: start of its draw animation, when it differs
+// from the timing in landing.module.css)
+function Underline({ drawDelay }: { drawDelay?: string } = {}) {
   return (
     <svg className={s.ul} viewBox="0 0 200 12" preserveAspectRatio="none" aria-hidden="true" focusable="false">
-      <path d="M3 8 Q 60 1 110 6 T 197 5" />
+      <path d="M3 8 Q 60 1 110 6 T 197 5" {...(drawDelay ? { style: { animationDelay: drawDelay } } : {})} />
     </svg>
   );
 }
@@ -28,7 +29,33 @@ function Accent({ children, coral = false }: { children: React.ReactNode; coral?
 // Without motion (or before/after the run) only "college." shows. Timing: landing.module.css.
 const ROTATING = ["college.", "course.", "scholarship.", "internship.", "college."];
 
+// While Colleges is on, only "college." -> "course." -> "college.": the site has no scholarship or
+// internship sections of its own yet. Same CSS steps (0, 1, then the closing step 4), with the closing
+// word brought forward to 3.5s (inline delays), so there is no gap where steps 2 and 3 would be.
+function LiveRotatingAccent() {
+  return (
+    <span className={s.ser}>
+      <span className="sr-only">college.</span>
+      <span className={s.rotWords} aria-hidden="true">
+        <span className={s.rotWord} data-step={0}>
+          college.
+          <Underline />
+        </span>
+        <span className={s.rotWord} data-step={1}>
+          course.
+          <Underline />
+        </span>
+        <span className={s.rotWord} data-step={4} style={{ animationDelay: "3.5s" }}>
+          college.
+          <Underline drawDelay="3.65s" />
+        </span>
+      </span>
+    </span>
+  );
+}
+
 function RotatingAccent() {
+  if (SHOW_COLLEGES) return <LiveRotatingAccent />;
   return (
     <span className={s.ser}>
       <span className="sr-only">college.</span>
@@ -109,10 +136,16 @@ export default function Hero({ finder }: { finder?: React.ReactNode } = {}) {
         {/* Slim site search (searches posts: tests, notes, solutions) */}
         <form action="/search" method="get" role="search" className={`${s.search} ${s.enter}`}>
           <label htmlFor="home-search" className="sr-only">
-            Search tests and topics
+            {SHOW_COLLEGES ? "Search colleges, exams and tests" : "Search tests and topics"}
           </label>
           <IconSearch aria-hidden="true" size={20} className="shrink-0 text-(--muted)" />
-          <input id="home-search" name="q" type="text" placeholder="Search a test or topic" />
+          {/* /search finds colleges, courses and exams too while Colleges is on */}
+          <input
+            id="home-search"
+            name="q"
+            type="text"
+            placeholder={SHOW_COLLEGES ? "Search colleges, exams or tests" : "Search a test or topic"}
+          />
           <button type="submit">Search</button>
         </form>
 
