@@ -28,10 +28,22 @@ import { useToast } from "@/components/Toast";
 import ViewTracker from "@/components/ViewTracker";
 import { setNavSection } from "@/components/nav-section";
 import { SHOW_SCHOOL } from "@/lib/features";
-import { entranceMeta, isTestPost } from "@/lib/test-posts";
+import { READING_CONTENT_TYPES, entranceMeta, formatTestDate, isTestPost } from "@/lib/test-posts";
+import { postKindLabel } from "@/components/tests/PostCard";
 
 // Reading material rather than a test: "What's inside", and no "Available until" date
-const READING_TYPES = ["NOTES", "SOLUTION"];
+const READING_TYPES = READING_CONTENT_TYPES;
+
+// Readable name for the post type (tests use the same label as their card on the Tests page)
+const TYPE_LABELS: Record<string, string> = {
+  QUIZ: "Test",
+  SOLUTION: "Solution",
+  INTERNSHIP: "Internship",
+  JOB: "Job",
+  COMPETITION: "Competition",
+  HACKATHON: "Hackathon",
+  EVENT: "Event",
+};
 
 // Page wrapper: fonts + colour tokens; a calm, wide reading column (PDF pages get more width)
 const shell = `${s.page} flex-1`;
@@ -66,6 +78,7 @@ export default function OpportunityDetailPage() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
   const [applicationsClosed, setApplicationsClosed] = useState(false);
+  const [testEnded, setTestEnded] = useState(false);
   const [backLink, setBackLink] = useState<{ href: string; label: string } | null>(null);
 
   useEffect(() => {
@@ -84,6 +97,7 @@ export default function OpportunityDetailPage() {
       setCodeUnlocked(data.codeUnlocked || false);
       setAlreadyLocked(data.isLocked || false);
       setApplicationsClosed(data.applicationsClosed || false);
+      setTestEnded(data.testEnded || false);
       setBackLink(data.backLink || null);
       // Header highlights the section this post belongs to (School / Higher / Tests)
       setNavSection(data.navSection || null);
@@ -182,7 +196,6 @@ export default function OpportunityDetailPage() {
   }
 
   const isQuiz = opportunity.type === "QUIZ" || opportunity.type === "SOLUTION";
-  const isInternship = opportunity.type === "INTERNSHIP";
   const isReading = READING_TYPES.includes(opportunity.contentType);
   return (
     <div className={shell}>
@@ -233,7 +246,7 @@ export default function OpportunityDetailPage() {
               </div>
             </div>
             <span className="shrink-0 rounded-full bg-(--hp-lavender-soft) px-3.5 py-1.5 text-xs font-extrabold text-(--teal-dark)">
-              {opportunity.type}
+              {isTestPost(opportunity) ? postKindLabel(opportunity) : (TYPE_LABELS[opportunity.type] ?? opportunity.type)}
             </span>
           </div>
 
@@ -248,15 +261,7 @@ export default function OpportunityDetailPage() {
           {/* Notes and solutions have no meaningful end date */}
           {!isReading && (
             <div className="mt-2 text-[15px] font-semibold text-(--hp-muted)">
-              ⏰ {isQuiz ? "Available until" : "Apply by"}{" "}
-              {isInternship
-                ? new Date(opportunity.applyDeadline).toLocaleDateString("en-IN", {
-                    day: "numeric",
-                    month: "short",
-                    year: "numeric",
-                    timeZone: "Asia/Kolkata",
-                  })
-                : new Date(opportunity.applyDeadline).toLocaleDateString()}
+              ⏰ {testEnded ? "Ended" : isQuiz ? "Available until" : "Apply by"} {formatTestDate(opportunity.applyDeadline)}
               {applicationsClosed && (
                 <span className="ml-1 font-extrabold text-red-700">· Applications closed</span>
               )}
@@ -279,7 +284,17 @@ export default function OpportunityDetailPage() {
 
           <div className="mt-7 border-t border-(--line) pt-6">
             {isQuiz ? (
-              opportunity.requiresCode && codeUnlocked && alreadyLocked ? (
+              testEnded ? (
+                <div className="rounded-[18px] border border-(--line) bg-(--hp-butter) p-6 text-center sm:p-8">
+                  <h2 className={`${s.display} m-0 mb-2 text-xl font-bold`}>
+                    This test ended on {formatTestDate(opportunity.applyDeadline)}
+                  </h2>
+                  <p className={`${s.readingCopy} mx-auto m-0`}>It is no longer available.</p>
+                  <Link href="/opportunities" className={`${backLinkClass} mt-2`}>
+                    See open tests →
+                  </Link>
+                </div>
+              ) : opportunity.requiresCode && codeUnlocked && alreadyLocked ? (
                 <div className="rounded-[18px] border border-red-200 bg-red-50 p-6 text-center sm:p-8">
                   <h2 className={`${s.display} mb-2 text-xl font-bold text-red-700`}>Test Locked</h2>
                   <p className={`${s.readingCopy} mx-auto`}>

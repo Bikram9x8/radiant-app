@@ -40,6 +40,23 @@ export function isTestPost(p: { type?: string | null; division?: string | null }
   return p.type === "QUIZ" || EXPLICIT_TEST_DIVISIONS.includes(p.division ?? "");
 }
 
+// Reading material (notes, solutions): no end date is shown, so it never "ends"
+export const READING_CONTENT_TYPES = ["NOTES", "SOLUTION"];
+
+// A test whose end date (applyDeadline) is in the past. Ended tests are left out of the Tests page and
+// their page shows "This test ended on …" without the PDF (admins still see them in the admin panel).
+export function isEndedTest(
+  p: { type?: string | null; division?: string | null; contentType?: string | null; applyDeadline: string | Date },
+  now: number = Date.now(),
+) {
+  return isTestPost(p) && !READING_CONTENT_TYPES.includes(p.contentType ?? "") && new Date(p.applyDeadline).getTime() < now;
+}
+
+// "29 Nov 2036": the date format of the Tests page, in India time
+export function formatTestDate(d: string | Date) {
+  return new Date(d).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric", timeZone: "Asia/Kolkata" });
+}
+
 export function isTestDivision(division: string) {
   return TEST_TYPE_FILTERS.some((f) => f.division === division);
 }

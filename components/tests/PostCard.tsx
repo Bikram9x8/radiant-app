@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { IconLock } from "@tabler/icons-react";
 import s from "@/components/school/school.module.css";
-import { entranceMeta, isTestPost, parseClassSubject } from "@/lib/test-posts";
+import { entranceMeta, formatTestDate, isTestPost, parseClassSubject } from "@/lib/test-posts";
 import { SHOW_SCHOOL } from "@/lib/features";
 
 // Result card for the Tests page (/opportunities) and Search (/search).
@@ -43,13 +43,11 @@ function kindOf(p: PostCardData): { label: string; strip: string } {
   return { label: "Study material", strip: "bg-(--hp-lavender)" };
 }
 
-function formatDate(d: string | Date) {
-  return new Date(d).toLocaleDateString("en-IN", {
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-    timeZone: "Asia/Kolkata",
-  });
+const formatDate = formatTestDate;
+
+/** What the post is, as the cards show it ("Test series", "DPP", "Test", "Internship"…) */
+export function postKindLabel(p: PostCardData) {
+  return kindOf(p).label;
 }
 
 // `now` (ms) comes from the page, read once when the data loads, so rendering stays pure

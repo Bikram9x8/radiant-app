@@ -3,7 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
 import { cleanDuration, getInternshipsCategoryId, isInternshipSubcategory } from "@/lib/internships";
-import { EXPLICIT_TEST_DIVISIONS, TEST_CLASSES, isTestDivision, parseClassSubject } from "@/lib/test-posts";
+import { EXPLICIT_TEST_DIVISIONS, READING_CONTENT_TYPES, TEST_CLASSES, isTestDivision, parseClassSubject } from "@/lib/test-posts";
 import type { Division, OpportunityType } from "@prisma/client";
 import { SHOW_SCHOOL } from "@/lib/features";
 import { SCHOOL_TEST_DIVISION, notSchoolWhere } from "@/lib/school-posts";
@@ -26,8 +26,14 @@ export async function GET(req: Request) {
   // School Education switched off: School posts (incl. board-level tests) are left out
   const schoolWhere = SHOW_SCHOOL ? {} : notSchoolWhere;
 
+  // Tests page: only tests, and only those that haven't ended (reading material has no end date)
   const testsWhere = testsOnly
-    ? { OR: [{ type: "QUIZ" as const }, { division: { in: EXPLICIT_TEST_DIVISIONS as Division[] } }] }
+    ? {
+        AND: [
+          { OR: [{ type: "QUIZ" as const }, { division: { in: EXPLICIT_TEST_DIVISIONS as Division[] } }] },
+          { OR: [{ applyDeadline: { gte: new Date() } }, { contentType: { in: READING_CONTENT_TYPES } }] },
+        ],
+      }
     : {};
   // ?subject=Physics (Tests page while School is off): the subject part of the category name, any class.
   // Only plain subject names are accepted; anything else is ignored.
