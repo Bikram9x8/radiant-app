@@ -47,7 +47,7 @@ export default async function Home() {
   const HomeWithUpdates =
     process.env.NEXT_PUBLIC_SHOW_UPDATES === "true" ? (await import("@/components/updates/HomeWithUpdates")).default : null;
   const updates =
-    process.env.NEXT_PUBLIC_SHOW_UPDATES === "true" ? await (await import("@/lib/updates/data")).latestUpdates(6) : [];
+    process.env.NEXT_PUBLIC_SHOW_UPDATES === "true" ? await (await import("@/lib/updates/data")).latestUpdates(4) : null;
 
   // Colleges are live (SHOW_COLLEGES on): the hero finder and the college cards use the real VERIFIED
   // colleges, and the empty ad boxes are hidden until a real ad exists. Written on process.env itself so
@@ -80,7 +80,7 @@ export default async function Home() {
       )}
 
       {HomeWithUpdates ? (
-        <HomeWithUpdates items={updates}>
+        <HomeWithUpdates items={updates?.items ?? []} total={updates?.total ?? 0}>
           <JourneyCards abroad={SHOW_ABROAD} />
         </HomeWithUpdates>
       ) : (
