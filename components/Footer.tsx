@@ -1,13 +1,11 @@
 import Link from "next/link";
 import s from "@/components/site-chrome.module.css";
 import RadiantLogo from "@/components/brand/RadiantLogo";
-import { SHOW_ABROAD, SHOW_COLLEGES, SHOW_SCHOOL } from "@/lib/features";
+import { SHOW_ABROAD, SHOW_COLLEGES, SHOW_SCHOOL, SHOW_UPDATES } from "@/lib/features";
 import { getExam } from "@/lib/abroad";
 
 type FooterLink = { label: string; href?: string }; // no href = not built yet ("Coming soon")
 type Section = { title: string; links: FooterLink[] };
-
-const HE = "/courses/higher-education/after-12th";
 
 // Shown only while School Education is switched on (lib/features.ts)
 const SCHOOL_SECTION: Section = {
@@ -31,33 +29,19 @@ const ABROAD_SECTION: Section = {
   ],
 };
 
+// Only pages with real content. The exam prep (JEE, NEET, NET, SSC, UPSC), scholarships, internships and
+// jobs sections are left out while they are still "Coming soon" (their pages still exist).
 const SECTIONS: Section[] = [
   ...(SHOW_SCHOOL ? [SCHOOL_SECTION] : []),
   {
     title: "Explore",
     links: [
-      // With SHOW_COLLEGES on, "Colleges" opens the college list; otherwise it stays on /higher
+      // With SHOW_COLLEGES on, "Colleges" opens the college list and "Entrance exams" the Exams hub;
+      // otherwise they stay on /higher and the Tests page
       { label: "Colleges", href: SHOW_COLLEGES ? "/colleges" : "/higher" },
-      { label: "Courses", href: "/higher" },
-      { label: "Entrance exams", href: "/opportunities" },
-    ],
-  },
-  {
-    title: "Exam prep",
-    links: [
-      { label: "JEE", href: "/courses/competitive/jee" },
-      { label: "NEET", href: "/courses/competitive/neet" },
-      { label: "NET", href: "/courses/competitive/net" },
-      { label: "SSC", href: "/courses/competitive/ssc" },
-      { label: "UPSC", href: "/courses/competitive/upsc" },
-    ],
-  },
-  {
-    title: "Opportunities",
-    links: [
-      { label: "Scholarships", href: `${HE}/scholarships` },
-      { label: "Internships", href: `${HE}/internships` },
-      { label: "Jobs & careers", href: `${HE}/jobs-careers` },
+      { label: "Entrance exams", href: SHOW_COLLEGES ? "/exams" : "/opportunities" },
+      ...(SHOW_COLLEGES ? [{ label: "Practice tests", href: "/opportunities" }] : []),
+      ...(SHOW_UPDATES ? [{ label: "Latest updates", href: "/updates" }] : []),
     ],
   },
   ...(SHOW_ABROAD ? [ABROAD_SECTION] : []),
@@ -76,7 +60,8 @@ const SECTIONS: Section[] = [
 const BLURB = SHOW_SCHOOL
   ? "Notes, solutions, tests and guidance for school and higher education, organised class by class and chapter by chapter."
   : SHOW_COLLEGES
-    ? "Colleges, entrance exam prep, scholarships and internships for students after Class 12."
+    ? // Only what the site has today: checked colleges and entrance exams, plus each switched-on section
+      `Colleges and entrance exams checked on official pages${SHOW_UPDATES ? ", the latest openings" : ""}${SHOW_ABROAD ? " and study abroad guides" : ""} for students after Class 12.`
     : "Entrance exam prep, scholarships and internships for students after Class 12. Colleges and courses coming soon.";
 
 export default function Footer() {

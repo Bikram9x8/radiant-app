@@ -2,7 +2,7 @@ import Link from "next/link";
 import { IconSearch } from "@tabler/icons-react";
 import s from "./landing.module.css";
 import AdmissionPass from "./AdmissionPass";
-import { SHOW_ABROAD, SHOW_COLLEGES } from "@/lib/features";
+import { SHOW_ABROAD, SHOW_COLLEGES, SHOW_UPDATES } from "@/lib/features";
 
 // Hand-drawn underline under an accent word
 function Underline() {
@@ -66,8 +66,7 @@ export default function Hero({ finder }: { finder?: React.ReactNode } = {}) {
         </h1>
         {SHOW_COLLEGES ? (
           <p className={`${s.lead} ${s.enter}`}>
-            Colleges with fees, eligibility and entrance exams checked on official pages, entrance exam prep for
-            JEE and NEET, scholarships and internships after Class 12.
+            {`Colleges with fees, eligibility and entrance exams checked on official pages, practice tests${SHOW_UPDATES ? " and the latest openings" : ""} after Class 12.`}
           </p>
         ) : (
           <p className={`${s.lead} ${s.enter}`}>
@@ -76,14 +75,27 @@ export default function Hero({ finder }: { finder?: React.ReactNode } = {}) {
           </p>
         )}
 
-        <div className={`${s.cta} ${s.enter}`}>
-          <Link href="/higher" className={`${s.btn} ${s.pri}`}>
-            Explore after Class 12
-          </Link>
-          <Link href="/opportunities" className={`${s.btn} ${s.out}`}>
-            Explore entrance prep
-          </Link>
-        </div>
+        {/* With Colleges on, the buttons open the college list and the Exams hub (real content) instead of
+            the /higher hub, whose sections are still "Coming soon" */}
+        {SHOW_COLLEGES ? (
+          <div className={`${s.cta} ${s.enter}`}>
+            <Link href="/colleges" className={`${s.btn} ${s.pri}`}>
+              Find a college
+            </Link>
+            <Link href="/exams" className={`${s.btn} ${s.out}`}>
+              Explore entrance exams
+            </Link>
+          </div>
+        ) : (
+          <div className={`${s.cta} ${s.enter}`}>
+            <Link href="/higher" className={`${s.btn} ${s.pri}`}>
+              Explore after Class 12
+            </Link>
+            <Link href="/opportunities" className={`${s.btn} ${s.out}`}>
+              Explore entrance prep
+            </Link>
+          </div>
+        )}
 
         {/* Slim site search (searches posts: tests, notes, solutions) */}
         <form action="/search" method="get" role="search" className={`${s.search} ${s.enter}`}>

@@ -56,6 +56,8 @@ export default async function Home() {
   // the bundler drops the finder's client code while the switch is off (the homepage is then unchanged).
   const collegesLive = process.env.NEXT_PUBLIC_SHOW_COLLEGES === "true";
   const colleges = collegesLive ? await (await import("@/lib/colleges/data")).verifiedColleges() : null;
+  // Exams that have a college page, for the exam band's links (only while Colleges is live)
+  const liveExams = colleges ? (await import("@/lib/colleges/exams")).examsInUse(colleges).map((e) => e.slug) : null;
   const CollegeFinderPass = collegesLive ? (await import("@/components/landing/CollegeFinderPass")).default : null;
 
   // Study Abroad words for the ticker: only verified items, none while it is switched off
@@ -98,7 +100,7 @@ export default async function Home() {
         </div>
       )}
 
-      <ExamsBand />
+      {liveExams ? <ExamsBand live={liveExams} /> : <ExamsBand />}
       {AbroadBand && <AbroadBand />}
       {collegesLive ? <RecentlyAdded items={latestOpportunities} hideAd /> : <RecentlyAdded items={latestOpportunities} />}
       <CareerBlock />

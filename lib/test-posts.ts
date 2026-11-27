@@ -54,6 +54,11 @@ export function isEndedTest(
   return isTestPost(p) && !READING_CONTENT_TYPES.includes(p.contentType ?? "") && new Date(p.applyDeadline).getTime() < now;
 }
 
+// The same rule as isTestPost(), as a database filter
+export const testPostWhere: Prisma.OpportunityWhereInput = {
+  OR: [{ type: "QUIZ" }, { division: { in: EXPLICIT_TEST_DIVISIONS as Division[] } }],
+};
+
 // The same rule as isEndedTest(), as a database filter: matches the ended tests, so a list can leave
 // them out with { NOT: endedTestWhere() } (put it inside AND: [...] when the query has its own NOT).
 // contentType null is checked on its own because "notIn" never matches an empty value.
@@ -65,6 +70,29 @@ export function endedTestWhere(now: Date = new Date()): Prisma.OpportunityWhereI
       { OR: [{ contentType: null }, { contentType: { notIn: READING_CONTENT_TYPES } }] },
     ],
   };
+}
+
+/** What a post is, as the cards and pages show it ("Test series", "DPP", "Test", "Internship"…) */
+export function postKindLabel(p: { type?: string | null; division?: string | null; contentType?: string | null }) {
+  if (isTestPost(p)) {
+    switch (p.division) {
+      case "TEST_SERIES":
+        return "Test series";
+      case "CHAPTER_WISE_TEST":
+        return "Chapter test";
+      case "BOARD_LEVEL_TEST":
+        return "Board-level test";
+      case "DPP":
+        return "DPP";
+      default:
+        return "Test";
+    }
+  }
+  if (p.type === "INTERNSHIP") return "Internship";
+  if (p.contentType === "NOTES") return "Notes";
+  if (p.division === "CBSE_SAMPLE_PAPERS") return "Sample paper";
+  if (p.contentType === "SOLUTION" || p.division === "NCERT_SOLUTION" || p.type === "SOLUTION") return "Solution";
+  return "Study material";
 }
 
 // "29 Nov 2036": the date format of the Tests page, in India time

@@ -28,8 +28,7 @@ import { useToast } from "@/components/Toast";
 import ViewTracker from "@/components/ViewTracker";
 import { setNavSection } from "@/components/nav-section";
 import { SHOW_SCHOOL } from "@/lib/features";
-import { READING_CONTENT_TYPES, entranceMeta, formatTestDate, isTestPost } from "@/lib/test-posts";
-import { postKindLabel } from "@/components/tests/PostCard";
+import { READING_CONTENT_TYPES, entranceMeta, formatTestDate, isTestPost, postKindLabel } from "@/lib/test-posts";
 
 // Reading material rather than a test: "What's inside", and no "Available until" date
 const READING_TYPES = READING_CONTENT_TYPES;

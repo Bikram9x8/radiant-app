@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { IconLock } from "@tabler/icons-react";
 import s from "@/components/school/school.module.css";
-import { entranceMeta, formatTestDate, isTestPost, parseClassSubject } from "@/lib/test-posts";
+import { entranceMeta, formatTestDate, isTestPost, parseClassSubject, postKindLabel } from "@/lib/test-posts";
 import { SHOW_SCHOOL } from "@/lib/features";
 
 // Result card for the Tests page (/opportunities) and Search (/search).
@@ -19,36 +19,26 @@ export type PostCardData = {
   category?: { name: string } | null;
 };
 
-// Label + colour (strip and pill) for what the post is
+// Colour (strip and pill) for each kind of post; the label itself comes from lib/test-posts.ts
+const STRIP: Record<string, string> = {
+  "Test series": "bg-(--hp-mint)",
+  "Chapter test": "bg-(--hp-lavender)",
+  "Board-level test": "bg-(--hp-coral)",
+  DPP: "bg-(--hp-yellow)",
+  Test: "bg-(--hp-sky)",
+  Internship: "bg-(--hp-mint)",
+  Notes: "bg-(--hp-sky)",
+  "Sample paper": "bg-(--hp-coral)",
+  Solution: "bg-(--hp-pink)",
+  "Study material": "bg-(--hp-lavender)",
+};
+
 function kindOf(p: PostCardData): { label: string; strip: string } {
-  if (isTestPost(p)) {
-    switch (p.division) {
-      case "TEST_SERIES":
-        return { label: "Test series", strip: "bg-(--hp-mint)" };
-      case "CHAPTER_WISE_TEST":
-        return { label: "Chapter test", strip: "bg-(--hp-lavender)" };
-      case "BOARD_LEVEL_TEST":
-        return { label: "Board-level test", strip: "bg-(--hp-coral)" };
-      case "DPP":
-        return { label: "DPP", strip: "bg-(--hp-yellow)" };
-      default:
-        return { label: "Test", strip: "bg-(--hp-sky)" };
-    }
-  }
-  if (p.type === "INTERNSHIP") return { label: "Internship", strip: "bg-(--hp-mint)" };
-  if (p.contentType === "NOTES") return { label: "Notes", strip: "bg-(--hp-sky)" };
-  if (p.division === "CBSE_SAMPLE_PAPERS") return { label: "Sample paper", strip: "bg-(--hp-coral)" };
-  if (p.contentType === "SOLUTION" || p.division === "NCERT_SOLUTION" || p.type === "SOLUTION")
-    return { label: "Solution", strip: "bg-(--hp-pink)" };
-  return { label: "Study material", strip: "bg-(--hp-lavender)" };
+  const label = postKindLabel(p);
+  return { label, strip: STRIP[label] };
 }
 
 const formatDate = formatTestDate;
-
-/** What the post is, as the cards show it ("Test series", "DPP", "Test", "Internship"…) */
-export function postKindLabel(p: PostCardData) {
-  return kindOf(p).label;
-}
 
 // `now` (ms) comes from the page, read once when the data loads, so rendering stays pure
 export default function PostCard({ post, now }: { post: PostCardData; now: number }) {
