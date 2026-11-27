@@ -7,6 +7,7 @@
 // 3 NCERT-style solutions (type SOLUTION). All real tests today are type QUIZ.
 
 import type { Division, Prisma } from "@prisma/client";
+import { SHOW_SCHOOL } from "@/lib/features";
 
 // Divisions that mark a post as a test even when its type isn't QUIZ
 export const EXPLICIT_TEST_DIVISIONS = ["CHAPTER_WISE_TEST", "BOARD_LEVEL_TEST", "DPP"];
@@ -124,6 +125,36 @@ export function entranceMeta(categoryName?: string | null) {
   if (subject) return `${label} · ${subject}`;
   // Not a "Class N - Subject" category: show it only if it isn't a class on its own
   return categoryName && !/^class\s*\d/i.test(categoryName) ? `${label} · ${categoryName}` : label;
+}
+
+type PostText = {
+  title: string;
+  type?: string | null;
+  division?: string | null;
+  contentType?: string | null;
+  chapter?: number | null;
+  category?: { name: string } | null;
+};
+
+/** The line under a post's title on its card: "JEE prep · Mathematics" for a test while School Education
+ *  is switched off (no class number), otherwise "Class 12 · Physics · Chapter 3" */
+export function postMetaParts(p: PostText): string[] {
+  const { classNo, subject } = parseClassSubject(p.category?.name);
+  const parts =
+    !SHOW_SCHOOL && isTestPost(p)
+      ? [entranceMeta(p.category?.name), p.chapter ? `Chapter ${p.chapter}` : null]
+      : [
+          classNo ? `Class ${classNo}` : null,
+          subject ?? (classNo ? null : (p.category?.name ?? null)),
+          p.chapter ? `Chapter ${p.chapter}` : null,
+        ];
+  return parts.filter((x): x is string => !!x);
+}
+
+/** What search matches a post against: the title plus everything its card shows about it (type label
+ *  such as "Test series" or "DPP", and the label line such as "JEE prep · Mathematics") */
+export function postSearchText(p: PostText) {
+  return [p.title, postKindLabel(p), ...postMetaParts(p)].join(" ");
 }
 
 // Category names look like "Class 12 - Physics"
