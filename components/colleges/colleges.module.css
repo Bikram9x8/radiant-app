@@ -475,7 +475,17 @@
   text-align: right;
 }
 
-/* Courses table: rows become cards on phones */
+/* Courses table: rows become cards on phones. The table stays inside its card: long words
+   (e.g. "Chemistry/Biology/Biotechnology") may wrap, and if the columns still need more room than the
+   card has, only the table scrolls sideways inside the card, never the page. */
+.ctabWrap {
+  /* relative: keeps any absolutely placed sr-only text inside this box */
+  position: relative;
+  max-width: 100%;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+}
+
 .ctab {
   width: 100%;
   border-collapse: collapse;
@@ -493,14 +503,24 @@
 
 .ctab tbody th,
 .ctab td {
+  /* Narrower cards: a long word like "Chemistry/Biology/Biotechnology/Technical" may break, so the
+     table fits its card (wide screens keep whole words, below) */
+  overflow-wrap: anywhere;
   padding: 12px 8px;
   border-bottom: 1px solid var(--line);
   text-align: left;
   vertical-align: top;
 }
 
+@media (min-width: 1200px) {
+  .ctab tbody th,
+  .ctab td {
+    overflow-wrap: break-word;
+  }
+}
+
 .ctab tbody th {
-  min-width: 150px;
+  min-width: 120px;
   font-weight: 400;
 }
 
@@ -516,11 +536,11 @@
 }
 
 .ctab td:nth-child(3) {
-  min-width: 200px;
+  min-width: 140px;
 }
 
 .fee {
-  min-width: 150px;
+  min-width: 110px;
 }
 
 .feeLine {

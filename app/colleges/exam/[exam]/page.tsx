@@ -70,33 +70,35 @@ export default async function ExamPage({ params }: Props) {
                 <Link href={`/colleges/${c.slug}`}>{c.name}</Link>
               </h2>
               {place(c) && <p className={s.meta}>{place(c)}</p>}
-              <table className={s.ctab}>
-                <thead>
-                  <tr>
-                    <th scope="col">Course</th>
-                    <th scope="col">Duration</th>
-                    <th scope="col">Entrance exams</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {ks.map((k) => (
-                    <tr key={k.courseId}>
-                      <th scope="row" data-l="Course">
-                        <b>{k.name}</b>
-                        {[k.specialization, k.level].some(Boolean) && (
-                          <small>{[k.specialization, k.level].filter(Boolean).join(" · ")}</small>
-                        )}
-                      </th>
-                      <td data-l="Duration" className={k.durationYears ? undefined : s.na}>
-                        {k.durationYears ? years(k.durationYears) : NOT_AVAILABLE}
-                      </td>
-                      <td data-l="Entrance exams">
-                        <ExamNames exams={k.entranceExams} />
-                      </td>
+              <div className={s.ctabWrap}>
+                <table className={s.ctab}>
+                  <thead>
+                    <tr>
+                      <th scope="col">Course</th>
+                      <th scope="col">Duration</th>
+                      <th scope="col">Entrance exams</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {ks.map((k) => (
+                      <tr key={k.courseId}>
+                        <th scope="row" data-l="Course">
+                          <b>{k.name}</b>
+                          {[k.specialization, k.level].some(Boolean) && (
+                            <small>{[k.specialization, k.level].filter(Boolean).join(" · ")}</small>
+                          )}
+                        </th>
+                        <td data-l="Duration" className={k.durationYears ? undefined : s.na}>
+                          {k.durationYears ? years(k.durationYears) : NOT_AVAILABLE}
+                        </td>
+                        <td data-l="Entrance exams">
+                          <ExamNames exams={k.entranceExams} />
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
               <SourceList
                 college={c}
                 items={ks.flatMap((k) => {
