@@ -9,7 +9,7 @@ import {
   isDeadlinePassed,
   isInternshipSubcategory,
 } from "@/lib/internships";
-import { isTestPost } from "@/lib/test-posts";
+import { isEndedTest, isTestPost } from "@/lib/test-posts";
 import { SHOW_SCHOOL } from "@/lib/features";
 import { getCourseRootSlug, isSchoolPost } from "@/lib/school-posts";
 
@@ -98,7 +98,18 @@ const session = await getServerSession(authOptions);
         : "/opportunities"
     : "/opportunities";
 
-  return NextResponse.json({ opportunity, alreadyApplied, codeUnlocked, isLocked, applicationsClosed, backLink, navSection });
+  // Ended test: the page says so, and the PDF link is not sent at all
+  const testEnded = isEndedTest(opportunity);
+  return NextResponse.json({
+    opportunity: testEnded ? { ...opportunity, externalLink: null } : opportunity,
+    alreadyApplied,
+    codeUnlocked,
+    isLocked,
+    applicationsClosed,
+    testEnded,
+    backLink,
+    navSection,
+  });
   }
 
 // Walks up from a course node to the root. Returns the node's /courses/... URL, whether it is a
