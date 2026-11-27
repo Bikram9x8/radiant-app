@@ -4,7 +4,7 @@ import { IconSearch } from "@tabler/icons-react";
 import { prisma } from "@/lib/prisma";
 import PostCard from "@/components/tests/PostCard";
 import s from "@/components/school/school.module.css";
-import { DIVISION_LABELS } from "@/lib/test-posts";
+import { DIVISION_LABELS, endedTestWhere } from "@/lib/test-posts";
 import type { Division } from "@prisma/client";
 import { SHOW_SCHOOL } from "@/lib/features";
 import { notSchoolWhere } from "@/lib/school-posts";
@@ -30,6 +30,8 @@ async function loadPosts(q: string, division: string) {
       ...(division ? { division: division as Division } : {}),
       // School posts are left out while School Education is switched off
       ...(SHOW_SCHOOL ? {} : notSchoolWhere),
+      // Ended tests are left out (lib/test-posts.ts); AND keeps notSchoolWhere's own NOT intact
+      AND: [{ NOT: endedTestWhere() }],
     },
     select: {
       id: true,
