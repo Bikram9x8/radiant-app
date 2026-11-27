@@ -5,8 +5,17 @@ import u from "./updates.module.css";
 
 // Homepage (only while SHOW_UPDATES is on; app/page.tsx loads this file only then, so the homepage is
 // unchanged while it is off): the first section after the hero ("Everything after Class 12") with a
-// "Latest updates" panel on its right on desktop, stacked below it on phones.
-export default function HomeWithUpdates({ children, items }: { children: React.ReactNode; items: UpdateView[] }) {
+// "Latest updates" panel on its right on desktop, stacked below it on phones. The panel shows the first
+// few open items in the same order as /updates (nearest deadline first) and links to all of them.
+export default function HomeWithUpdates({
+  children,
+  items,
+  total,
+}: {
+  children: React.ReactNode;
+  items: UpdateView[];
+  total: number;
+}) {
   return (
     <div className={u.homeGrid}>
       {children}
@@ -29,6 +38,13 @@ export default function HomeWithUpdates({ children, items }: { children: React.R
               </li>
             ))}
           </ul>
+        )}
+        {total > 0 && (
+          <p className={u.panelFoot}>
+            <Link className={u.all} href="/updates">
+              See all {total} {total === 1 ? "update" : "updates"} →
+            </Link>
+          </p>
         )}
       </aside>
     </div>

@@ -27,13 +27,8 @@ const toView = (u: Omit<Row, "internalNotes">): UpdateView => ({
   checked: iso(u.checkedAt),
 });
 
-/** Homepage panel: the most recently verified items, newest first */
-export async function latestUpdates(take = 6): Promise<UpdateView[]> {
-  const rows = await prisma.latestUpdate.findMany({ where: where(), omit: { internalNotes: true }, orderBy: { verifiedAt: "desc" }, take });
-  return rows.map(toView);
-}
-
-/** /updates: every visible item, nearest deadline first (no deadline last) */
+/** /updates: every visible item. Items with a deadline first, nearest deadline first; then items
+ *  without a deadline, newest verified first */
 export async function openUpdates(): Promise<UpdateView[]> {
   const rows = await prisma.latestUpdate.findMany({
     where: where(),
@@ -41,4 +36,10 @@ export async function openUpdates(): Promise<UpdateView[]> {
     orderBy: [{ deadline: { sort: "asc", nulls: "last" } }, { verifiedAt: "desc" }],
   });
   return rows.map(toView);
+}
+
+/** Homepage panel: the first `take` items in the same order as /updates, and how many are open in all */
+export async function latestUpdates(take = 4): Promise<{ items: UpdateView[]; total: number }> {
+  const all = await openUpdates();
+  return { items: all.slice(0, take), total: all.length };
 }
