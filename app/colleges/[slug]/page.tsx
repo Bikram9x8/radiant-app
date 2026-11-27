@@ -190,53 +190,55 @@ export default async function CollegePage({ params }: Props) {
               <div id="cf">
                 <Heading title="Courses" accent="and fees" coral />
               </div>
-              <table className={s.ctab}>
-                <thead>
-                  <tr>
-                    <th scope="col">Course</th>
-                    <th scope="col">Duration</th>
-                    <th scope="col">Eligibility</th>
-                    <th scope="col">Entrance exams</th>
-                    <th scope="col">Fee</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {c.courses.map((k) => {
-                    const fees = feeLines(k);
-                    const sub = [k.specialization, k.level, k.stream, k.mode].filter(Boolean).join(" · ");
-                    return (
-                      <tr key={k.courseId}>
-                        <th scope="row" data-l="Course">
-                          <b>{k.name}</b>
-                          {sub && <small>{sub}</small>}
-                        </th>
-                        <td data-l="Duration" className={k.durationYears ? undefined : s.na}>
-                          {k.durationYears ? years(k.durationYears) : NOT_AVAILABLE}
-                        </td>
-                        <td data-l="Eligibility" className={k.eligibility ? undefined : s.na}>
-                          {k.eligibility ?? NOT_AVAILABLE}
-                        </td>
-                        <td data-l="Entrance exams" className={k.entranceExams.length ? undefined : s.na}>
-                          {k.entranceExams.length ? <ExamNames exams={k.entranceExams} /> : NOT_AVAILABLE}
-                        </td>
-                        <td data-l="Fee" className={fees.length ? s.fee : s.na}>
-                          {fees.length
-                            ? fees.map((x) => (
-                                <span key={x.label} className={s.feeLine}>
-                                  <b>{x.amount}</b>
-                                  <small>
-                                    {x.label}
-                                    {k.feeYear ? `, ${k.feeYear}` : ""}
-                                  </small>
-                                </span>
-                              ))
-                            : NOT_AVAILABLE}
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
+              <div className={s.ctabWrap}>
+                <table className={s.ctab}>
+                  <thead>
+                    <tr>
+                      <th scope="col">Course</th>
+                      <th scope="col">Duration</th>
+                      <th scope="col">Eligibility</th>
+                      <th scope="col">Entrance exams</th>
+                      <th scope="col">Fee</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {c.courses.map((k) => {
+                      const fees = feeLines(k);
+                      const sub = [k.specialization, k.level, k.stream, k.mode].filter(Boolean).join(" · ");
+                      return (
+                        <tr key={k.courseId}>
+                          <th scope="row" data-l="Course">
+                            <b>{k.name}</b>
+                            {sub && <small>{sub}</small>}
+                          </th>
+                          <td data-l="Duration" className={k.durationYears ? undefined : s.na}>
+                            {k.durationYears ? years(k.durationYears) : NOT_AVAILABLE}
+                          </td>
+                          <td data-l="Eligibility" className={k.eligibility ? undefined : s.na}>
+                            {k.eligibility ?? NOT_AVAILABLE}
+                          </td>
+                          <td data-l="Entrance exams" className={k.entranceExams.length ? undefined : s.na}>
+                            {k.entranceExams.length ? <ExamNames exams={k.entranceExams} /> : NOT_AVAILABLE}
+                          </td>
+                          <td data-l="Fee" className={fees.length ? s.fee : s.na}>
+                            {fees.length
+                              ? fees.map((x) => (
+                                  <span key={x.label} className={s.feeLine}>
+                                    <b>{x.amount}</b>
+                                    <small>
+                                      {x.label}
+                                      {k.feeYear ? `, ${k.feeYear}` : ""}
+                                    </small>
+                                  </span>
+                                ))
+                              : NOT_AVAILABLE}
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
               <p className={s.note}>
                 Fees are shown exactly as the college publishes them, for the year shown. Hostel is charged
                 separately. Check the official fee page for what is included before you pay.
