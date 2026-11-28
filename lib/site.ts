@@ -10,6 +10,17 @@ const fromEnv =
 export const SITE_URL = fromEnv.replace(/\/+$/, "");
 export const SITE_NAME = "Radiant Educations";
 
+/** Longest page title we use: search results cut titles off at about 65 characters */
+export const MAX_TITLE = 65;
+
+/** The first candidate title that fits in MAX_TITLE characters (the last one is cut if none fits) */
+export function fitTitle(...candidates: string[]) {
+  const ok = candidates.find((t) => t.length <= MAX_TITLE);
+  if (ok) return ok;
+  const last = candidates[candidates.length - 1];
+  return last.slice(0, MAX_TITLE - 1).replace(/\s+\S*$/, "") + "…";
+}
+
 /** Absolute URL for a path on this site, e.g. absoluteUrl("/blog") */
 export function absoluteUrl(path: string) {
   return `${SITE_URL}${path.startsWith("/") ? path : `/${path}`}`;

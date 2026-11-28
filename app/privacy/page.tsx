@@ -1,3 +1,10 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Privacy policy | Radiant Educations",
+  description: "What Radiant Educations collects, why, how long it is kept and how to ask for it to be removed.",
+};
+
 import Link from "next/link";
 
 export default function PrivacyPage() {

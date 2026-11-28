@@ -1,4 +1,6 @@
+import type { Metadata } from "next";
 import Link from "next/link";
+import { absoluteUrl, fitTitle, SITE_NAME } from "@/lib/site";
 import { notFound } from "next/navigation";
 import type { CourseNode } from "@prisma/client";
 import {
@@ -67,6 +69,46 @@ const CLASS_SECTIONS = [
   { slug: "previous-year-papers", label: "Previous Year Papers", text: "Past board papers to practise with.", type: "PREVIOUS_YEAR_PAPER", Icon: IconHistory },
   { slug: "revision-notes", label: "Revision Notes", text: "Quick notes for last-minute revision.", type: "REVISION_NOTES", Icon: IconBulb },
 ];
+
+// Title from the course name ("Law Internships – Internships | Radiant Educations"). While nothing in
+// this part of the tree has an approved post yet, the page only says "Coming soon": it stays online
+// but is not indexed (read-only lookups; nothing is changed or deleted).
+export async function generateMetadata({ params }: { params: Promise<{ slug?: string[] }> }): Promise<Metadata> {
+  const { slug = [] } = await params;
+  const trail: CourseNode[] = [];
+  let parentId: string | null = null;
+  for (const s of slug) {
+    const node: CourseNode | null = await prisma.courseNode.findFirst({ where: { parentId, slug: s, isActive: true } });
+    if (!node) return { title: `Not found | ${SITE_NAME}`, robots: { index: false } };
+    trail.push(node);
+    parentId = node.id;
+  }
+  const current = trail[trail.length - 1];
+  const parent = trail[trail.length - 2];
+  if (!current) return { title: `All courses | ${SITE_NAME}`, robots: { index: false, follow: true } };
+
+  // Every node in this part of the tree (a few dozen at most), then any approved post linked to one
+  const ids = [current.id];
+  for (let level = [current.id], depth = 0; level.length && depth < 6; depth++) {
+    const kids = await prisma.courseNode.findMany({ where: { parentId: { in: level }, isActive: true }, select: { id: true } });
+    level = kids.map((k) => k.id);
+    ids.push(...level);
+  }
+  const posts = await prisma.opportunity.count({ where: { courseNodeId: { in: ids }, status: "APPROVED" } });
+
+  const title = fitTitle(
+    parent ? `${current.name} – ${parent.name} | ${SITE_NAME}` : `${current.name} | ${SITE_NAME}`,
+    `${current.name} | ${SITE_NAME}`,
+    current.name,
+  );
+  const description = `${current.name}${parent ? ` (${parent.name})` : ""}: guides, tests and study material on Radiant Educations.`;
+  return {
+    title,
+    description,
+    alternates: { canonical: absoluteUrl("/courses/" + slug.join("/")) },
+    ...(posts === 0 ? { robots: { index: false, follow: true } } : {}),
+  };
+}
 
 export default async function CoursePage({
   params,

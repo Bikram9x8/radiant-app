@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { absoluteUrl } from "@/lib/site";
 import Link from "next/link";
 import { getRate, scholarshipPreview, verifiedCountries, verifiedScholarships } from "@/lib/abroad";
 import { PLANNED_COUNTRIES } from "@/lib/abroad/planned";
@@ -13,6 +14,7 @@ import s from "@/components/abroad/abroad.module.css";
 
 export const metadata: Metadata = {
   title: "Study abroad | Radiant Educations",
+  alternates: { canonical: absoluteUrl("/abroad") },
   description:
     "Country guides, costs in rupees, exam prep and scholarships for Indian students, with the official source and date for every fact.",
 };

@@ -7,7 +7,7 @@ import { COURSES_SOON, feeLines, NOT_AVAILABLE, place, years } from "@/lib/colle
 import type { CollegeView } from "@/lib/colleges/types";
 import { factSources } from "@/lib/colleges/fact-sources";
 import { formatDate } from "@/lib/abroad/format";
-import { absoluteUrl, SITE_NAME } from "@/lib/site";
+import { absoluteUrl, fitTitle, SITE_NAME } from "@/lib/site";
 import { breadcrumbJsonLd, collegeCrumbs, collegeJsonLd, collegePath, jsonLdHtml } from "@/lib/colleges/seo";
 import SourceList from "@/components/colleges/SourceList";
 import ExamNames from "@/components/colleges/ExamNames";
@@ -25,7 +25,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   // Draft or unknown slug: the page is a 404, so no canonical, Open Graph or indexing
   if (!c) return { title: `College not found | ${SITE_NAME}`, robots: { index: false } };
   const url = absoluteUrl(collegePath(c.slug));
-  const title = `${c.name}: courses, eligibility and fees | ${SITE_NAME}`;
+  // Under 65 characters: the full name without "(Deemed to be University)" and the like, shortened
+  // step by step only as far as needed
+  const name = c.name.replace(/\s*\([^)]*\)/g, "").trim();
+  const title = fitTitle(
+    `${name}: courses, fees, eligibility | ${SITE_NAME}`,
+    `${name}: courses, fees, eligibility`,
+    `${name}: courses and fees`,
+    name,
+  );
   const where = place(c); // "Chandigarh" once when the city is also the state
   const description = `${c.name}${where ? `, ${where}` : ""}: courses, eligibility, entrance exams and fees from official sources, with the date each was checked.`;
   return {

@@ -42,7 +42,7 @@ function ExamDateCard({ item }: { item: UpdateView }) {
 // Read on each request: colleges, exam-date updates and open tests change without a deploy
 export const dynamic = "force-dynamic";
 
-const TITLE = `Entrance exams: colleges by exam, exam dates and practice tests | ${SITE_NAME}`;
+const TITLE = `Entrance exams: colleges by exam | ${SITE_NAME}`;
 const DESCRIPTION =
   "Entrance exams after Class 12: which checked colleges accept JEE Main, CUET UG, CAT and more, the latest exam dates, and open practice tests.";
 

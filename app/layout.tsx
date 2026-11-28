@@ -83,7 +83,8 @@ const notoGurmukhi = localFont({
 
 export const metadata: Metadata = {
   title: "Radiant Educations",
-  description: "Connecting students with opportunities from verified companies.",
+  description:
+    "Colleges, entrance exams and the latest admission updates after Class 12. Every fact links to its official source.",
   // Icons come from Next's file conventions: app/favicon.ico, app/icon.svg, app/apple-icon.png
   // and app/manifest.ts (all made from the logo mark in components/brand/brand-svg.ts).
 };

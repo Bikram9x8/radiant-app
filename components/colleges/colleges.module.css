@@ -401,6 +401,8 @@
 }
 
 .crumb a {
+  display: inline-block;
+  padding-block: 4px;
   color: var(--tint-teal-strong);
   font-weight: 700;
 }
@@ -601,10 +603,19 @@
 }
 
 /* ---------- Links to exam pages, outline button on dark ---------- */
+/* An exam name is never broken inside ("JEE Main", "CMAT"); the list itself may wrap between names.
+   Vertical padding makes each link at least 24px tall to tap. */
 .examLink {
+  display: inline-block;
+  padding-block: 3px;
   color: var(--teal-dark);
   font-weight: 700;
+  white-space: nowrap;
   text-underline-offset: 3px;
+}
+
+.examNames {
+  min-width: 0;
 }
 
 .btnOutDark {
@@ -642,6 +653,8 @@
 }
 
 .crumbLight a {
+  display: inline-block;
+  padding-block: 4px;
   color: var(--teal-dark);
   font-weight: 700;
 }
@@ -933,6 +946,7 @@
     min-width: 0 !important;
     padding: 4px 0;
     border: 0;
+    overflow-wrap: break-word;
     text-align: right;
   }
 

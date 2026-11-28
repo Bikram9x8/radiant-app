@@ -16,6 +16,8 @@ export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Search · Radiant Educations",
+  // Result pages are for visitors, not for search engines
+  robots: { index: false, follow: true },
   description: SHOW_SCHOOL
     ? "Search notes, NCERT solutions, sample papers and tests."
     : SHOW_COLLEGES

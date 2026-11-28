@@ -1,3 +1,10 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Terms of use | Radiant Educations",
+  description: "The rules for using Radiant Educations: accounts, content, official sources and limits of liability.",
+};
+
 import Link from "next/link";
 
 export default function TermsPage() {

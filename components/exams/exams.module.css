@@ -74,6 +74,8 @@
 }
 
 .more {
+  display: inline-block;
+  padding-block: 4px;
   color: var(--teal-dark);
   font-size: 15px;
   font-weight: 700;
