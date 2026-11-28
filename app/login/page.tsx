@@ -1,3 +1,11 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Log in | Radiant Educations",
+  description: "Log in to your Radiant Educations account.",
+  robots: { index: false, follow: true },
+};
+
 import AuthLayout from "@/components/AuthLayout";
 import LoginForm from "@/components/auth/LoginForm";
 import { safeReturnTo } from "@/lib/return-to";

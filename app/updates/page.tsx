@@ -10,7 +10,7 @@ import u from "@/components/updates/updates.module.css";
 // Read on each request, so an item disappears the day after its deadline
 export const dynamic = "force-dynamic";
 
-const TITLE = `Latest updates: internships, PhD positions, fellowships | ${SITE_NAME}`;
+const TITLE = `Latest updates: internships and PhDs | ${SITE_NAME}`;
 const DESCRIPTION =
   "Open internships, PhD and MS positions, workshops, fellowships, scholarships and exam dates, each with its official link and the date we checked it.";
 

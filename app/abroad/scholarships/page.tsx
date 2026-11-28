@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { absoluteUrl } from "@/lib/site";
 import Link from "next/link";
 import { verifiedCountries, verifiedScholarships } from "@/lib/abroad";
 import { PLANNED_COUNTRIES } from "@/lib/abroad/planned";
@@ -7,6 +8,7 @@ import s from "@/components/abroad/abroad.module.css";
 
 export const metadata: Metadata = {
   title: "Scholarships abroad | Radiant Educations",
+  alternates: { canonical: absoluteUrl("/abroad/scholarships") },
   description: "Fully funded and partial scholarships for Indian students, each linked to its official page.",
 };
 

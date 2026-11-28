@@ -1,11 +1,19 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+import { absoluteUrl } from "@/lib/site";
 import HigherTabs from "@/components/HigherTabs";
 import { HigherArt } from "@/components/Illustrations";
 import AdSlot, { ADS_ENABLED } from "@/components/AdSlot";
 import s from "@/components/school/school.module.css";
 import ComingSoon from "@/components/ComingSoon";
 export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
+  title: "Higher education after Class 12 | Radiant Educations",
+  description: "Where to go after Class 12, after graduation and after post-graduation: courses, exams, scholarships and careers.",
+  alternates: { canonical: absoluteUrl("/higher") },
+};
 
 export default async function HigherPage() {
   const root = await prisma.courseNode.findFirst({

@@ -1,3 +1,10 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Contact us | Radiant Educations",
+  description: "How to reach Radiant Educations with a question, a correction or a suggestion.",
+};
+
 export default function ContactPage() {
   return (
     <div className="min-h-screen flex items-center justify-center px-4 py-16">

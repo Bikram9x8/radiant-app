@@ -16,7 +16,7 @@ export const authPanels = {
     benefits: [
       // No "Class 12" while School Education is switched off (lib/features.ts)
       SHOW_SCHOOL ? "Free Class 12 and entrance exam practice tests" : "Free entrance exam practice tests",
-      "Internships from verified companies",
+      "Latest internships and openings, checked at the source",
       "Track your progress and applications",
     ],
   },

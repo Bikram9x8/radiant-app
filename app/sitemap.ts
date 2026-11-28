@@ -61,7 +61,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   return checkSitemap([
     page("/"),
-    page("/higher"),
     page("/opportunities"),
     ...(SHOW_SCHOOL ? [page("/school")] : []),
     ...(SHOW_ABROAD

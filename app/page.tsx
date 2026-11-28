@@ -1,4 +1,6 @@
+import type { Metadata } from "next";
 import { getServerSession } from "next-auth/next";
+import { absoluteUrl } from "@/lib/site";
 import { redirect } from "next/navigation";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
@@ -20,6 +22,17 @@ import { SHOW_ABROAD, SHOW_SCHOOL } from "@/lib/features";
 import { getCountry, getExam, verifiedScholarships } from "@/lib/abroad";
 import { notSchoolWhere } from "@/lib/school-posts";
 import { endedTestWhere } from "@/lib/test-posts";
+
+const HOME_TITLE = "Radiant Educations: colleges, entrance exams and updates after Class 12";
+const HOME_DESCRIPTION =
+  "Compare colleges in Punjab and Tricity, check entrance exams and follow the latest admission updates. Every fact links to its official source.";
+
+export const metadata: Metadata = {
+  title: HOME_TITLE,
+  description: HOME_DESCRIPTION,
+  alternates: { canonical: absoluteUrl("/") },
+  openGraph: { type: "website", url: absoluteUrl("/"), title: HOME_TITLE, description: HOME_DESCRIPTION, siteName: "Radiant Educations", locale: "en_IN" },
+};
 
 // Homepage (Phase 2 "Teal + Coral", radiant-design/home-teal-coral.html).
 // Logged-in visitors go to their dashboard. Colleges, course chips, guides and the career test are

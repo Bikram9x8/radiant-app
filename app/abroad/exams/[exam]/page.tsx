@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { absoluteUrl } from "@/lib/site";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getExam, verifiedCountries, verifiedExams } from "@/lib/abroad";
@@ -22,6 +23,7 @@ export async function generateMetadata({ params }: { params: Promise<{ exam: str
   return {
     title: e ? `${e.name}${e.subtitle ? ` ${e.subtitle}` : ""} | Study abroad | Radiant Educations` : "Study abroad | Radiant Educations",
     description: e ? `${e.name}: format, official score requirements and fees, with sources.` : undefined,
+    ...(e ? { alternates: { canonical: absoluteUrl(`/abroad/exams/${e.slug}`) } } : {}),
   };
 }
 

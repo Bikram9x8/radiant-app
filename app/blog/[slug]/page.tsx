@@ -5,7 +5,7 @@ import { allPosts, getPost } from "@/lib/blog";
 import { formatDate } from "@/lib/abroad/format";
 import { verifiedCountries } from "@/lib/abroad";
 import { SHOW_ABROAD } from "@/lib/features";
-import { absoluteUrl, SITE_NAME } from "@/lib/site";
+import { fitTitle, absoluteUrl, SITE_NAME } from "@/lib/site";
 import s from "@/components/blog/blog.module.css";
 
 // Only articles in content/blog have a page; any other slug is a 404
@@ -21,7 +21,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   if (!post) return { title: `Blog | ${SITE_NAME}` };
   const url = absoluteUrl(`/blog/${post.slug}`);
   return {
-    title: `${post.title} | ${SITE_NAME}`,
+    // Long post titles are cut at the colon ("Study abroad from India 2026") to stay under 65 characters
+    title: fitTitle(`${post.title} | ${SITE_NAME}`, post.title, `${post.title.split(":")[0]} | ${SITE_NAME}`),
     description: post.description,
     alternates: { canonical: url },
     openGraph: {
